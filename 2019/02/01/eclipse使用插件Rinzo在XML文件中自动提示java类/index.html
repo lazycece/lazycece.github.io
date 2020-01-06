@@ -307,6 +307,7 @@
 <li>JRE 5 or above；</li>
 </ul>
 <a id="more"></a>
+
 <h4 id="安装设置"><a href="#安装设置" class="headerlink" title="安装设置"></a>安装设置</h4><ul>
 <li><p>Rinzo下载地址：<a href="https://sourceforge.net/projects/editorxml/files/Rinzo%20XML%20Editor/" target="_blank" rel="noopener">https://sourceforge.net/projects/editorxml/files/Rinzo%20XML%20Editor/</a> (也可以从download中进入，然后选择想要下载的版本)；</p>
 </li>
@@ -426,7 +427,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">97</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -439,7 +440,7 @@
             <a href="/categories/">
           
         
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">26</span>
         <span class="site-state-item-name">categories</span>
         </a>
       </div>
@@ -452,7 +453,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-count">62</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
@@ -530,6 +531,7 @@
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
 
+
         
 <div class="busuanzi-count">
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
@@ -599,6 +601,19 @@
 
 
 
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
 

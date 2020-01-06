@@ -306,13 +306,18 @@
 </blockquote>
 <p>首先使用<code>@RocketMQTransactionListener</code>定义一个监听器来模拟执行本地事务和事务会查：</p>
 <a id="more"></a>
+
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Slf</span>4j</span><br><span class="line"><span class="meta">@RocketMQTransactionListener</span>(txProducerGroup = <span class="string">"tx-group"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TransactionListenerImpl</span> <span class="keyword">implements</span> <span class="title">RocketMQLocalTransactionListener</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> RocketMQLocalTransactionState <span class="title">executeLocalTransaction</span><span class="params">(Message msg, Object arg)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 模拟本地事务不通过</span></span><br><span class="line">        log.info(<span class="string">"============== executeLocalTransaction"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> RocketMQLocalTransactionState.UNKNOWN;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> RocketMQLocalTransactionState <span class="title">checkLocalTransaction</span><span class="params">(Message msg)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 模拟回查本地事务</span></span><br><span class="line">        log.info(<span class="string">"============== checkLocalTransaction"</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> RocketMQLocalTransactionState.COMMIT;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>然后再定义一个消费者，设定<code>topic</code>为“topic-tx”：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RocketMQMessageListener</span>(topic = <span class="string">"topic-tx"</span>, consumerGroup = <span class="string">"tx-consumer-group"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TransactionConsumer</span> <span class="keyword">implements</span> <span class="title">RocketMQListener</span>&lt;<span class="title">Message</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onMessage</span><span class="params">(Message message)</span> </span>&#123;</span><br><span class="line">        log.info(<span class="string">"topic-tx received message: &#123;&#125;"</span>, message);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>最后定义一个消息生产者，向“topic-tx”主题发送消息，并且需要指定<code>gorup</code>为“tx-group”（同事务监听器所设置的<code>txProducerGroup</code>一致）：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Slf</span>4j</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TransactionProducer</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Resource</span></span><br><span class="line">    <span class="keyword">private</span> RocketMQTemplate rocketMQTemplate;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">produce</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Message&lt;String&gt; message = <span class="keyword">new</span> Message&lt;&gt;();</span><br><span class="line">        message.setId(UUID.randomUUID().toString());</span><br><span class="line">        message.setContent(<span class="string">"transaction message"</span>);</span><br><span class="line">        log.info(<span class="string">"========sending message========="</span>);</span><br><span class="line">        rocketMQTemplate.sendMessageInTransaction(<span class="string">"tx-group"</span>, <span class="string">"topic-tx"</span>, MessageBuilder.withPayload(message).build(), <span class="keyword">null</span>);</span><br><span class="line">        log.info(<span class="string">"========finish send ========="</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>跑起项目后，在控制台可看到如下输出：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">========sending message=========</span><br><span class="line">============== executeLocalTransaction</span><br><span class="line">========finish send =========</span><br><span class="line">============== checkLocalTransaction</span><br></pre></td></tr></table></figure>
+
 
     </div>
 
@@ -416,7 +421,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">97</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -429,7 +434,7 @@
             <a href="/categories/">
           
         
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">26</span>
         <span class="site-state-item-name">categories</span>
         </a>
       </div>
@@ -442,7 +447,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-count">62</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
@@ -520,6 +525,7 @@
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
 
+
         
 <div class="busuanzi-count">
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
@@ -589,6 +595,19 @@
 
 
 
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
 

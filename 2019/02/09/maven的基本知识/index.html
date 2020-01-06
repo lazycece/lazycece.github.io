@@ -303,14 +303,17 @@
         <h4 id="maven常用构建命令"><a href="#maven常用构建命令" class="headerlink" title="maven常用构建命令"></a>maven常用构建命令</h4><p>mvn  -v<br>mvn  compile   编译  </p>
 <p>test         测试测试类<br>package 打包成jar<br>clean      删除target  </p>
 <a id="more"></a>
+
 <h4 id="项目的构建过程"><a href="#项目的构建过程" class="headerlink" title="项目的构建过程"></a>项目的构建过程</h4><p>清理-&gt;编译-&gt;测试-&gt;打包-&gt;集成测试-&gt;验证-&gt;部署</p>
 <p>maven自动构建目录骨架两种方式</p>
 <ul>
 <li>mvn archetype:generate 然后根据提示完成创建</li>
-<li>mvn archetype:generate -DgroupId=组织名（公司网址的反写+项目名）<br>-DartifactId=项目名-模块名<br>-Dversion=版本号(1.0.0SNAPSHOT)<br>-Dpackage=代码所存在的包名</li>
+<li>mvn archetype:generate -DgroupId=组织名（公司网址的反写+项目名）</li>
+<li>DartifactId=项目名-模块名 </li>
+<li>Dversion=版本号(1.0.0SNAPSHOT)</li>
+<li>Dpackage=代码所存在的包名</li>
 </ul>
-<h4 id="maven中的坐标和仓库"><a href="#maven中的坐标和仓库" class="headerlink" title="maven中的坐标和仓库"></a>maven中的坐标和仓库</h4><p>(DgroupId，DartifactId，Dversion)构成坐标<br>仓库：本地仓库，远程仓库<br>镜像仓库：可在maven目录-&gt;conf-&gt;settings.xml中的<mirrot></mirrot>标签中修改<br>更改仓库位置：默认位置为c盘用户目录的.m2\repository目录下<br>在 maven目录-&gt;conf-&gt;settings.xml中  </p>
-<p><localrepository>路径名改\为/如:(E:/JavaProgram/maven/repository)</localrepository><br>将settings.xml文件复制到仓库中防止以后更新maven版本再次修改settis文件  </p>
+<h4 id="maven中的坐标和仓库"><a href="#maven中的坐标和仓库" class="headerlink" title="maven中的坐标和仓库"></a>maven中的坐标和仓库</h4><p>(DgroupId，DartifactId，Dversion)构成坐标<br>仓库：本地仓库，远程仓库<br>镜像仓库：可在maven目录-&gt;conf-&gt;settings.xml中的<mirrot></mirrot>标签中修改<br>更改仓库位置：默认位置为c盘用户目录的.m2\repository目录下<br>在 maven目录-&gt;conf-&gt;settings.xml中<br><localrepository>路径名改\为/如:(E:/JavaProgram/maven/repository)</localrepository><br>将settings.xml文件复制到仓库中防止以后更新maven版本再次修改settis文件  </p>
 <h4 id="maven的生命周期和插件"><a href="#maven的生命周期和插件" class="headerlink" title="maven的生命周期和插件"></a>maven的生命周期和插件</h4><p>生命周期：<br>clean 清理项目<br>pre-clean 执行清理前的工作<br>clean 清理上一次构建生成的所有文件<br>post-clean 执行清理后的文件<br>defaul 构建项目（最核心）<br>compile test package install<br>site 生成项目站点<br>pre-site 在生成项目站点前要完成的工作<br>site 生成项目的站点文档<br>post-site 在生成项目站点后要完成的工作<br>site-deploy 发布生成站点到服务器上  </p>
 <h4 id="pom-xml文件解析"><a href="#pom-xml文件解析" class="headerlink" title="pom.xml文件解析"></a>pom.xml文件解析</h4><p>常用元素介绍<br>依赖的范围-控制依赖与三种classpath的关系<br>依赖的传递<br>依赖的冲突<br>短路优先<br>路径长度相同，先申明，先优先  </p>
 <h4 id="maven的聚合与继承"><a href="#maven的聚合与继承" class="headerlink" title="maven的聚合与继承"></a>maven的聚合与继承</h4>
@@ -418,7 +421,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">97</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -431,7 +434,7 @@
             <a href="/categories/">
           
         
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">26</span>
         <span class="site-state-item-name">categories</span>
         </a>
       </div>
@@ -444,7 +447,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-count">62</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
@@ -522,6 +525,7 @@
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
 
+
         
 <div class="busuanzi-count">
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
@@ -591,6 +595,19 @@
 
 
 
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
 

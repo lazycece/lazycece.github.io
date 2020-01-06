@@ -55,18 +55,18 @@
   };
 </script>
 
-  <meta name="description" content="三指针法遍历，一次遍历则完成反转：1234567891011121314ListNode* ReverseList(ListNode* pHead) &amp;#123;     //no node     if(pHead==nullptr) return pHead;     ListNode* pre=nullptr,*mid=pHead,*last=nullptr;     //more node">
+  <meta name="description" content="三指针法遍历，一次遍历则完成反转： 1234567891011121314ListNode* ReverseList(ListNode* pHead) &amp;#123;     //no node     if(pHead==nullptr) return pHead;     ListNode* pre=nullptr,*mid=pHead,*last=nullptr;     //more nod">
 <meta name="keywords" content="算法,链表">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【链表】单向链表的反转">
 <meta property="og:url" content="https://lazycece.github.io/2019/02/08/【链表】单向链表的反转/index.html">
 <meta property="og:site_name" content="W  pit">
-<meta property="og:description" content="三指针法遍历，一次遍历则完成反转：1234567891011121314ListNode* ReverseList(ListNode* pHead) &amp;#123;     //no node     if(pHead==nullptr) return pHead;     ListNode* pre=nullptr,*mid=pHead,*last=nullptr;     //more node">
+<meta property="og:description" content="三指针法遍历，一次遍历则完成反转： 1234567891011121314ListNode* ReverseList(ListNode* pHead) &amp;#123;     //no node     if(pHead==nullptr) return pHead;     ListNode* pre=nullptr,*mid=pHead,*last=nullptr;     //more nod">
 <meta property="og:locale" content="en">
 <meta property="og:updated_time" content="2020-01-01T14:48:52.476Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【链表】单向链表的反转">
-<meta name="twitter:description" content="三指针法遍历，一次遍历则完成反转：1234567891011121314ListNode* ReverseList(ListNode* pHead) &amp;#123;     //no node     if(pHead==nullptr) return pHead;     ListNode* pre=nullptr,*mid=pHead,*last=nullptr;     //more node">
+<meta name="twitter:description" content="三指针法遍历，一次遍历则完成反转： 1234567891011121314ListNode* ReverseList(ListNode* pHead) &amp;#123;     //no node     if(pHead==nullptr) return pHead;     ListNode* pre=nullptr,*mid=pHead,*last=nullptr;     //more nod">
   <link rel="canonical" href="https://lazycece.github.io/2019/02/08/【链表】单向链表的反转/">
 
 
@@ -300,8 +300,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>三指针法遍历，一次遍历则完成反转：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ListNode* <span class="title">ReverseList</span><span class="params">(ListNode* pHead)</span> </span>&#123;</span><br><span class="line">     <span class="comment">//no node</span></span><br><span class="line">     <span class="keyword">if</span>(pHead==<span class="literal">nullptr</span>) <span class="keyword">return</span> pHead;</span><br><span class="line">     ListNode* pre=<span class="literal">nullptr</span>,*mid=pHead,*last=<span class="literal">nullptr</span>;</span><br><span class="line">     <span class="comment">//more node/single node</span></span><br><span class="line">     <span class="keyword">while</span>(mid-&gt;next!=<span class="literal">nullptr</span>)&#123;</span><br><span class="line">         <span class="comment">//confirm the location</span></span><br><span class="line">         last=mid-&gt;next;</span><br><span class="line">         mid-&gt;next=pre; pre=mid;mid=last; </span><br><span class="line">     &#125;</span><br><span class="line">     mid-&gt;next=pre;</span><br><span class="line">     pHead=mid;</span><br><span class="line">     <span class="keyword">return</span> pHead;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure></p>
-
+        <p>三指针法遍历，一次遍历则完成反转：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ListNode* <span class="title">ReverseList</span><span class="params">(ListNode* pHead)</span> </span>&#123;</span><br><span class="line">     <span class="comment">//no node</span></span><br><span class="line">     <span class="keyword">if</span>(pHead==<span class="literal">nullptr</span>) <span class="keyword">return</span> pHead;</span><br><span class="line">     ListNode* pre=<span class="literal">nullptr</span>,*mid=pHead,*last=<span class="literal">nullptr</span>;</span><br><span class="line">     <span class="comment">//more node/single node</span></span><br><span class="line">     <span class="keyword">while</span>(mid-&gt;next!=<span class="literal">nullptr</span>)&#123;</span><br><span class="line">         <span class="comment">//confirm the location</span></span><br><span class="line">         last=mid-&gt;next;</span><br><span class="line">         mid-&gt;next=pre; pre=mid;mid=last; </span><br><span class="line">     &#125;</span><br><span class="line">     mid-&gt;next=pre;</span><br><span class="line">     pHead=mid;</span><br><span class="line">     <span class="keyword">return</span> pHead;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
     </div>
 
     
@@ -406,7 +406,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">97</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -419,7 +419,7 @@
             <a href="/categories/">
           
         
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">26</span>
         <span class="site-state-item-name">categories</span>
         </a>
       </div>
@@ -432,7 +432,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-count">62</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
@@ -510,6 +510,7 @@
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
 
+
         
 <div class="busuanzi-count">
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
@@ -579,6 +580,19 @@
 
 
 
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
 

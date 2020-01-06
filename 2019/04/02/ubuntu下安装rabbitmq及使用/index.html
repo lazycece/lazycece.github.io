@@ -55,18 +55,18 @@
   };
 </script>
 
-  <meta name="description" content="Erlang环境安装rabbitmq是运行在erlang环境上的，所以需要安装erlang：1sudo apt-get install erlang">
+  <meta name="description" content="Erlang环境安装rabbitmq是运行在erlang环境上的，所以需要安装erlang： 1sudo apt-get install erlang">
 <meta name="keywords" content="ubuntu,rabbitmq">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ubuntu下安装rabbitmq及使用">
 <meta property="og:url" content="https://lazycece.github.io/2019/04/02/ubuntu下安装rabbitmq及使用/index.html">
 <meta property="og:site_name" content="W  pit">
-<meta property="og:description" content="Erlang环境安装rabbitmq是运行在erlang环境上的，所以需要安装erlang：1sudo apt-get install erlang">
+<meta property="og:description" content="Erlang环境安装rabbitmq是运行在erlang环境上的，所以需要安装erlang： 1sudo apt-get install erlang">
 <meta property="og:locale" content="en">
 <meta property="og:updated_time" content="2020-01-01T14:48:52.476Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ubuntu下安装rabbitmq及使用">
-<meta name="twitter:description" content="Erlang环境安装rabbitmq是运行在erlang环境上的，所以需要安装erlang：1sudo apt-get install erlang">
+<meta name="twitter:description" content="Erlang环境安装rabbitmq是运行在erlang环境上的，所以需要安装erlang： 1sudo apt-get install erlang">
   <link rel="canonical" href="https://lazycece.github.io/2019/04/02/ubuntu下安装rabbitmq及使用/">
 
 
@@ -300,17 +300,27 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h4 id="Erlang环境安装"><a href="#Erlang环境安装" class="headerlink" title="Erlang环境安装"></a>Erlang环境安装</h4><p>rabbitmq是运行在erlang环境上的，所以需要安装erlang：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install erlang</span><br></pre></td></tr></table></figure></p>
+        <h4 id="Erlang环境安装"><a href="#Erlang环境安装" class="headerlink" title="Erlang环境安装"></a>Erlang环境安装</h4><p>rabbitmq是运行在erlang环境上的，所以需要安装erlang：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install erlang</span><br></pre></td></tr></table></figure>
+
 <a id="more"></a>
+
 <h4 id="安装rabbitmq"><a href="#安装rabbitmq" class="headerlink" title="安装rabbitmq"></a>安装rabbitmq</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install rabbitmq-server</span><br></pre></td></tr></table></figure>
-<h4 id="rabbitmq服务操作"><a href="#rabbitmq服务操作" class="headerlink" title="rabbitmq服务操作"></a>rabbitmq服务操作</h4><p>当通过apt包安装后，可直接使用如下方式操作服务：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service rabbitmq-server status/start/stop/restart/...</span><br></pre></td></tr></table></figure></p>
+
+<h4 id="rabbitmq服务操作"><a href="#rabbitmq服务操作" class="headerlink" title="rabbitmq服务操作"></a>rabbitmq服务操作</h4><p>当通过apt包安装后，可直接使用如下方式操作服务：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service rabbitmq-server status/start/stop/restart/...</span><br></pre></td></tr></table></figure>
+
 <p>但是通过上述方式操作rabbitmq的启动和关闭的时候，会涉及到erlang节点的启动和关闭。</p>
 <blockquote>
 <p>erlang节点：erlang虚拟机运行的实例，运行着erlang应用程序，rabbitmq是erlang节点上的erlang应用程序。</p>
 </blockquote>
-<p>如果想单纯的启动/关闭rabbmq-server程序，可使用如下命令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo rabbitmqctl start_app/stop_app</span><br></pre></td></tr></table></figure></p>
+<p>如果想单纯的启动/关闭rabbmq-server程序，可使用如下命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo rabbitmqctl start_app/stop_app</span><br></pre></td></tr></table></figure>
+
 <h4 id="创建用户"><a href="#创建用户" class="headerlink" title="创建用户"></a>创建用户</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 添加用户</span></span><br><span class="line"><span class="comment"># rabbitmqctl add_user username password</span></span><br><span class="line">sudo rabbitmqctl add_user admin admin</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置用户为管理员</span></span><br><span class="line"><span class="comment"># rabbitmqctl set_user_tags username administrator</span></span><br><span class="line">sudo rabbitmqctl set_user_tags admin administrator</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置用户权限</span></span><br><span class="line"><span class="comment"># rabbitmqctl set_permissions [-p vhost] user conf write read</span></span><br><span class="line">sudo rabbitmqctl set_permissions -p / admin <span class="string">".*"</span> <span class="string">".*"</span> <span class="string">".*"</span></span><br></pre></td></tr></table></figure>
+
 <h4 id="插件安装使用"><a href="#插件安装使用" class="headerlink" title="插件安装使用"></a>插件安装使用</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo rabbitmq-plugins <span class="built_in">enable</span> rabbitmq_management</span><br></pre></td></tr></table></figure>
+
 <p>用上面创建的用户登录控制台（也可用默认账号guest，密码guest）：<a href="http://localhost:15672" target="_blank" rel="noopener">http://localhost:15672</a></p>
 <h4 id="rabbitmq-CLI-tools"><a href="#rabbitmq-CLI-tools" class="headerlink" title="rabbitmq-CLI-tools"></a>rabbitmq-CLI-tools</h4><p>rabbitmq提供了如下几种工具来管控服务：</p>
 <ul>
@@ -320,8 +330,12 @@
 <li>rabbitmqadmin：用于HTTP API上的操作员任务</li>
 </ul>
 <p>由于上文已提到了用户创建，所以这里简单说明一下rabbitmqctl在用户管理和权限控制方面的操作，有关rabbitmqctl对队列，连接，渠道，交换，消费者、政策、集群方面的，以及rabbitmq-diagnostics、rabbitmq-plugins、rabbitmqadmin等几个工具的操作可查看<a href="https://www.rabbitmq.com/documentation.html" target="_blank" rel="noopener">官方文档</a></p>
-<p>用户管理<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 添加用户</span></span><br><span class="line">rabbitmqctl add_user username password</span><br><span class="line"><span class="comment"># 删除用户</span></span><br><span class="line">rabbitmqctl delete_user username</span><br><span class="line"><span class="comment"># 更改用户密码</span></span><br><span class="line">rabbitmqctl change_password username newpassword</span><br><span class="line"><span class="comment"># 清除用户密码</span></span><br><span class="line">rabbitmqctl clear_password usename</span><br><span class="line"><span class="comment"># 验证用户及密码</span></span><br><span class="line">rabbitmqctl authenticate_user username password</span><br><span class="line"><span class="comment"># 设置用户标签</span></span><br><span class="line">rabbitmqctl set_user_tags username tag-name</span><br><span class="line"><span class="comment"># 查看用户列表</span></span><br><span class="line">rabbitmqctl list_users</span><br></pre></td></tr></table></figure></p>
-<p>权限管理<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 添加vhost</span></span><br><span class="line">rabbitmqctl add_vhost vhost-name</span><br><span class="line"><span class="comment"># 删除vhost</span></span><br><span class="line">rabbitmqctl delete_vhost vhost-name</span><br><span class="line"><span class="comment"># 查看vhost信息[名称] [是否为此虚拟主机启用了跟踪]</span></span><br><span class="line">rabbitmqctl list_vhosts [name] [tracing]</span><br><span class="line"><span class="comment"># 设置用户权限 vhost名 用户 配置、写、读权限（正则表达式）</span></span><br><span class="line">rabbitmqctl set_permissions -p my-vhost janeway “^janeway-.*” “.*” “.*”</span><br><span class="line"><span class="comment"># 清除用户权限</span></span><br><span class="line">rabbitmqctl clear_permissions [-p my-vhost] username</span><br><span class="line"><span class="comment"># 查看虚拟主机下所有用户的权限</span></span><br><span class="line">rabbitmqctl list_permissions -p my-vhost</span><br><span class="line"><span class="comment"># 查看单个用户的权限</span></span><br><span class="line">rabbitmqctl list_user_permissions username</span><br></pre></td></tr></table></figure></p>
+<p>用户管理</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 添加用户</span></span><br><span class="line">rabbitmqctl add_user username password</span><br><span class="line"><span class="comment"># 删除用户</span></span><br><span class="line">rabbitmqctl delete_user username</span><br><span class="line"><span class="comment"># 更改用户密码</span></span><br><span class="line">rabbitmqctl change_password username newpassword</span><br><span class="line"><span class="comment"># 清除用户密码</span></span><br><span class="line">rabbitmqctl clear_password usename</span><br><span class="line"><span class="comment"># 验证用户及密码</span></span><br><span class="line">rabbitmqctl authenticate_user username password</span><br><span class="line"><span class="comment"># 设置用户标签</span></span><br><span class="line">rabbitmqctl set_user_tags username tag-name</span><br><span class="line"><span class="comment"># 查看用户列表</span></span><br><span class="line">rabbitmqctl list_users</span><br></pre></td></tr></table></figure>
+
+<p>权限管理</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 添加vhost</span></span><br><span class="line">rabbitmqctl add_vhost vhost-name</span><br><span class="line"><span class="comment"># 删除vhost</span></span><br><span class="line">rabbitmqctl delete_vhost vhost-name</span><br><span class="line"><span class="comment"># 查看vhost信息[名称] [是否为此虚拟主机启用了跟踪]</span></span><br><span class="line">rabbitmqctl list_vhosts [name] [tracing]</span><br><span class="line"><span class="comment"># 设置用户权限 vhost名 用户 配置、写、读权限（正则表达式）</span></span><br><span class="line">rabbitmqctl set_permissions -p my-vhost janeway “^janeway-.*” “.*” “.*”</span><br><span class="line"><span class="comment"># 清除用户权限</span></span><br><span class="line">rabbitmqctl clear_permissions [-p my-vhost] username</span><br><span class="line"><span class="comment"># 查看虚拟主机下所有用户的权限</span></span><br><span class="line">rabbitmqctl list_permissions -p my-vhost</span><br><span class="line"><span class="comment"># 查看单个用户的权限</span></span><br><span class="line">rabbitmqctl list_user_permissions username</span><br></pre></td></tr></table></figure>
+
 
     </div>
 
@@ -429,7 +443,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">97</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -442,7 +456,7 @@
             <a href="/categories/">
           
         
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">26</span>
         <span class="site-state-item-name">categories</span>
         </a>
       </div>
@@ -455,7 +469,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-count">62</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
@@ -533,6 +547,7 @@
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
 
+
         
 <div class="busuanzi-count">
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
@@ -602,6 +617,19 @@
 
 
 
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
 

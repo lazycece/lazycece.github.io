@@ -306,35 +306,50 @@
 <h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><h3 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h3><p>下载地址如下，选择想要下载的版本即可：<br><a href="http://rocketmq.apache.org/release_notes/" target="_blank" rel="noopener">http://rocketmq.apache.org/release_notes/</a></p>
 <h3 id="解压"><a href="#解压" class="headerlink" title="解压"></a>解压</h3><p>在自己的环境安装目录下解压</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ unzip rocketmq-all-4.5.2-bin-release.zip</span><br></pre></td></tr></table></figure>
+
 <a id="more"></a>
+
 <h2 id="启动服务"><a href="#启动服务" class="headerlink" title="启动服务"></a>启动服务</h2><h3 id="启动namesrv"><a href="#启动namesrv" class="headerlink" title="启动namesrv"></a>启动<code>namesrv</code></h3><p><code>namesrv</code>的默认启动申请的jvm内存是信息如下：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">JAVA_OPT=<span class="string">"<span class="variable">$&#123;JAVA_OPT&#125;</span> -server -Xms4g -Xmx4g -Xmn2g -XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=320m"</span></span><br></pre></td></tr></table></figure>
+
 <p>可以根据实际环境进行调整，如果是在自己的开发本启动，不进行调整的话内存自然不够用。修改jvm配置</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim  bin/runserver.sh</span><br></pre></td></tr></table></figure>
+
 <p>启动<code>namesrv</code>服务：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ nohup ./bin/mqnamesrv &amp;</span><br><span class="line">$ tail  -f  ~/logs/rocketmqlogs/namesrv.log</span><br><span class="line">The Name Server boot success.</span><br></pre></td></tr></table></figure>
+
 <h3 id="启动broker"><a href="#启动broker" class="headerlink" title="启动broker"></a>启动<code>broker</code></h3><p><code>broker</code>的默认启动申请的jvm内存为8g，信息如下：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">JAVA_OPT=<span class="string">"<span class="variable">$&#123;JAVA_OPT&#125;</span> -server -Xms8g -Xmx8g -Xmn4g"</span></span><br></pre></td></tr></table></figure>
+
 <p>同样需要根据实际环境进行调整，修改jvm配置：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim  bin/runbroker.sh</span><br></pre></td></tr></table></figure>
+
 <p>启动<code>broker</code>服务，并且指定<code>namesrv</code>服务：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ nohup ./bin/mqbroker -n localhost:9876 &amp;</span><br><span class="line">$ tail -f ~/logs/rocketmqlogs/broker.log</span><br><span class="line">The broker[cc-ubuntu, 192.168.1.4:10911] boot success.</span><br></pre></td></tr></table></figure>
+
 <p>启动成功后，便可以在日志文件中看到broker初始化配置信息的过程日志，同时还向<code>namesrv</code>中进行注册。</p>
 <h2 id="验证服务"><a href="#验证服务" class="headerlink" title="验证服务"></a>验证服务</h2><h3 id="服务启动成功验证"><a href="#服务启动成功验证" class="headerlink" title="服务启动成功验证"></a>服务启动成功验证</h3><p>在启动的时候已用查看日志的方式进行了验证，但由于是java服务，除了可以通过启动日志来看服务是否启动成功外，亦可以查看java进程的方式来判断，如下所示：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ jps -l</span><br><span class="line">14257 org.apache.rocketmq.namesrv.NamesrvStartup</span><br><span class="line">14548 org.apache.rocketmq.broker.BrokerStartup</span><br></pre></td></tr></table></figure>
+
 <h3 id="服务可用验证"><a href="#服务可用验证" class="headerlink" title="服务可用验证"></a>服务可用验证</h3><p>设置临时的<code>namesrv</code>环境变量：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> NAMESRV_ADDR=localhost:9876</span><br></pre></td></tr></table></figure>
+
 <p>利用官方提供的工具发送消息和消费消息来验证，可以看到正常的完成消息发送和消息消费。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ sh bin/tools.sh org.apache.rocketmq.example.quickstart.Producer</span><br><span class="line">SendResult [sendStatus=SEND_OK, msgId= ...</span><br><span class="line"></span><br><span class="line">$ sh bin/tools.sh org.apache.rocketmq.example.quickstart.Consumer</span><br><span class="line">ConsumeMessageThread_%d Receive New Messages: [MessageExt...</span><br></pre></td></tr></table></figure>
+
 <h2 id="web控制台安装"><a href="#web控制台安装" class="headerlink" title="web控制台安装"></a>web控制台安装</h2><p>下载rocketmq-externals:<br><a href="https://github.com/apache/rocketmq-externals/" target="_blank" rel="noopener">https://github.com/apache/rocketmq-externals/</a></p>
 <p>然后进行解压，并且编译打包：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ unzip rocketmq-externals-master.zip</span><br><span class="line">$ <span class="built_in">cd</span> rocketmq-externals-master/rocketmq-console/</span><br><span class="line">$ mvn clean package -Dmaven.skip.test=<span class="literal">true</span></span><br><span class="line">&gt;&gt;&gt;</span><br><span class="line">[INFO] BUILD SUCCESS</span><br></pre></td></tr></table></figure>
+
 <p>拷贝jar包到合适的路径，启动程序（指定<code>namesrv</code>地址和服务端口）：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nohup java -jar rocketmq-console-ng-1.0.1.jar --server.port=19876 --rocketmq.config.namesrvAddr=localhost:9876 &amp;</span><br></pre></td></tr></table></figure>
+
 <p>访问<a href="http://localhost:19876/#/" target="_blank" rel="noopener">http://localhost:19876/#/</a>即可看到控制台界面：</p>
 <p><img src="/images/article/rocketmq-console.png" alt="rocketmq-console"></p>
 <h2 id="关闭服务"><a href="#关闭服务" class="headerlink" title="关闭服务"></a>关闭服务</h2><h3 id="关闭broker"><a href="#关闭broker" class="headerlink" title="关闭broker"></a>关闭broker</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ ./bin/mqshutdown broker</span><br><span class="line">The mqbroker(3082) is running...</span><br><span class="line">Send shutdown request to mqbroker(3082) OK</span><br></pre></td></tr></table></figure>
+
 <h3 id="关闭namesrv"><a href="#关闭namesrv" class="headerlink" title="关闭namesrv"></a>关闭namesrv</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ ./bin/mqshutdown namesrv</span><br><span class="line">The mqnamesrv(3019) is running...</span><br><span class="line">Send shutdown request to mqnamesrv(3019) OK</span><br></pre></td></tr></table></figure>
+
 
     </div>
 
@@ -442,7 +457,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">97</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -455,7 +470,7 @@
             <a href="/categories/">
           
         
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">26</span>
         <span class="site-state-item-name">categories</span>
         </a>
       </div>
@@ -468,7 +483,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-count">62</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
@@ -546,6 +561,7 @@
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
 
+
         
 <div class="busuanzi-count">
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
@@ -615,6 +631,19 @@
 
 
 
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
 

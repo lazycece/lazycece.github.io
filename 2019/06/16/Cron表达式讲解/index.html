@@ -302,17 +302,17 @@
       
         <h4 id="格式"><a href="#格式" class="headerlink" title="格式"></a>格式</h4><p>[秒] [分] [时] [日] [月] [周] [年]</p>
 <a id="more"></a>
+
 <h4 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h4><table>
 <thead>
 <tr>
 <th>参数</th>
 <th>可选值</th>
 <th>可选通配符</th>
-<th>必填 </th>
+<th>必填</th>
 </tr>
 </thead>
-<tbody>
-<tr>
+<tbody><tr>
 <td>秒</td>
 <td>0-59</td>
 <td>, - * /</td>
@@ -354,8 +354,7 @@
 <td>, - * /</td>
 <td>否</td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 <h4 id="通配符说明"><a href="#通配符说明" class="headerlink" title="通配符说明"></a>通配符说明</h4><blockquote>
 <ol>
 <li>若设置时，使用英文，则不区分大小写;</li>
@@ -370,8 +369,7 @@
 <th>描述</th>
 </tr>
 </thead>
-<tbody>
-<tr>
+<tbody><tr>
 <td>,</td>
 <td>多值连接</td>
 <td>如在小时参数上设置“7,9”，表示在7点和9点分别触发</td>
@@ -411,11 +409,10 @@
 <td>序号</td>
 <td>表示每月的第几个周几，在周字段上使用。如设置为3#2，则表示在每月的第2个周三。</td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 <h4 id="样例"><a href="#样例" class="headerlink" title="样例"></a>样例</h4><ul>
-<li>0 30 8 <em> </em> ? *<br>每天8点30分触发</li>
-<li>0  0/5 <em> </em> <em> </em><br>每5分钟触发</li>
+<li>0 30 8 * * ? *<br>每天8点30分触发</li>
+<li>0  0/5 * * * *<br>每5分钟触发</li>
 </ul>
 
     </div>
@@ -524,7 +521,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">97</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -537,7 +534,7 @@
             <a href="/categories/">
           
         
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">26</span>
         <span class="site-state-item-name">categories</span>
         </a>
       </div>
@@ -550,7 +547,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-count">62</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
@@ -628,6 +625,7 @@
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
 
+
         
 <div class="busuanzi-count">
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
@@ -697,6 +695,19 @@
 
 
 
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
 

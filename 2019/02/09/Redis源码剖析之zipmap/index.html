@@ -307,8 +307,10 @@
 <li>由于zipmap的特性，hash结构在存储的数据少的情况下，在内存使用方面又相当大的优势。</li>
 </ol>
 <a id="more"></a>
+
 <h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2><p>在源码中例子可见，对于一个map中的值有 “foo” =&gt; “bar”, “hello” =&gt; “world”，那么其结构如下所示：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;zmlen&gt;&lt;len&gt;&quot;foo&quot;&lt;len&gt;&lt;free&gt;&quot;bar&quot;&lt;len&gt;&quot;hello&quot;&lt;len&gt;&lt;free&gt;&quot;world&quot;</span><br></pre></td></tr></table></figure>
+
 <p>其中各部分的含义如下：</p>
 <ul>
 <li>zmlen<br>占用一个字节长度，保存zipmap结构的当前长度，但是只针对zipmap的长度小于254时，如果大于等于254，那么仍然需要遍历整理结构才能得知长度值。</li>
@@ -319,10 +321,13 @@
 </ul>
 <p>介绍了个字段的含义，那么就可以知道上面的例子的占用内存情况了，如下所示：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;\x02\x03foo\x03\x00bar\x05hello\x05\x00world\xff&quot;</span><br></pre></td></tr></table></figure>
+
 <h2 id="API"><a href="#API" class="headerlink" title="API"></a>API</h2><p>zipmap.h头文件中定义了如下api：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">//创建zipmap结构</span><br><span class="line">unsigned char *zipmapNew(void);</span><br><span class="line">//添加值</span><br><span class="line">unsigned char *zipmapSet(unsigned char *zm, unsigned char *key, unsigned int klen, unsigned char *val, unsigned int vlen, int *update);</span><br><span class="line">//删除值</span><br><span class="line">unsigned char *zipmapDel(unsigned char *zm, unsigned char *key, unsigned int klen, int *deleted);</span><br><span class="line">//迭代元素之前调用</span><br><span class="line">unsigned char *zipmapRewind(unsigned char *zm);</span><br><span class="line">//用于遍历zipmap，返回下一个节点</span><br><span class="line">unsigned char *zipmapNext(unsigned char *zm, unsigned char **key, unsigned int *klen, unsigned char **value, unsigned int *vlen);</span><br><span class="line">//get给定key的映射值</span><br><span class="line">int zipmapGet(unsigned char *zm, unsigned char *key, unsigned int klen, unsigned char **value, unsigned int *vlen);</span><br><span class="line">//判断一个key是否在zipmap中存在</span><br><span class="line">int zipmapExists(unsigned char *zm, unsigned char *key, unsigned int klen);</span><br><span class="line">//zipmap中节点的个数</span><br><span class="line">unsigned int zipmapLen(unsigned char *zm);</span><br><span class="line">//zipmap占用总字节数</span><br><span class="line">size_t zipmapBlobLen(unsigned char *zm);</span><br><span class="line">//格式化打印zipmap信息</span><br><span class="line">void zipmapRepr(unsigned char *p);</span><br></pre></td></tr></table></figure>
+
 <p>zipmap的源码很简单，也不难理解，下面就只介绍一下zipmapSet函数的源码，其他的有兴趣的可以自行点击本文首部的链接去下载源码查看。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">/*如果key不存在，则创建；在update不为NULL的前提下  *，如果key存在则update指针的值为1，否则为0*/</span><br><span class="line">unsigned char *zipmapSet(unsigned char *zm, unsigned char *key, unsigned int klen, unsigned char *val, unsigned int vlen, int *update) &#123;</span><br><span class="line">    unsigned int zmlen, offset;</span><br><span class="line">    unsigned int freelen, reqlen = zipmapRequiredLength(klen,vlen);</span><br><span class="line">    unsigned int empty, vempty;</span><br><span class="line">    unsigned char *p;</span><br><span class="line"></span><br><span class="line">    freelen = reqlen;</span><br><span class="line">    if (update) *update = 0;</span><br><span class="line">    p = zipmapLookupRaw(zm,key,klen,&amp;zmlen);</span><br><span class="line">    if (p == NULL) &#123;</span><br><span class="line">        //key不存在，则分配空间创建key</span><br><span class="line">        zm = zipmapResize(zm, zmlen+reqlen);</span><br><span class="line">        p = zm+zmlen-1;</span><br><span class="line">        zmlen = zmlen+reqlen;</span><br><span class="line"></span><br><span class="line">        //增加zipmap的长度</span><br><span class="line">        if (zm[0] &lt; ZIPMAP_BIGLEN) zm[0]++;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        //key存在，判断是否有足够的空间存储值</span><br><span class="line">        if (update) *update = 1;</span><br><span class="line">        freelen = zipmapRawEntryLength(p);</span><br><span class="line">        if (freelen &lt; reqlen) &#123;</span><br><span class="line">            //空闲空间不足，需要重新分配空间</span><br><span class="line">            offset = p-zm;</span><br><span class="line">            zm = zipmapResize(zm, zmlen-freelen+reqlen);</span><br><span class="line">            p = zm+offset;</span><br><span class="line">            memmove(p+reqlen, p+freelen, zmlen-(offset+freelen+1));</span><br><span class="line">            zmlen = zmlen-freelen+reqlen;</span><br><span class="line">            freelen = reqlen;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    empty = freelen-reqlen;</span><br><span class="line">    if (empty &gt;= ZIPMAP_VALUE_MAX_FREE) &#123;</span><br><span class="line">        //如果空闲空间待遇设定的空间空间允许数，则释放部分空间</span><br><span class="line">        offset = p-zm;</span><br><span class="line">        memmove(p+reqlen, p+freelen, zmlen-(offset+freelen+1));</span><br><span class="line">        zmlen -= empty;</span><br><span class="line">        zm = zipmapResize(zm, zmlen);</span><br><span class="line">        p = zm+offset;</span><br><span class="line">        vempty = 0;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        vempty = empty;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //写入值</span><br><span class="line">    p += zipmapEncodeLength(p,klen);</span><br><span class="line">    memcpy(p,key,klen);</span><br><span class="line">    p += klen;</span><br><span class="line">    p += zipmapEncodeLength(p,vlen);</span><br><span class="line">    *p++ = vempty;</span><br><span class="line">    memcpy(p,val,vlen);</span><br><span class="line">    return zm;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 
     </div>
 
@@ -428,7 +433,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">97</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -441,7 +446,7 @@
             <a href="/categories/">
           
         
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">26</span>
         <span class="site-state-item-name">categories</span>
         </a>
       </div>
@@ -454,7 +459,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-count">62</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
@@ -532,6 +537,7 @@
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
 
+
         
 <div class="busuanzi-count">
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
@@ -601,6 +607,19 @@
 
 
 
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
 

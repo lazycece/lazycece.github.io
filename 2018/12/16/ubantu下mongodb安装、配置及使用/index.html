@@ -55,18 +55,18 @@
   };
 </script>
 
-  <meta name="description" content="安装/查看版本信息12apt install mongodbmongo -version mongo服务启动/重启/关闭123service mongodb startservice mongodb rstartservice mongodb stop">
+  <meta name="description" content="安装/查看版本信息12apt install mongodbmongo -version  mongo服务启动/重启/关闭123service mongodb startservice mongodb rstartservice mongodb stop">
 <meta name="keywords" content="ubuntu,mongodb">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ubantu下mongodb安装、配置及使用">
 <meta property="og:url" content="https://lazycece.github.io/2018/12/16/ubantu下mongodb安装、配置及使用/index.html">
 <meta property="og:site_name" content="W  pit">
-<meta property="og:description" content="安装/查看版本信息12apt install mongodbmongo -version mongo服务启动/重启/关闭123service mongodb startservice mongodb rstartservice mongodb stop">
+<meta property="og:description" content="安装/查看版本信息12apt install mongodbmongo -version  mongo服务启动/重启/关闭123service mongodb startservice mongodb rstartservice mongodb stop">
 <meta property="og:locale" content="en">
 <meta property="og:updated_time" content="2020-01-01T14:48:52.476Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ubantu下mongodb安装、配置及使用">
-<meta name="twitter:description" content="安装/查看版本信息12apt install mongodbmongo -version mongo服务启动/重启/关闭123service mongodb startservice mongodb rstartservice mongodb stop">
+<meta name="twitter:description" content="安装/查看版本信息12apt install mongodbmongo -version  mongo服务启动/重启/关闭123service mongodb startservice mongodb rstartservice mongodb stop">
   <link rel="canonical" href="https://lazycece.github.io/2018/12/16/ubantu下mongodb安装、配置及使用/">
 
 
@@ -301,9 +301,14 @@
 
       
         <h4 id="安装-查看版本信息"><a href="#安装-查看版本信息" class="headerlink" title="安装/查看版本信息"></a>安装/查看版本信息</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">apt install mongodb</span><br><span class="line">mongo -version</span><br></pre></td></tr></table></figure>
+
 <h4 id="mongo服务启动-重启-关闭"><a href="#mongo服务启动-重启-关闭" class="headerlink" title="mongo服务启动/重启/关闭"></a>mongo服务启动/重启/关闭</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">service mongodb start</span><br><span class="line">service mongodb rstart</span><br><span class="line">service mongodb stop</span><br></pre></td></tr></table></figure>
+
 <a id="more"></a>
+
+
 <h4 id="卸载mongo服务"><a href="#卸载mongo服务" class="headerlink" title="卸载mongo服务"></a>卸载mongo服务</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">apt --purge remove mongodb mongodb-clients mongodb-server</span><br><span class="line">apt autoremove</span><br></pre></td></tr></table></figure>
+
 <h4 id="mongodb的配置修改"><a href="#mongodb的配置修改" class="headerlink" title="mongodb的配置修改"></a>mongodb的配置修改</h4><p>mongodb的配置文件默认路径为/etc/mongodb.conf, 可以进行修改该文件中的配置信息（比如db存储路径、log存储路径、默认端口、主从配置信息、auth验证等等），然后重启mongo服务即可。</p>
 <h4 id="mongo-shell-客户端使用"><a href="#mongo-shell-客户端使用" class="headerlink" title="mongo shell 客户端使用"></a>mongo shell 客户端使用</h4><ol>
 <li><p>进入mongo shell，命令如下：</p>
@@ -425,7 +430,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">97</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -438,7 +443,7 @@
             <a href="/categories/">
           
         
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">26</span>
         <span class="site-state-item-name">categories</span>
         </a>
       </div>
@@ -451,7 +456,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-count">62</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
@@ -529,6 +534,7 @@
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
 
+
         
 <div class="busuanzi-count">
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
@@ -598,6 +604,19 @@
 
 
 
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
 

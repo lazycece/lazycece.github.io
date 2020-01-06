@@ -303,16 +303,28 @@
         <h4 id="前提"><a href="#前提" class="headerlink" title="前提"></a>前提</h4><p>tomcat的运行需要有java环境，所以需要提前安装好java环境。点击如下链接查看ubantu下java环境的安装:</p>
 <p><a href="https://lazycece.github.io/2018/12/02/ubuntu%E4%B8%8B%E5%AE%89%E8%A3%85java%E7%8E%AF%E5%A2%83/">ubuntu下安装java环境</a></p>
 <a id="more"></a>
+
 <h4 id="tomcat下载"><a href="#tomcat下载" class="headerlink" title="tomcat下载"></a>tomcat下载</h4><p>下载地址：<a href="https://tomcat.apache.org/" target="_blank" rel="noopener">https://tomcat.apache.org/</a></p>
 <p>选择自己想要下载的版本即可，这里以tomcat9的tar.gz版本包为例。</p>
-<h4 id="解压"><a href="#解压" class="headerlink" title="解压"></a>解压</h4><p>将包放在自己想要放在的路径下，进行解压，命令如下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf apache-tomcat-9.0.10.tar.gz</span><br></pre></td></tr></table></figure></p>
+<h4 id="解压"><a href="#解压" class="headerlink" title="解压"></a>解压</h4><p>将包放在自己想要放在的路径下，进行解压，命令如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf apache-tomcat-9.0.10.tar.gz</span><br></pre></td></tr></table></figure>
+
 <h4 id="修改tomcat端口"><a href="#修改tomcat端口" class="headerlink" title="修改tomcat端口"></a>修改tomcat端口</h4><p>tomcat的端口默认为8080，如果不想改端口，则可以忽略这里。</p>
-<p>首先进入tomcat的目录中的conf文件夹, 然后编辑server.xml文件，修改文件中的端口：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim server.xml</span><br></pre></td></tr></table></figure></p>
-<h4 id="启动tomcat"><a href="#启动tomcat" class="headerlink" title="启动tomcat"></a>启动tomcat</h4><p>tomcat的启动脚本是tomcat目录中的bin路径下的 startup.sh ，运行该脚本即可启动tomcat，命令如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./startup.sh</span><br></pre></td></tr></table></figure></p>
-<p>关闭tomcat的脚本是 shutdown.sh ，关闭命令如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./shutdown.sh</span><br></pre></td></tr></table></figure></p>
-<p>启动后，可以查看tomcat的进程来确定是否启动成功：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps -ef|grep tomcat</span><br></pre></td></tr></table></figure></p>
+<p>首先进入tomcat的目录中的conf文件夹, 然后编辑server.xml文件，修改文件中的端口：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim server.xml</span><br></pre></td></tr></table></figure>
+
+<h4 id="启动tomcat"><a href="#启动tomcat" class="headerlink" title="启动tomcat"></a>启动tomcat</h4><p>tomcat的启动脚本是tomcat目录中的bin路径下的 startup.sh ，运行该脚本即可启动tomcat，命令如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./startup.sh</span><br></pre></td></tr></table></figure>
+
+<p>关闭tomcat的脚本是 shutdown.sh ，关闭命令如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./shutdown.sh</span><br></pre></td></tr></table></figure>
+
+<p>启动后，可以查看tomcat的进程来确定是否启动成功：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps -ef|grep tomcat</span><br></pre></td></tr></table></figure>
+
 <h4 id="防火墙开放端口"><a href="#防火墙开放端口" class="headerlink" title="防火墙开放端口"></a>防火墙开放端口</h4><p>如果服务器开启了防火墙，则需要对我们的tomcat端口开放，命令如下（此处tomcat的端口为8088）：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ufw allow 8088/tcp</span><br></pre></td></tr></table></figure>
+
 <p>如果是阿里云等云服务器，则还需要在控制台，进行配置服务器实例的安全组规则，进行开放tomcat的端口，否则即便服务器本身的防火墙开了，也是不能访问的。</p>
 <h4 id="安装结果验证"><a href="#安装结果验证" class="headerlink" title="安装结果验证"></a>安装结果验证</h4><p>可访问<a href="http://ip:port来看到tomcat的页面：" target="_blank" rel="noopener">http://ip:port来看到tomcat的页面：</a></p>
 <p>也可以访问webapp下的默认应用examples来确定tomcat可以成功访问：<a href="http://ip:port/examples" target="_blank" rel="noopener">http://ip:port/examples</a></p>
@@ -423,7 +435,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">97</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -436,7 +448,7 @@
             <a href="/categories/">
           
         
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">26</span>
         <span class="site-state-item-name">categories</span>
         </a>
       </div>
@@ -449,7 +461,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-count">62</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
@@ -527,6 +539,7 @@
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
 
+
         
 <div class="busuanzi-count">
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
@@ -596,6 +609,19 @@
 
 
 
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
 

@@ -55,18 +55,18 @@
   };
 </script>
 
-  <meta name="description" content="在ubuntu18.04上安装mysql5.7后通过workbench连接和×mysql -u root -p 命令连接均无法连接。命令行显示如下错误：123lazycece@cc-ubuntu:~$ mysql -u root -p Enter password: ERROR 1698 (28000): Access denied for user &apos;root&apos;@&apos;localhost&apos;">
+  <meta name="description" content="在ubuntu18.04上安装mysql5.7后通过workbench连接和×mysql -u root -p 命令连接均无法连接。命令行显示如下错误： 123lazycece@cc-ubuntu:~$ mysql -u root -p Enter password: ERROR 1698 (28000): Access denied for user &apos;root&apos;@&apos;localhost&apos;">
 <meta name="keywords" content="mysql,ubuntu">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ubuntu下mysql5.7安装后无法远程登录问题">
 <meta property="og:url" content="https://lazycece.github.io/2019/03/23/ubuntu下mysql5-7安装后无法远程登录问题/index.html">
 <meta property="og:site_name" content="W  pit">
-<meta property="og:description" content="在ubuntu18.04上安装mysql5.7后通过workbench连接和×mysql -u root -p 命令连接均无法连接。命令行显示如下错误：123lazycece@cc-ubuntu:~$ mysql -u root -p Enter password: ERROR 1698 (28000): Access denied for user &apos;root&apos;@&apos;localhost&apos;">
+<meta property="og:description" content="在ubuntu18.04上安装mysql5.7后通过workbench连接和×mysql -u root -p 命令连接均无法连接。命令行显示如下错误： 123lazycece@cc-ubuntu:~$ mysql -u root -p Enter password: ERROR 1698 (28000): Access denied for user &apos;root&apos;@&apos;localhost&apos;">
 <meta property="og:locale" content="en">
 <meta property="og:updated_time" content="2020-01-01T14:48:52.476Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ubuntu下mysql5.7安装后无法远程登录问题">
-<meta name="twitter:description" content="在ubuntu18.04上安装mysql5.7后通过workbench连接和×mysql -u root -p 命令连接均无法连接。命令行显示如下错误：123lazycece@cc-ubuntu:~$ mysql -u root -p Enter password: ERROR 1698 (28000): Access denied for user &apos;root&apos;@&apos;localhost&apos;">
+<meta name="twitter:description" content="在ubuntu18.04上安装mysql5.7后通过workbench连接和×mysql -u root -p 命令连接均无法连接。命令行显示如下错误： 123lazycece@cc-ubuntu:~$ mysql -u root -p Enter password: ERROR 1698 (28000): Access denied for user &apos;root&apos;@&apos;localhost&apos;">
   <link rel="canonical" href="https://lazycece.github.io/2019/03/23/ubuntu下mysql5-7安装后无法远程登录问题/">
 
 
@@ -300,15 +300,21 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>在ubuntu18.04上安装mysql5.7后通过workbench连接和×<em>mysql -u root -p</em> 命令连接均无法连接。命令行显示如下错误：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">lazycece@cc-ubuntu:~$ mysql -u root -p </span><br><span class="line">Enter password: </span><br><span class="line">ERROR 1698 (28000): Access denied <span class="keyword">for</span> user <span class="string">'root'</span>@<span class="string">'localhost'</span></span><br></pre></td></tr></table></figure></p>
+        <p>在ubuntu18.04上安装mysql5.7后通过workbench连接和×<em>mysql -u root -p</em> 命令连接均无法连接。命令行显示如下错误：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">lazycece@cc-ubuntu:~$ mysql -u root -p </span><br><span class="line">Enter password: </span><br><span class="line">ERROR 1698 (28000): Access denied <span class="keyword">for</span> user <span class="string">'root'</span>@<span class="string">'localhost'</span></span><br></pre></td></tr></table></figure>
+
 <a id="more"></a>
-<p>通过 <em>sudo mysql</em>进行访问，进入命令行查看用户信息：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select user,host,plugin from mysql.user;</span><br><span class="line">+------------------+-----------+-----------------------+</span><br><span class="line">| user             | host      | plugin                |</span><br><span class="line">+------------------+-----------+-----------------------+</span><br><span class="line">| root             | localhost | auth_socket           |</span><br><span class="line">| mysql.session    | localhost | mysql_native_password |</span><br><span class="line">| mysql.sys        | localhost | mysql_native_password |</span><br><span class="line">| debian-sys-maint | localhost | mysql_native_password |</span><br><span class="line">+------------------+-----------+-----------------------+</span><br><span class="line">4 rows <span class="keyword">in</span> <span class="built_in">set</span> (0.00 sec)</span><br></pre></td></tr></table></figure></p>
+
+<p>通过 <em>sudo mysql</em>进行访问，进入命令行查看用户信息：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select user,host,plugin from mysql.user;</span><br><span class="line">+------------------+-----------+-----------------------+</span><br><span class="line">| user             | host      | plugin                |</span><br><span class="line">+------------------+-----------+-----------------------+</span><br><span class="line">| root             | localhost | auth_socket           |</span><br><span class="line">| mysql.session    | localhost | mysql_native_password |</span><br><span class="line">| mysql.sys        | localhost | mysql_native_password |</span><br><span class="line">| debian-sys-maint | localhost | mysql_native_password |</span><br><span class="line">+------------------+-----------+-----------------------+</span><br><span class="line">4 rows <span class="keyword">in</span> <span class="built_in">set</span> (0.00 sec)</span><br></pre></td></tr></table></figure>
+
 <p>可以看到此时root用户的认证方式为<em>auth_socket</em>，与其他不一样，原因是在使用ubuntu安装时，mysql默认使用了UNIX auth_socket plugin插件，也就是说着当db_users使用数据库时，将会通过系统用户认证表进行认证。，可参考<a href="https://dev.mysql.com/doc/relnotes/mysql/5.7/en/news-5-7-11.html" target="_blank" rel="noopener">官方文档</a></p>
-<p>那么如何解决呢？可参考<a href="https://stackoverflow.com/questions/39281594/error-1698-28000-access-denied-for-user-rootlocalhost" target="_blank" rel="noopener">ERROR 1698 (28000): Access denied for user ‘root‘@’localhost’</a>,有如下两种方案，设置后，service mysql restart即可。</p>
+<p>那么如何解决呢？可参考<a href="https://stackoverflow.com/questions/39281594/error-1698-28000-access-denied-for-user-rootlocalhost" target="_blank" rel="noopener">ERROR 1698 (28000): Access denied for user ‘root’@’localhost’</a>,有如下两种方案，设置后，service mysql restart即可。</p>
 <ul>
 <li>修改root用户的认证方式   </li>
 </ul>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; USE mysql;</span><br><span class="line">mysql&gt; UPDATE user SET plugin=<span class="string">'mysql_native_password'</span> WHERE User=<span class="string">'root'</span>;</span><br><span class="line">mysql&gt; ALTER USER <span class="string">'root'</span>@<span class="string">'localhost'</span> IDENTIFIED BY <span class="string">'password'</span>;</span><br><span class="line">mysql&gt; FLUSH PRIVILEGES;</span><br><span class="line">mysql&gt; \q</span><br></pre></td></tr></table></figure>
+
 <ul>
 <li>创建一个与系统用户一致的新的数据库用户  </li>
 </ul>
@@ -417,7 +423,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">97</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -430,7 +436,7 @@
             <a href="/categories/">
           
         
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">26</span>
         <span class="site-state-item-name">categories</span>
         </a>
       </div>
@@ -443,7 +449,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-count">62</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
@@ -521,6 +527,7 @@
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
 
+
         
 <div class="busuanzi-count">
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
@@ -590,6 +597,19 @@
 
 
 
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
 

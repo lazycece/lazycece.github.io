@@ -55,18 +55,18 @@
   };
 </script>
 
-  <meta name="description" content="场景业务需求中，在计算人均通话数时，使用聚合的时候使用到了内联以及反内联聚合，当bucket_script聚合作为反内联reverse_nested的子聚和的时候，会报如下错误：1org.elasticsearch.ElasticsearchException: Elasticsearch exception [type=class_cast_exception, reason=org.elast">
+  <meta name="description" content="场景业务需求中，在计算人均通话数时，使用聚合的时候使用到了内联以及反内联聚合，当bucket_script聚合作为反内联reverse_nested的子聚和的时候，会报如下错误： 1org.elasticsearch.ElasticsearchException: Elasticsearch exception [type=class_cast_exception, reason=org.elas">
 <meta name="keywords" content="elasticsearch">
 <meta property="og:type" content="article">
 <meta property="og:title" content="elasticsearch中bucket_script聚合父级必须是多桶聚合">
 <meta property="og:url" content="https://lazycece.github.io/2019/08/03/elasticsearch中bucket-script聚合父级必须是多桶聚合/index.html">
 <meta property="og:site_name" content="W  pit">
-<meta property="og:description" content="场景业务需求中，在计算人均通话数时，使用聚合的时候使用到了内联以及反内联聚合，当bucket_script聚合作为反内联reverse_nested的子聚和的时候，会报如下错误：1org.elasticsearch.ElasticsearchException: Elasticsearch exception [type=class_cast_exception, reason=org.elast">
+<meta property="og:description" content="场景业务需求中，在计算人均通话数时，使用聚合的时候使用到了内联以及反内联聚合，当bucket_script聚合作为反内联reverse_nested的子聚和的时候，会报如下错误： 1org.elasticsearch.ElasticsearchException: Elasticsearch exception [type=class_cast_exception, reason=org.elas">
 <meta property="og:locale" content="en">
 <meta property="og:updated_time" content="2020-01-01T14:48:52.468Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="elasticsearch中bucket_script聚合父级必须是多桶聚合">
-<meta name="twitter:description" content="场景业务需求中，在计算人均通话数时，使用聚合的时候使用到了内联以及反内联聚合，当bucket_script聚合作为反内联reverse_nested的子聚和的时候，会报如下错误：1org.elasticsearch.ElasticsearchException: Elasticsearch exception [type=class_cast_exception, reason=org.elast">
+<meta name="twitter:description" content="场景业务需求中，在计算人均通话数时，使用聚合的时候使用到了内联以及反内联聚合，当bucket_script聚合作为反内联reverse_nested的子聚和的时候，会报如下错误： 1org.elasticsearch.ElasticsearchException: Elasticsearch exception [type=class_cast_exception, reason=org.elas">
   <link rel="canonical" href="https://lazycece.github.io/2019/08/03/elasticsearch中bucket-script聚合父级必须是多桶聚合/">
 
 
@@ -300,16 +300,20 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>业务需求中，在计算人均通话数时，使用聚合的时候使用到了内联以及反内联聚合，当<code>bucket_script</code>聚合作为反内联<code>reverse_nested</code>的子聚和的时候，会报如下错误：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">org.elasticsearch.ElasticsearchException: Elasticsearch exception [<span class="built_in">type</span>=class_cast_exception, reason=org.elasticsearch.search.aggregations.bucket.nested.InternalReverseNested cannot be cast to org.elasticsearch.search.aggregations.InternalMultiBucketAggregation]</span><br></pre></td></tr></table></figure></p>
+        <h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>业务需求中，在计算人均通话数时，使用聚合的时候使用到了内联以及反内联聚合，当<code>bucket_script</code>聚合作为反内联<code>reverse_nested</code>的子聚和的时候，会报如下错误：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">org.elasticsearch.ElasticsearchException: Elasticsearch exception [<span class="built_in">type</span>=class_cast_exception, reason=org.elasticsearch.search.aggregations.bucket.nested.InternalReverseNested cannot be cast to org.elasticsearch.search.aggregations.InternalMultiBucketAggregation]</span><br></pre></td></tr></table></figure>
+
 <a id="more"></a>
-<p>该场景中的嵌套聚合中的子聚合如下（父级聚合此处不展示）：<br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	<span class="attr">"reverse_nested"</span>: &#123;</span><br><span class="line">		<span class="attr">"reverse_nested"</span>: &#123;&#125;,</span><br><span class="line">		<span class="attr">"aggregations"</span>: &#123;</span><br><span class="line">			<span class="attr">"agg_count"</span>: &#123;</span><br><span class="line">				<span class="attr">"value_count"</span>: &#123;</span><br><span class="line">					<span class="attr">"field"</span>: <span class="string">"taskId.keyword"</span></span><br><span class="line">				&#125;</span><br><span class="line">			&#125;,</span><br><span class="line">			<span class="attr">"agg_cardinality_tel"</span>: &#123;</span><br><span class="line">				<span class="attr">"cardinality"</span>: &#123;</span><br><span class="line">					<span class="attr">"field"</span>: <span class="string">"tel.keyword"</span></span><br><span class="line">				&#125;</span><br><span class="line">			&#125;,</span><br><span class="line">			<span class="attr">"agg_bucketScript"</span>: &#123;</span><br><span class="line">				<span class="attr">"bucket_script"</span>: &#123;</span><br><span class="line">					<span class="attr">"buckets_path"</span>: &#123;</span><br><span class="line">						<span class="attr">"userCount"</span>: <span class="string">"agg_cardinality_tel"</span>,</span><br><span class="line">						<span class="attr">"docCount"</span>: <span class="string">"agg_count"</span></span><br><span class="line">					&#125;,</span><br><span class="line">					<span class="attr">"script"</span>: &#123;</span><br><span class="line">						<span class="attr">"source"</span>: <span class="string">"params.docCount / params.userCount"</span>,</span><br><span class="line">						<span class="attr">"lang"</span>: <span class="string">"painless"</span></span><br><span class="line">					&#125;,</span><br><span class="line">					<span class="attr">"gap_policy"</span>: <span class="string">"skip"</span></span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>该场景中的嵌套聚合中的子聚合如下（父级聚合此处不展示）：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	<span class="attr">"reverse_nested"</span>: &#123;</span><br><span class="line">		<span class="attr">"reverse_nested"</span>: &#123;&#125;,</span><br><span class="line">		<span class="attr">"aggregations"</span>: &#123;</span><br><span class="line">			<span class="attr">"agg_count"</span>: &#123;</span><br><span class="line">				<span class="attr">"value_count"</span>: &#123;</span><br><span class="line">					<span class="attr">"field"</span>: <span class="string">"taskId.keyword"</span></span><br><span class="line">				&#125;</span><br><span class="line">			&#125;,</span><br><span class="line">			<span class="attr">"agg_cardinality_tel"</span>: &#123;</span><br><span class="line">				<span class="attr">"cardinality"</span>: &#123;</span><br><span class="line">					<span class="attr">"field"</span>: <span class="string">"tel.keyword"</span></span><br><span class="line">				&#125;</span><br><span class="line">			&#125;,</span><br><span class="line">			<span class="attr">"agg_bucketScript"</span>: &#123;</span><br><span class="line">				<span class="attr">"bucket_script"</span>: &#123;</span><br><span class="line">					<span class="attr">"buckets_path"</span>: &#123;</span><br><span class="line">						<span class="attr">"userCount"</span>: <span class="string">"agg_cardinality_tel"</span>,</span><br><span class="line">						<span class="attr">"docCount"</span>: <span class="string">"agg_count"</span></span><br><span class="line">					&#125;,</span><br><span class="line">					<span class="attr">"script"</span>: &#123;</span><br><span class="line">						<span class="attr">"source"</span>: <span class="string">"params.docCount / params.userCount"</span>,</span><br><span class="line">						<span class="attr">"lang"</span>: <span class="string">"painless"</span></span><br><span class="line">					&#125;,</span><br><span class="line">					<span class="attr">"gap_policy"</span>: <span class="string">"skip"</span></span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <h2 id="原因分析"><a href="#原因分析" class="headerlink" title="原因分析"></a>原因分析</h2><p><code>bucket_script</code>聚合的是建立在多桶聚合的前提下，即父级聚合必须是多桶聚合，<a href="https://www.elastic.co/guide/en/elasticsearch/reference/6.4/search-aggregations-pipeline-bucket-script-aggregation.html#search-aggregations-pipeline-bucket-script-aggregation" target="_blank" rel="noopener">官方文档</a>已对此做过说明。</p>
 <blockquote>
 <p><code>bucket_selector</code> 等聚合方式的聚合场景亦是如此。</p>
 </blockquote>
 <p>A parent pipeline aggregation which executes a script which can perform per bucket computations on specified metrics in the parent multi-bucket aggregation. The specified metric must be numeric and the script must return a numeric value.</p>
-<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>将<code>bucket_script</code>聚合与<code>reverse_nested</code>聚合放在同层级，关联path即可。<br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	<span class="attr">"reverse_nested"</span>: &#123;</span><br><span class="line">		<span class="attr">"reverse_nested"</span>: &#123;&#125;,</span><br><span class="line">		<span class="attr">"aggregations"</span>: &#123;</span><br><span class="line">			<span class="attr">"agg_count"</span>: &#123;</span><br><span class="line">				<span class="attr">"value_count"</span>: &#123;</span><br><span class="line">					<span class="attr">"field"</span>: <span class="string">"taskId.keyword"</span></span><br><span class="line">				&#125;</span><br><span class="line">			&#125;,</span><br><span class="line">			<span class="attr">"agg_cardinality_tel"</span>: &#123;</span><br><span class="line">				<span class="attr">"cardinality"</span>: &#123;</span><br><span class="line">					<span class="attr">"field"</span>: <span class="string">"tel.keyword"</span></span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;,</span><br><span class="line">	<span class="attr">"agg_bucketScript"</span>: &#123;</span><br><span class="line">		<span class="attr">"bucket_script"</span>: &#123;</span><br><span class="line">			<span class="attr">"buckets_path"</span>: &#123;</span><br><span class="line">				<span class="attr">"userCount"</span>: <span class="string">"reverse_nested&gt;agg_cardinality_tel"</span>,</span><br><span class="line">				<span class="attr">"docCount"</span>: <span class="string">"reverse_nested&gt;agg_count"</span></span><br><span class="line">			&#125;,</span><br><span class="line">			<span class="attr">"script"</span>: &#123;</span><br><span class="line">				<span class="attr">"source"</span>: <span class="string">"params.docCount / params.userCount"</span>,</span><br><span class="line">				<span class="attr">"lang"</span>: <span class="string">"painless"</span></span><br><span class="line">			&#125;,</span><br><span class="line">			<span class="attr">"gap_policy"</span>: <span class="string">"skip"</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>将<code>bucket_script</code>聚合与<code>reverse_nested</code>聚合放在同层级，关联path即可。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	<span class="attr">"reverse_nested"</span>: &#123;</span><br><span class="line">		<span class="attr">"reverse_nested"</span>: &#123;&#125;,</span><br><span class="line">		<span class="attr">"aggregations"</span>: &#123;</span><br><span class="line">			<span class="attr">"agg_count"</span>: &#123;</span><br><span class="line">				<span class="attr">"value_count"</span>: &#123;</span><br><span class="line">					<span class="attr">"field"</span>: <span class="string">"taskId.keyword"</span></span><br><span class="line">				&#125;</span><br><span class="line">			&#125;,</span><br><span class="line">			<span class="attr">"agg_cardinality_tel"</span>: &#123;</span><br><span class="line">				<span class="attr">"cardinality"</span>: &#123;</span><br><span class="line">					<span class="attr">"field"</span>: <span class="string">"tel.keyword"</span></span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;,</span><br><span class="line">	<span class="attr">"agg_bucketScript"</span>: &#123;</span><br><span class="line">		<span class="attr">"bucket_script"</span>: &#123;</span><br><span class="line">			<span class="attr">"buckets_path"</span>: &#123;</span><br><span class="line">				<span class="attr">"userCount"</span>: <span class="string">"reverse_nested&gt;agg_cardinality_tel"</span>,</span><br><span class="line">				<span class="attr">"docCount"</span>: <span class="string">"reverse_nested&gt;agg_count"</span></span><br><span class="line">			&#125;,</span><br><span class="line">			<span class="attr">"script"</span>: &#123;</span><br><span class="line">				<span class="attr">"source"</span>: <span class="string">"params.docCount / params.userCount"</span>,</span><br><span class="line">				<span class="attr">"lang"</span>: <span class="string">"painless"</span></span><br><span class="line">			&#125;,</span><br><span class="line">			<span class="attr">"gap_policy"</span>: <span class="string">"skip"</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
     </div>
 
     
@@ -414,7 +418,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">97</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -427,7 +431,7 @@
             <a href="/categories/">
           
         
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">26</span>
         <span class="site-state-item-name">categories</span>
         </a>
       </div>
@@ -440,7 +444,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-count">62</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
@@ -518,6 +522,7 @@
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
 
+
         
 <div class="busuanzi-count">
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
@@ -587,6 +592,19 @@
 
 
 
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
 

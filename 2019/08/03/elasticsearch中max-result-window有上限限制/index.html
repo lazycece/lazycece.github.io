@@ -55,18 +55,18 @@
   };
 </script>
 
-  <meta name="description" content="场景做分页查询，当分页达到一定量的时候，报如下错误：1Result window is too large, from + size must be less than or equal to: [10000] but was [78020]. See the scroll api for a more efficient way to request large data sets. This">
+  <meta name="description" content="场景做分页查询，当分页达到一定量的时候，报如下错误： 1Result window is too large, from + size must be less than or equal to: [10000] but was [78020]. See the scroll api for a more efficient way to request large data sets. This">
 <meta name="keywords" content="elasticsearch">
 <meta property="og:type" content="article">
 <meta property="og:title" content="elasticsearch中max_result_window有上限限制">
 <meta property="og:url" content="https://lazycece.github.io/2019/08/03/elasticsearch中max-result-window有上限限制/index.html">
 <meta property="og:site_name" content="W  pit">
-<meta property="og:description" content="场景做分页查询，当分页达到一定量的时候，报如下错误：1Result window is too large, from + size must be less than or equal to: [10000] but was [78020]. See the scroll api for a more efficient way to request large data sets. This">
+<meta property="og:description" content="场景做分页查询，当分页达到一定量的时候，报如下错误： 1Result window is too large, from + size must be less than or equal to: [10000] but was [78020]. See the scroll api for a more efficient way to request large data sets. This">
 <meta property="og:locale" content="en">
 <meta property="og:updated_time" content="2020-01-01T14:48:52.468Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="elasticsearch中max_result_window有上限限制">
-<meta name="twitter:description" content="场景做分页查询，当分页达到一定量的时候，报如下错误：1Result window is too large, from + size must be less than or equal to: [10000] but was [78020]. See the scroll api for a more efficient way to request large data sets. This">
+<meta name="twitter:description" content="场景做分页查询，当分页达到一定量的时候，报如下错误： 1Result window is too large, from + size must be less than or equal to: [10000] but was [78020]. See the scroll api for a more efficient way to request large data sets. This">
   <link rel="canonical" href="https://lazycece.github.io/2019/08/03/elasticsearch中max-result-window有上限限制/">
 
 
@@ -300,12 +300,16 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>做分页查询，当分页达到一定量的时候，报如下错误：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Result window is too large, from + size must be less than or equal to: [10000] but was [78020]. See the scroll api for a more efficient way to request large data sets. This limit can be set by changing the [index.max_result_window] index level setting.</span><br></pre></td></tr></table></figure></p>
+        <h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>做分页查询，当分页达到一定量的时候，报如下错误：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Result window is too large, from + size must be less than or equal to: [10000] but was [78020]. See the scroll api for a more efficient way to request large data sets. This limit can be set by changing the [index.max_result_window] index level setting.</span><br></pre></td></tr></table></figure>
+
 <a id="more"></a>
+
 <h2 id="原因分析"><a href="#原因分析" class="headerlink" title="原因分析"></a>原因分析</h2><p>es对from + size的大小进行限制，必须小于等于10000。</p>
 <h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><ul>
 <li>在业务中限制分页大小，使<code>from+size&lt;=10000</code>;</li>
 <li>动态更改索引设置，为<code>max_result_window</code>参数赋值足够大的值；<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">PUT index/_settings</span><br><span class="line">&#123;</span><br><span class="line">  &quot;index&quot;:&#123;</span><br><span class="line">    &quot;max_result_window&quot;:100000000</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 </li>
 </ul>
 <p>推荐使用第一种解决方案，因为es的优势在于搜索，不在于分页，对此做限制就是为不影响其性。就es的默认配置，假设每页10条记录，也有1000页，如果业务上实在不妥协，则使用第二种方案。</p>
@@ -414,7 +418,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">97</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -427,7 +431,7 @@
             <a href="/categories/">
           
         
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">26</span>
         <span class="site-state-item-name">categories</span>
         </a>
       </div>
@@ -440,7 +444,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-count">62</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
@@ -518,6 +522,7 @@
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
 
+
         
 <div class="busuanzi-count">
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
@@ -587,6 +592,19 @@
 
 
 
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
 

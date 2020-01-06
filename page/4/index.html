@@ -222,6 +222,108 @@
   
   
   <div class="post-block home">
+    <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2019/04/13/rabbitmq集群简介/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="LazyCeCe">
+      <meta itemprop="description" content="Another way to laugh !">
+      <meta itemprop="image" content="/images/avatar-1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="W  pit">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+            
+            <a href="/2019/04/13/rabbitmq集群简介/" class="post-title-link" itemprop="url">rabbitmq集群简介</a>
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2019-04-13 15:55:04" itemprop="dateCreated datePublished" datetime="2019-04-13T15:55:04+08:00">2019-04-13</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-01-01 22:48:52" itemprop="dateModified" datetime="2020-01-01T22:48:52+08:00">2020-01-01</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/rabbitmq/" itemprop="url" rel="index"><span itemprop="name">rabbitmq</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>rabbitmq自带内建集群，其旨在rabbitmq的高可用，允许消费者和生产者在rabbitmq节点崩溃的情况下继续运行，以及通过添加更多节点的方式来线性扩展消息的吞吐量。但是即便是将消息、队列、交换器设置成可持久化，当集群中的一个节点挂掉后，该节点上队列中的消息也会消失，因为在默认情况下rabbitmq是不会将队列的内容复制到整个集群中（<em>除非进行特别的设置：镜像队列</em>）。</p>
+          <!--noindex-->
+          
+            <div class="post-button">
+              <a class="btn" href="/2019/04/13/rabbitmq集群简介/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-eof"></div>
+        
+      </footer>
+  </div>
+  
+  
+  
+  </article>
+
+    
+        <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block home">
     <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2019/04/06/springboot中rabbitmq的集成与使用/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -397,7 +499,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h4 id="Erlang环境安装"><a href="#Erlang环境安装" class="headerlink" title="Erlang环境安装"></a>Erlang环境安装</h4><p>rabbitmq是运行在erlang环境上的，所以需要安装erlang：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install erlang</span><br></pre></td></tr></table></figure></p>
+          <h4 id="Erlang环境安装"><a href="#Erlang环境安装" class="headerlink" title="Erlang环境安装"></a>Erlang环境安装</h4><p>rabbitmq是运行在erlang环境上的，所以需要安装erlang：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install erlang</span><br></pre></td></tr></table></figure>
           <!--noindex-->
           
             <div class="post-button">
@@ -607,7 +710,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>在ubuntu18.04上安装mysql5.7后通过workbench连接和×<em>mysql -u root -p</em> 命令连接均无法连接。命令行显示如下错误：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">lazycece@cc-ubuntu:~$ mysql -u root -p </span><br><span class="line">Enter password: </span><br><span class="line">ERROR 1698 (28000): Access denied <span class="keyword">for</span> user <span class="string">'root'</span>@<span class="string">'localhost'</span></span><br></pre></td></tr></table></figure></p>
+          <p>在ubuntu18.04上安装mysql5.7后通过workbench连接和×<em>mysql -u root -p</em> 命令连接均无法连接。命令行显示如下错误：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">lazycece@cc-ubuntu:~$ mysql -u root -p </span><br><span class="line">Enter password: </span><br><span class="line">ERROR 1698 (28000): Access denied <span class="keyword">for</span> user <span class="string">'root'</span>@<span class="string">'localhost'</span></span><br></pre></td></tr></table></figure>
           <!--noindex-->
           
             <div class="post-button">
@@ -710,6 +814,7 @@
 
       
           <h4 id="下载安装"><a href="#下载安装" class="headerlink" title="下载安装"></a>下载安装</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install mysql-server</span><br><span class="line">mysql --version</span><br></pre></td></tr></table></figure>
+
 <h4 id="运行安全脚本-mysql-secure-installation"><a href="#运行安全脚本-mysql-secure-installation" class="headerlink" title="运行安全脚本 mysql_secure_installation"></a>运行安全脚本 mysql_secure_installation</h4><p>安全脚本主要做如下事项，根据自己情况设置即可：</p>
 <ul>
 <li>为root用户设置密码</li>
@@ -931,7 +1036,8 @@
 
       
           <p>从github仓库下载nacos安装包，地址如下：<br><a href="https://github.com/alibaba/nacos/releases" target="_blank" rel="noopener">https://github.com/alibaba/nacos/releases</a> </p>
-<p>然后解压，这里nacos-server-0.9.0.tar.gz为例：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf nacos-server-0.9.0.tar.gz</span><br></pre></td></tr></table></figure></p>
+<p>然后解压，这里nacos-server-0.9.0.tar.gz为例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf nacos-server-0.9.0.tar.gz</span><br></pre></td></tr></table></figure>
           <!--noindex-->
           
             <div class="post-button">
@@ -1165,109 +1271,6 @@
   </article>
 
     
-        <article itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block home">
-    <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2019/02/28/mongo找不到pojo编解码转换器问题/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="LazyCeCe">
-      <meta itemprop="description" content="Another way to laugh !">
-      <meta itemprop="image" content="/images/avatar-1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="W  pit">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-            
-            <a href="/2019/02/28/mongo找不到pojo编解码转换器问题/" class="post-title-link" itemprop="url">mongo找不到pojo编解码转换器问题</a>
-          
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              
-                
-              
-
-              <time title="Created: 2019-02-28 20:18:02" itemprop="dateCreated datePublished" datetime="2019-02-28T20:18:02+08:00">2019-02-28</time>
-            </span>
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-01-01 22:48:52" itemprop="dateModified" datetime="2020-01-01T22:48:52+08:00">2020-01-01</time>
-              </span>
-            
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/mongodb/" itemprop="url" rel="index"><span itemprop="name">mongodb</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h4 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h4><p>异常是在mongo执行存储函数向数据库写入数据的时候发生的，业务伪代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Document dbObject = <span class="keyword">new</span> Document();</span><br><span class="line">dbObject.append(<span class="string">"$eval"</span>, <span class="string">"function(x1,x2,x3)&#123;return statisticsFunction(x1, x2, x3);&#125;"</span>)</span><br><span class="line">        .append(<span class="string">"args"</span>, Arrays.asList(arg1, arg2, arg3))</span><br><span class="line">        .append(<span class="string">"nolock"</span>, <span class="keyword">true</span>);</span><br><span class="line">Document result = mongoTemplate.executeCommand(dbObject);</span><br></pre></td></tr></table></figure></p>
-<p>在没有升级mongo版本之前，POJO通过继承ReflectionDBObject的方式事项映射转换，版本升级之后即不可使用，出现如下异常：</p>
-          <!--noindex-->
-          
-            <div class="post-button">
-              <a class="btn" href="/2019/02/28/mongo找不到pojo编解码转换器问题/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-          <div class="post-eof"></div>
-        
-      </footer>
-  </div>
-  
-  
-  
-  </article>
-
-    
   </div>
 
   
@@ -1321,7 +1324,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">97</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1334,7 +1337,7 @@
             <a href="/categories/">
           
         
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">26</span>
         <span class="site-state-item-name">categories</span>
         </a>
       </div>
@@ -1347,7 +1350,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-count">62</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
@@ -1425,6 +1428,7 @@
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
 
+
         
 <div class="busuanzi-count">
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
@@ -1494,6 +1498,19 @@
 
 
 
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
 

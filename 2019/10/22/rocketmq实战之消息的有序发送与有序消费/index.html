@@ -306,15 +306,20 @@
 </blockquote>
 <p>消息的有序发送方面，我们可以直接使用<code>syncSendOrderly</code>（同步有序发送）和<code>asyncSendOrderly</code>（异步有序发送）两种类型的方法进行发送消息，他们的区别就如命名一样是同步和异步的区别。</p>
 <a id="more"></a>
+
 <p>下面给出同步有序发送的样例代码：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OrderProducer</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Integer NUM = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Resource</span></span><br><span class="line">    <span class="keyword">private</span> RocketMQTemplate rocketMQTemplate;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sendSyncOrderly</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        String message = <span class="string">"orderly message: "</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; NUM; i++) &#123;</span><br><span class="line">            <span class="comment">// 模拟有序发送消息</span></span><br><span class="line">            rocketMQTemplate.syncSendOrderly(<span class="string">"topic-orderly"</span>, message + i, <span class="string">"select_queue_key"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>有序消息的发送比普通消息的发送多了一类参数“select_queue_key”，在<code>rocketmq-spring</code>中叫做<code>hashKey</code>，该参数的左右即是在发送消息的时候，固定发送到一个队列（默认情况下rocketmq中的topic有4个队列）以保证顺序。</p>
 <p>有序消费的样例代码如下：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Slf</span>4j</span><br><span class="line"><span class="meta">@RocketMQMessageListener</span>(topic = <span class="string">"topic-orderly"</span>,</span><br><span class="line">        consumerGroup = <span class="string">"orderly-consumer-group"</span>,consumeMode = ConsumeMode.ORDERLY)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OrderConsumer</span> <span class="keyword">implements</span> <span class="title">RocketMQListener</span>&lt;<span class="title">String</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onMessage</span><span class="params">(String message)</span> </span>&#123;</span><br><span class="line">        log.info(<span class="string">"========&#123;&#125;======="</span>, message);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>这里主要是设置消费模式<code>consumeMode = ConsumeMode.ORDERLY</code>，默认情况下是并发消费模式（<code>ConsumeMode.CONCURRENTLY</code>）。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">2019-10-22 21:59:01.654  INFO 1400 --- [           main] c.l.s.r.SpringbootAcRocketmqApplication  : Started SpringbootAcRocketmqApplication <span class="keyword">in</span> 2.611 seconds (JVM running <span class="keyword">for</span> 3.824)</span><br><span class="line">2019-10-22 21:59:04.474  INFO 1400 --- [MessageThread_1] c.l.sbac.rocketmq.order.OrderConsumer    : ========orderly message: 0=======</span><br><span class="line">2019-10-22 21:59:04.475  INFO 1400 --- [MessageThread_1] a.r.s.s.DefaultRocketMQListenerContainer : consume C0A801040578512DDF1770DD27200000 cost: 0 ms</span><br><span class="line">2019-10-22 21:59:04.475  INFO 1400 --- [MessageThread_1] c.l.sbac.rocketmq.order.OrderConsumer    : ========orderly message: 1=======</span><br><span class="line">2019-10-22 21:59:04.475  INFO 1400 --- [MessageThread_1] a.r.s.s.DefaultRocketMQListenerContainer : consume C0A801040578512DDF1770DD27280002 cost: 0 ms</span><br><span class="line">2019-10-22 21:59:04.476  INFO 1400 --- [MessageThread_1] c.l.sbac.rocketmq.order.OrderConsumer    : ========orderly message: 2=======</span><br><span class="line">2019-10-22 21:59:04.476  INFO 1400 --- [MessageThread_1] a.r.s.s.DefaultRocketMQListenerContainer : consume C0A801040578512DDF1770DD272A0004 cost: 0 ms</span><br><span class="line">2019-10-22 21:59:04.476  INFO 1400 --- [MessageThread_1] c.l.sbac.rocketmq.order.OrderConsumer    : ========orderly message: 3=======</span><br><span class="line">2019-10-22 21:59:04.476  INFO 1400 --- [MessageThread_1] a.r.s.s.DefaultRocketMQListenerContainer : consume C0A801040578512DDF1770DD272C0006 cost: 0 ms</span><br><span class="line">2019-10-22 21:59:04.476  INFO 1400 --- [MessageThread_1] c.l.sbac.rocketmq.order.OrderConsumer    : ========orderly message: 4=======</span><br><span class="line">2019-10-22 21:59:04.476  INFO 1400 --- [MessageThread_1] a.r.s.s.DefaultRocketMQListenerContainer : consume C0A801040578512DDF1770DD272D0008 cost: 0 ms</span><br><span class="line">2019-10-22 21:59:04.476  INFO 1400 --- [MessageThread_1] c.l.sbac.rocketmq.order.OrderConsumer    : ========orderly message: 5=======</span><br><span class="line">2019-10-22 21:59:04.476  INFO 1400 --- [MessageThread_1] a.r.s.s.DefaultRocketMQListenerContainer : consume C0A801040578512DDF1770DD272F000A cost: 0 ms</span><br><span class="line">2019-10-22 21:59:04.477  INFO 1400 --- [MessageThread_1] c.l.sbac.rocketmq.order.OrderConsumer    : ========orderly message: 6=======</span><br><span class="line">2019-10-22 21:59:04.477  INFO 1400 --- [MessageThread_1] a.r.s.s.DefaultRocketMQListenerContainer : consume C0A801040578512DDF1770DD2731000C cost: 0 ms</span><br><span class="line">2019-10-22 21:59:04.477  INFO 1400 --- [MessageThread_1] c.l.sbac.rocketmq.order.OrderConsumer    : ========orderly message: 7=======</span><br><span class="line">2019-10-22 21:59:04.477  INFO 1400 --- [MessageThread_1] a.r.s.s.DefaultRocketMQListenerContainer : consume C0A801040578512DDF1770DD2733000E cost: 0 ms</span><br><span class="line">2019-10-22 21:59:04.477  INFO 1400 --- [MessageThread_1] c.l.sbac.rocketmq.order.OrderConsumer    : ========orderly message: 8=======</span><br><span class="line">2019-10-22 21:59:04.477  INFO 1400 --- [MessageThread_1] a.r.s.s.DefaultRocketMQListenerContainer : consume C0A801040578512DDF1770DD27350010 cost: 0 ms</span><br><span class="line">2019-10-22 21:59:04.478  INFO 1400 --- [MessageThread_1] c.l.sbac.rocketmq.order.OrderConsumer    : ========orderly message: 9=======</span><br><span class="line">2019-10-22 21:59:04.478  INFO 1400 --- [MessageThread_1] a.r.s.s.DefaultRocketMQListenerContainer : consume C0A801040578512DDF1770DD27360012 cost: 0 ms</span><br></pre></td></tr></table></figure>
+
 <p>如果消费者不设置为有序消费的话，则消费的消息则是乱序的：</p>
   <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">  2019-10-22 22:00:59.922  INFO 2198 --- [MessageThread_2] c.l.sbac.rocketmq.order.OrderConsumer    : ========orderly message: 1=======</span><br><span class="line">2019-10-22 22:00:59.926  INFO 2198 --- [MessageThread_8] c.l.sbac.rocketmq.order.OrderConsumer    : ========orderly message: 7=======</span><br><span class="line">2019-10-22 22:00:59.922  INFO 2198 --- [MessageThread_6] c.l.sbac.rocketmq.order.OrderConsumer    : ========orderly message: 5=======</span><br><span class="line">2019-10-22 22:00:59.922  INFO 2198 --- [MessageThread_3] c.l.sbac.rocketmq.order.OrderConsumer    : ========orderly message: 2=======</span><br><span class="line">2019-10-22 22:00:59.922  INFO 2198 --- [MessageThread_1] c.l.sbac.rocketmq.order.OrderConsumer    : ========orderly message: 0=======</span><br><span class="line">2019-10-22 22:00:59.925  INFO 2198 --- [MessageThread_4] c.l.sbac.rocketmq.order.OrderConsumer    : ========orderly message: 3=======</span><br><span class="line">2019-10-22 22:00:59.926  INFO 2198 --- [MessageThread_7] c.l.sbac.rocketmq.order.OrderConsumer    : ========orderly message: 6=======</span><br><span class="line">2019-10-22 22:00:59.927  INFO 2198 --- [MessageThread_9] c.l.sbac.rocketmq.order.OrderConsumer    : ========orderly message: 8=======</span><br><span class="line">2019-10-22 22:00:59.925  INFO 2198 --- [MessageThread_5] c.l.sbac.rocketmq.order.OrderConsumer    : ========orderly message: 4=======</span><br><span class="line">2019-10-22 22:00:59.927  INFO 2198 --- [essageThread_10] c.l.sbac.rocketmq.order.OrderConsumer    : ========orderly message: 9=======</span><br></pre></td></tr></table></figure>
+
 
     </div>
 
@@ -418,7 +423,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">97</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -431,7 +436,7 @@
             <a href="/categories/">
           
         
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">26</span>
         <span class="site-state-item-name">categories</span>
         </a>
       </div>
@@ -444,7 +449,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-count">62</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
@@ -522,6 +527,7 @@
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
 
+
         
 <div class="busuanzi-count">
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
@@ -591,6 +597,19 @@
 
 
 
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
 

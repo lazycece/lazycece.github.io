@@ -55,18 +55,18 @@
   };
 </script>
 
-  <meta name="description" content="以下涉及到的源码均为redis5.0-rc3版本的代码【点击查看官方源码】 Redis服务器初始化数据库的个数为16个，由server.h头文件中的宏定义而来，如下所示：1#define CONFIG_DEFAULT_DBNUM     16 并且每个数据库的结构都有一个redisDb构成，如下是redisDb的数据结构定义（server.h头文件中），各字段的含义可见上面的源码注释：">
+  <meta name="description" content="以下涉及到的源码均为redis5.0-rc3版本的代码【点击查看官方源码】 Redis服务器初始化数据库的个数为16个，由server.h头文件中的宏定义而来，如下所示： 1#define CONFIG_DEFAULT_DBNUM     16  并且每个数据库的结构都有一个redisDb构成，如下是redisDb的数据结构定义（server.h头文件中），各字段的含义可见上面的源码注释：">
 <meta name="keywords" content="redis">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Redis源码剖析之数据库结构">
 <meta property="og:url" content="https://lazycece.github.io/2019/02/09/Redis源码剖析之数据库结构/index.html">
 <meta property="og:site_name" content="W  pit">
-<meta property="og:description" content="以下涉及到的源码均为redis5.0-rc3版本的代码【点击查看官方源码】 Redis服务器初始化数据库的个数为16个，由server.h头文件中的宏定义而来，如下所示：1#define CONFIG_DEFAULT_DBNUM     16 并且每个数据库的结构都有一个redisDb构成，如下是redisDb的数据结构定义（server.h头文件中），各字段的含义可见上面的源码注释：">
+<meta property="og:description" content="以下涉及到的源码均为redis5.0-rc3版本的代码【点击查看官方源码】 Redis服务器初始化数据库的个数为16个，由server.h头文件中的宏定义而来，如下所示： 1#define CONFIG_DEFAULT_DBNUM     16  并且每个数据库的结构都有一个redisDb构成，如下是redisDb的数据结构定义（server.h头文件中），各字段的含义可见上面的源码注释：">
 <meta property="og:locale" content="en">
 <meta property="og:updated_time" content="2020-01-01T14:48:52.464Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Redis源码剖析之数据库结构">
-<meta name="twitter:description" content="以下涉及到的源码均为redis5.0-rc3版本的代码【点击查看官方源码】 Redis服务器初始化数据库的个数为16个，由server.h头文件中的宏定义而来，如下所示：1#define CONFIG_DEFAULT_DBNUM     16 并且每个数据库的结构都有一个redisDb构成，如下是redisDb的数据结构定义（server.h头文件中），各字段的含义可见上面的源码注释：">
+<meta name="twitter:description" content="以下涉及到的源码均为redis5.0-rc3版本的代码【点击查看官方源码】 Redis服务器初始化数据库的个数为16个，由server.h头文件中的宏定义而来，如下所示： 1#define CONFIG_DEFAULT_DBNUM     16  并且每个数据库的结构都有一个redisDb构成，如下是redisDb的数据结构定义（server.h头文件中），各字段的含义可见上面的源码注释：">
   <link rel="canonical" href="https://lazycece.github.io/2019/02/09/Redis源码剖析之数据库结构/">
 
 
@@ -301,10 +301,14 @@
 
       
         <p>以下涉及到的源码均为redis5.0-rc3版本的代码【<a href="https://github.com/antirez/redis/releases" target="_blank" rel="noopener">点击查看官方源码</a>】</p>
-<p>Redis服务器初始化数据库的个数为16个，由server.h头文件中的宏定义而来，如下所示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define CONFIG_DEFAULT_DBNUM     16</span><br></pre></td></tr></table></figure></p>
+<p>Redis服务器初始化数据库的个数为16个，由server.h头文件中的宏定义而来，如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define CONFIG_DEFAULT_DBNUM     16</span><br></pre></td></tr></table></figure>
+
 <p>并且每个数据库的结构都有一个redisDb构成，如下是redisDb的数据结构定义（server.h头文件中），各字段的含义可见上面的源码注释：</p>
 <a id="more"></a>
+
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">/* Redis database representation. There are multiple databases identified</span><br><span class="line"> * by integers from 0 (the default database) up to the max configured</span><br><span class="line"> * database. The database number is the &apos;id&apos; field in the structure. */</span><br><span class="line">typedef struct redisDb &#123;</span><br><span class="line">    dict *dict;                 /* The keyspace for this DB */</span><br><span class="line">    dict *expires;              /* Timeout of keys with a timeout set */</span><br><span class="line">    dict *blocking_keys;        /* Keys with clients waiting for data (BLPOP)*/</span><br><span class="line">    dict *ready_keys;           /* Blocked keys that received a PUSH */</span><br><span class="line">    dict *watched_keys;         /* WATCHED keys for MULTI/EXEC CAS */</span><br><span class="line">    int id;                     /* Database ID */</span><br><span class="line">    long long avg_ttl;          /* Average TTL, just for stats */</span><br><span class="line">    list *defrag_later;         /* List of key names to attempt to defrag one by one, gradually. */</span><br><span class="line">&#125; redisDb;</span><br></pre></td></tr></table></figure>
+
 
     </div>
 
@@ -408,7 +412,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">97</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -421,7 +425,7 @@
             <a href="/categories/">
           
         
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">26</span>
         <span class="site-state-item-name">categories</span>
         </a>
       </div>
@@ -434,7 +438,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-count">62</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
@@ -512,6 +516,7 @@
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
 
+
         
 <div class="busuanzi-count">
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
@@ -581,6 +586,19 @@
 
 
 
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
 

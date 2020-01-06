@@ -55,18 +55,18 @@
   };
 </script>
 
-  <meta name="description" content="首先贴上我遇到的问题,如下:12345QSqlDatabase: QMYSQL driver not loadedQSqlDatabase: available drivers: QSQLITE QMYSQL QMYSQL3 QPSQL QPSQL7Unable to open database">
+  <meta name="description" content="首先贴上我遇到的问题,如下: 12345QSqlDatabase: QMYSQL driver not loadedQSqlDatabase: available drivers: QSQLITE QMYSQL QMYSQL3 QPSQL QPSQL7Unable to open database">
 <meta name="keywords" content="Qt,ubuntu">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Qt5.7不能加载MySql驱动问题(需要重新编译驱动)">
 <meta property="og:url" content="https://lazycece.github.io/2019/02/08/Qt5-7不能加载MySql驱动问题/index.html">
 <meta property="og:site_name" content="W  pit">
-<meta property="og:description" content="首先贴上我遇到的问题,如下:12345QSqlDatabase: QMYSQL driver not loadedQSqlDatabase: available drivers: QSQLITE QMYSQL QMYSQL3 QPSQL QPSQL7Unable to open database">
+<meta property="og:description" content="首先贴上我遇到的问题,如下: 12345QSqlDatabase: QMYSQL driver not loadedQSqlDatabase: available drivers: QSQLITE QMYSQL QMYSQL3 QPSQL QPSQL7Unable to open database">
 <meta property="og:locale" content="en">
 <meta property="og:updated_time" content="2020-01-01T14:48:52.464Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Qt5.7不能加载MySql驱动问题(需要重新编译驱动)">
-<meta name="twitter:description" content="首先贴上我遇到的问题,如下:12345QSqlDatabase: QMYSQL driver not loadedQSqlDatabase: available drivers: QSQLITE QMYSQL QMYSQL3 QPSQL QPSQL7Unable to open database">
+<meta name="twitter:description" content="首先贴上我遇到的问题,如下: 12345QSqlDatabase: QMYSQL driver not loadedQSqlDatabase: available drivers: QSQLITE QMYSQL QMYSQL3 QPSQL QPSQL7Unable to open database">
   <link rel="canonical" href="https://lazycece.github.io/2019/02/08/Qt5-7不能加载MySql驱动问题/">
 
 
@@ -300,8 +300,11 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>首先贴上我遇到的问题,如下:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">QSqlDatabase: QMYSQL driver not loaded</span><br><span class="line"></span><br><span class="line">QSqlDatabase: available drivers: QSQLITE QMYSQL QMYSQL3 QPSQL QPSQL7</span><br><span class="line"></span><br><span class="line">Unable to open database</span><br></pre></td></tr></table></figure></p>
+        <p>首先贴上我遇到的问题,如下:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">QSqlDatabase: QMYSQL driver not loaded</span><br><span class="line"></span><br><span class="line">QSqlDatabase: available drivers: QSQLITE QMYSQL QMYSQL3 QPSQL QPSQL7</span><br><span class="line"></span><br><span class="line">Unable to open database</span><br></pre></td></tr></table></figure>
+
 <a id="more"></a>
+
 <p>在解决这个问题的时候,首先在网上查询了各种解决方案,都尝试过,但是其中遇到的一些小问题,总是找不到解决方法,最终在”Stack Overflow”上提问得到了答案,故此记录一下,一遍以后备用,也希望能帮助到一些人.</p>
 <p>环境:   ubantu16.04 + Qt5.7 + MySql5.7</p>
 <h4 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h4><ol>
@@ -316,14 +319,17 @@
 </li>
 <li><p>执行命令查看 libqsqlmysql.so 的依赖:</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ldd libqsqlmysql.so</span><br></pre></td></tr></table></figure>
+
 <p>显示如下:  </p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">linux-vdso.so.1 =&gt;  (0x00007ffcb64e2000)</span><br><span class="line">libmysqlclient_r.so.16 =&gt; not found</span><br><span class="line">libz.so.1 =&gt; /lib/x86_64-linux-gnu/libz.so.1 (0x00007fea06463000)</span><br><span class="line">libcrypt.so.1 =&gt; /lib/x86_64-linux-gnu/libcrypt.so.1 (0x00007fea0622a000)</span><br><span class="line">libnsl.so.1 =&gt; /lib/x86_64-linux-gnu/libnsl.so.1 (0x00007fea06011000)</span><br><span class="line">libssl.so.10 =&gt; /usr/lib/x86_64-linux-gnu/libssl.so.10 (0x00007fea05dba000)</span><br><span class="line">libQt5Sql.so.5 =&gt; /home/cc/ProgramFiles/Qt5.7.0/5.7/gcc_64/plugins/sqldrivers/./../../lib/libQt5Sql.so.5 (0x00007fea05b74000)</span><br><span class="line">libQt5Core.so.5 =&gt; /home/cc/ProgramFiles/Qt5.7.0/5.7/gcc_64/plugins/sqldrivers/./../../lib/libQt5Core.so.5 (0x00007fea05459000)</span><br><span class="line">libpthread.so.0 =&gt; /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007fea0523c000)</span><br><span class="line">libstdc++.so.6 =&gt; /usr/lib/x86_64-linux-gnu/libstdc++.so.6 (0x00007fea04eb9000)</span><br><span class="line">libm.so.6 =&gt; /lib/x86_64-linux-gnu/libm.so.6 (0x00007fea04bb0000)</span><br><span class="line">libgcc_s.so.1 =&gt; /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007fea0499a000)</span><br><span class="line">libc.so.6 =&gt; /lib/x86_64-linux-gnu/libc.so.6 (0x00007fea045d0000)</span><br><span class="line">libnss3.so =&gt; /usr/lib/x86_64-linux-gnu/libnss3.so (0x00007fea0428a000)</span><br><span class="line">libnssutil3.so =&gt; /usr/lib/x86_64-linux-gnu/libnssutil3.so (0x00007fea0405d000)</span><br><span class="line">libplc4.so =&gt; /usr/lib/x86_64-linux-gnu/libplc4.so (0x00007fea03e57000)</span><br><span class="line">libnspr4.so =&gt; /usr/lib/x86_64-linux-gnu/libnspr4.so (0x00007fea03c18000)</span><br><span class="line">libicui18n.so.56 =&gt; /home/cc/ProgramFiles/Qt5.7.0/5.7/gcc_64/plugins/sqldrivers/./../../lib/libicui18n.so.56 (0x00007fea0377d000)</span><br><span class="line">libicuuc.so.56 =&gt; /home/cc/ProgramFiles/Qt5.7.0/5.7/gcc_64/plugins/sqldrivers/./../../lib/libicuuc.so.56 (0x00007fea033c5000)</span><br><span class="line">libicudata.so.56 =&gt; /home/cc/ProgramFiles/Qt5.7.0/5.7/gcc_64/plugins/sqldrivers/./../../lib/libicudata.so.56 (0x00007fea019e2000)</span><br><span class="line">libdl.so.2 =&gt; /lib/x86_64-linux-gnu/libdl.so.2 (0x00007fea017dd000)</span><br><span class="line">libgthread-2.0.so.0 =&gt; /usr/lib/x86_64-linux-gnu/libgthread-2.0.so.0 (0x00007fea015db000)</span><br><span class="line">librt.so.1 =&gt; /lib/x86_64-linux-gnu/librt.so.1 (0x00007fea013d3000)</span><br><span class="line">libglib-2.0.so.0 =&gt; /lib/x86_64-linux-gnu/libglib-2.0.so.0 (0x00007fea010c2000)</span><br><span class="line">/lib64/ld-linux-x86-64.so.2 (0x0000560757219000)</span><br><span class="line">libplds4.so =&gt; /usr/lib/x86_64-linux-gnu/libplds4.so (0x00007fea00ebd000)</span><br><span class="line">libpcre.so.3 =&gt; /lib/x86_64-linux-gnu/libpcre.so.3 (0x00007fea00c4d000)</span><br></pre></td></tr></table></figure>
+
 <p>在此会发现一个问题:  libmysqlclient_r.so.16 =&gt; not found,说明没有这个依赖项,所以现在我们要解决的是这个依赖.</p>
 </li>
 </ol>
 <ol start="5">
 <li><p>查看自己所有的 libmysqlclient.so</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">cc@1whispers:~$ locate libmysqlclient.so</span><br><span class="line"></span><br><span class="line">/home/cc/Desktop/libmysqlclient.so.20</span><br><span class="line">/usr/lib/x86_64-linux-gnu/libmysqlclient.so</span><br><span class="line">/usr/lib/x86_64-linux-gnu/libmysqlclient.so.20</span><br><span class="line">/usr/lib/x86_64-linux-gnu/libmysqlclient.so.20.3.0</span><br></pre></td></tr></table></figure>
+
 <p>可知到我们的依赖有这些.</p>
 </li>
 </ol>
@@ -334,18 +340,22 @@
 </li>
 <li><p>进入到源码中MySql驱动的源码中</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /ProgramFiles/Qt5.7.0/5.7/Src/qtbase/src/plugins/sqldrivers/mysql</span><br></pre></td></tr></table></figure>
+
 <p>路径是各自安装qt的路径而来.</p>
 </li>
 <li><p>执行编译:<br>qmake-&gt;make-&gt;make install<br>执行过程:</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sudo /home/cc/ProgramFiles/Qt5.7.0/5.7/gcc_64/bin/qmake <span class="string">"INCLUDEPATH+=/usr/include/mysql"</span> <span class="string">"LIBS+=-L/usr/lib/mysql -lmysqlclient_r"</span> mysql.pro</span><br><span class="line"></span><br><span class="line">sudo make</span><br><span class="line"></span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
+
 <p>在查看依赖 ldd libqsqlmysql.so ,则会看到已有依赖库.<br>再去运行程序,则会显示成功连接数据库.</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Database connection established</span><br></pre></td></tr></table></figure>
+
 <p>这是记得要sudo make clean清理一下之前编译的中间文件.</p>
 </li>
 </ol>
 <h4 id="可能出现的问题"><a href="#可能出现的问题" class="headerlink" title="可能出现的问题"></a>可能出现的问题</h4><ol>
 <li><p>执行qmake的时候: qmake “INCLUDEPATH+=/usr/include/mysql” “LIBS+=-L/usr/lib/mysql -lmysqlclient_r” mysql.pro这样的命令是用的默认的qmake文件,这样如果没有Qt4的SDK,则会出错,所以需要用我们自己安装Qt时路劲下的qmake.</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo /home/cc/ProgramFiles/Qt5.7.0/5.7/gcc_64/bin/qmake <span class="string">"INCLUDEPATH+=/usr/include/mysql"</span> <span class="string">"LIBS+=-L/usr/lib/mysql -lmysqlclient_r"</span> mysql.pro</span><br></pre></td></tr></table></figure>
+
 <p>需要加上sudo,不然会出现 not permit的错误,即没有权限,所以需要用root权限.</p>
 </li>
 <li><p>在执行make的时候,也需要用到root权限.不然会出现以下错误(我本人就是死在这里,因为没有用root权限,但是出现错误又不懂什么原因,迷茫了2天,终于解决)</p>
@@ -353,8 +363,10 @@
 </li>
 <li><p>使用证确方式(sudo make)执行后肯能会出现以下问题:</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-lQt5Sql -lQt5Core -lpthread  </span><br><span class="line">/usr/bin/ld: cannot find -lmysqlclient_r</span><br><span class="line">collect2: error: ld returned 1 <span class="built_in">exit</span> status</span><br><span class="line">Makefile:114: recipe <span class="keyword">for</span> target <span class="string">'../../../../plugins/sqldrivers/libqsqlmysql.so'</span> failed</span><br><span class="line">make: *** [../../../../plugins/sqldrivers/libqsqlmysql.so] Error 1</span><br></pre></td></tr></table></figure>
+
 <p>可知,我们没有了lmysqlclient_r相关的文件:即没有libmysqlclient_r.so等文件;但是在之前分析的时候,知道我们有</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">/home/cc/Desktop/libmysqlclient.so.20</span><br><span class="line">/usr/lib/x86_64-linux-gnu/libmysqlclient.so</span><br><span class="line">/usr/lib/x86_64-linux-gnu/libmysqlclient.so.20</span><br><span class="line">/usr/lib/x86_64-linux-gnu/libmysqlclient.so.20.3.0</span><br><span class="line">``` </span><br><span class="line">  所以要去链接出lmysqlclient_r相关的文件;</span><br><span class="line">```bash</span><br><span class="line"><span class="built_in">cd</span> /usr/lib/x86_64-linux-gnu/</span><br><span class="line">ln -s libmysqlclient.so.20.3.0 libmysqlclient_r.so.20.3.0</span><br><span class="line">ln -s libmysqlclient.so.20 libmysqlclient_r.so.20</span><br><span class="line">ln -s libmysqlclient.so libmysqlclient_r.so</span><br></pre></td></tr></table></figure>
+
 <p>这样在去执行sudo make命令,则会成功.</p>
 </li>
 </ol>
@@ -465,7 +477,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">97</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -478,7 +490,7 @@
             <a href="/categories/">
           
         
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">26</span>
         <span class="site-state-item-name">categories</span>
         </a>
       </div>
@@ -491,7 +503,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-count">62</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
@@ -569,6 +581,7 @@
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
 
+
         
 <div class="busuanzi-count">
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
@@ -638,6 +651,19 @@
 
 
 
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
 

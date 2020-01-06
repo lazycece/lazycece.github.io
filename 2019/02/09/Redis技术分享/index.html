@@ -328,13 +328,18 @@
 <h2 id="Redis是什么？"><a href="#Redis是什么？" class="headerlink" title="Redis是什么？"></a>Redis是什么？</h2><p>Redis是完全开源免费、遵守BSD协议的一个高性能的key-value数据库。据官方统计数据：redis读 110000次/秒，写 81000次/秒。目前已经有很多公司都在用redis，下面举几个例子：</p>
 <p><img src="/images/article/redis-5/redis-5-1.png" alt="redis-5-1"></p>
 <a id="more"></a>
+
 <p><img src="/images/article/redis-5/redis-5-2.png" alt="redis-5-2"><br><img src="/images/article/redis-5/redis-5-3.png" alt="redis-5-3"><br><img src="/images/article/redis-5/redis-5-4.png" alt="redis-5-4"><br><img src="/images/article/redis-5/redis-5-5.png" alt="redis-5-5"></p>
 <h2 id="Redis的基本数据结构"><a href="#Redis的基本数据结构" class="headerlink" title="Redis的基本数据结构"></a>Redis的基本数据结构</h2><p>Redis作为一个nosql数据库，支持五种基本的数据结构，可谓是相当丰富，能满足大部分使用场景。如下所示：</p>
 <p><img src="/images/article/redis-5/redis-5-6.png" alt="redis-5-6">              </p>
 <p>虽然说redis是nosql数据库，但是实际业务场景中，我们也可以用redis实现关系型表结构，这都跟上面的五种基本数据结构是分不开的。当然，这里只针对每种数据结构的底层做了提点，并没有去深入探究；redis的底层是用C/C++实现的，足以体现其高性能；在使用中，redis其实还对其底层结构做了一次封装，封装厂特有的对象，以便于上层的操作。感兴趣的可以去浏览一下redis的源码：<a href="https://github.com/antirez/redis" target="_blank" rel="noopener">https://github.com/antirez/redis</a></p>
 <h2 id="安全与性能"><a href="#安全与性能" class="headerlink" title="安全与性能"></a>安全与性能</h2><h3 id="持久化"><a href="#持久化" class="headerlink" title="持久化"></a>持久化</h3><p>redis支持两种持久化方式：AOF 和 RDB（SNAPSHOTTING）。</p>
-<p>RDB持久化也俗称快照，是将redis数据库中某一时刻的数据写入硬盘，存一个副本，然后在数据库数据丢失后，执行这个快照文件即可恢复数据。RDB的核心配置如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">save 60 1000  //60秒内有1000次更改操作则进行save</span><br><span class="line">stop-writes-on-bgsave-error no //save的过程中出错是否停止</span><br><span class="line">rdbcompress yes //是否对保存的文件进行压缩</span><br><span class="line">dbfilename dump.rdb //定义生成的文件名</span><br></pre></td></tr></table></figure></p>
-<p>AOF持久化是将操作命令追加到aof文件的末尾，以此来达到数据备份，即数据库崩溃时，可以重新执行这个文件，来尽可能的恢复数据。AOF的核心配置如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">appendonly yes  //是否追加</span><br><span class="line">appendfsync everysec / always / no  //追加方式：每秒写入并完成磁盘同步、总是写入并完成磁盘同步、写入不完成磁盘同步</span><br><span class="line">no-appendfsync-on-rewrite no //当磁盘同步时是否进行对文件进行写入操作</span><br><span class="line">auto-aof-rewrite-percentage 100 //设置当前文件夹的大小是上一次rewrite操作时文件的一倍时（即增长了100%）执行rewrite操作</span><br><span class="line">auto-aof-rewrite-min-size 64m //设置文件到达一定大小后才执行rewrite操作</span><br></pre></td></tr></table></figure></p>
+<p>RDB持久化也俗称快照，是将redis数据库中某一时刻的数据写入硬盘，存一个副本，然后在数据库数据丢失后，执行这个快照文件即可恢复数据。RDB的核心配置如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">save 60 1000  //60秒内有1000次更改操作则进行save</span><br><span class="line">stop-writes-on-bgsave-error no //save的过程中出错是否停止</span><br><span class="line">rdbcompress yes //是否对保存的文件进行压缩</span><br><span class="line">dbfilename dump.rdb //定义生成的文件名</span><br></pre></td></tr></table></figure>
+
+<p>AOF持久化是将操作命令追加到aof文件的末尾，以此来达到数据备份，即数据库崩溃时，可以重新执行这个文件，来尽可能的恢复数据。AOF的核心配置如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">appendonly yes  //是否追加</span><br><span class="line">appendfsync everysec / always / no  //追加方式：每秒写入并完成磁盘同步、总是写入并完成磁盘同步、写入不完成磁盘同步</span><br><span class="line">no-appendfsync-on-rewrite no //当磁盘同步时是否进行对文件进行写入操作</span><br><span class="line">auto-aof-rewrite-percentage 100 //设置当前文件夹的大小是上一次rewrite操作时文件的一倍时（即增长了100%）执行rewrite操作</span><br><span class="line">auto-aof-rewrite-min-size 64m //设置文件到达一定大小后才执行rewrite操作</span><br></pre></td></tr></table></figure>
+
 <p>下面来对RDB和AOF两种持久化方式做一个对比：<br><img src="/images/article/redis-5/redis-5-7.png" alt="redis-5-7"></p>
 <p>在实际应用中，基本上都是两种方式结合使用，这样能互相弥补缺点，尽量保证当出现数据丢失时达到最小。</p>
 <h3 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h3><p>Redis的事务保证是通过WATCH、MULTI、EXEC、UNWATCH、DISCARD几个命令。下面给出一段代码（买卖关系）展示，主要讲几个命令综合起来运用，来探究redis事务。<br>这段代码很简单，当前，前提弄懂了这个几个命令的意思就更容易看懂了。<br><img src="/images/article/redis-5/redis-5-8.png" alt="redis-5-8"></p>
@@ -362,13 +367,13 @@
 <li>Redis支持几个操作的原子性执行 [ MULTI和EXEC命令包裹的操作]。</li>
 </ul>
 <h3 id="键的过期时间设定"><a href="#键的过期时间设定" class="headerlink" title="键的过期时间设定"></a>键的过期时间设定</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">EXPIRE key-name seconds	设置多长时间后过期</span><br><span class="line">conn.expire(&quot;key&quot;,100);</span><br><span class="line"></span><br><span class="line">EXPIREAT key-name timestamp   设置某个特定的UNIX时间戳之后键过期</span><br><span class="line">conn.expireAt(&quot;key&quot;,1508084022);</span><br><span class="line"></span><br><span class="line">PTTL  key-name		查看距过期时间还剩多少秒</span><br><span class="line">conn.pttl(&quot;key&quot;);</span><br><span class="line"></span><br><span class="line">PERSIST key-name		移除过期时间</span><br><span class="line">conn.persist(&quot;key&quot;);</span><br></pre></td></tr></table></figure>
+
 <h3 id="发布与订阅"><a href="#发布与订阅" class="headerlink" title="发布与订阅"></a>发布与订阅</h3><p><img src="/images/article/redis-5/redis-5-12.png" alt="redis-5-12"><br><img src="/images/article/redis-5/redis-5-13.png" alt="redis-5-13"><br>发布与订阅</p>
 <pre><code>SUBSCRIBE channel [channel …]        订阅频道
 UNSUBSCRIBE channel [channel …]    退订频道
 PUBLISH channel message        向给频道发送消息
 PSUBSCRIBE pattern [pattern]        订阅与给定模式相匹配的所有频道
-PUNSUBSCRIBE pattern [pattern …]    退订给定的模式 
-</code></pre><h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><h3 id="String（可存储字符串、整数、浮点数）"><a href="#String（可存储字符串、整数、浮点数）" class="headerlink" title="String（可存储字符串、整数、浮点数）"></a>String（可存储字符串、整数、浮点数）</h3><ul>
+PUNSUBSCRIBE pattern [pattern …]    退订给定的模式 </code></pre><h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><h3 id="String（可存储字符串、整数、浮点数）"><a href="#String（可存储字符串、整数、浮点数）" class="headerlink" title="String（可存储字符串、整数、浮点数）"></a>String（可存储字符串、整数、浮点数）</h3><ul>
 <li>原子计数器 [比如网站的点击量]；</li>
 <li>要对单个元素设置过期时间的情况下，只能使用String结构，不能使用哈希，因为hash的key不是redis的key；<br><img src="/images/article/redis-5/redis-5-14.png" alt="redis-5-14"></li>
 <li>字符串 [串的追加、获取子串]</li>
@@ -500,7 +505,7 @@ PUNSUBSCRIBE pattern [pattern …]    退订给定的模式
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">97</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -513,7 +518,7 @@ PUNSUBSCRIBE pattern [pattern …]    退订给定的模式
             <a href="/categories/">
           
         
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">26</span>
         <span class="site-state-item-name">categories</span>
         </a>
       </div>
@@ -526,7 +531,7 @@ PUNSUBSCRIBE pattern [pattern …]    退订给定的模式
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-count">62</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
@@ -604,6 +609,7 @@ PUNSUBSCRIBE pattern [pattern …]    退订给定的模式
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
 
+
         
 <div class="busuanzi-count">
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
@@ -673,6 +679,19 @@ PUNSUBSCRIBE pattern [pattern …]    退订给定的模式
 
 
 
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
 

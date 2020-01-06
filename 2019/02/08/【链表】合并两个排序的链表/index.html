@@ -302,7 +302,9 @@
       
         <h4 id="解法一"><a href="#解法一" class="headerlink" title="解法一"></a>解法一</h4><p>递归思路，需要重新创建一个链表，空间复杂度O(1)</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ListNode* <span class="title">Merge</span><span class="params">(ListNode* pHead1, ListNode* pHead2)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(pHead1==<span class="literal">nullptr</span>) <span class="keyword">return</span> pHead2;</span><br><span class="line">    <span class="keyword">if</span>(pHead2==<span class="literal">nullptr</span>) <span class="keyword">return</span> pHead1;</span><br><span class="line">    ListNode* <span class="built_in">list</span>;</span><br><span class="line">    <span class="keyword">if</span>(pHead1-&gt;val&gt;pHead2-&gt;val)&#123;</span><br><span class="line">        <span class="built_in">list</span>=pHead2;</span><br><span class="line">        <span class="built_in">list</span>-&gt;next=Merge(pHead1,pHead2-&gt;next);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="built_in">list</span>=pHead1;</span><br><span class="line">        <span class="built_in">list</span>-&gt;next=Merge(pHead1-&gt;next,pHead2);</span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">list</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <a id="more"></a>
+
 <h4 id="解法二"><a href="#解法二" class="headerlink" title="解法二"></a>解法二</h4><p>非递归思路,直接在两个链表上修改</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ListNode* <span class="title">Merge</span><span class="params">(ListNode* pHead1, ListNode* pHead2)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(pHead1==<span class="literal">nullptr</span>) <span class="keyword">return</span> pHead2;</span><br><span class="line">        <span class="keyword">if</span>(pHead2==<span class="literal">nullptr</span>) <span class="keyword">return</span> pHead1;</span><br><span class="line">        ListNode* <span class="built_in">list</span>=pHead1;</span><br><span class="line">        ListNode* index1=pHead1,*index2=pHead2,*pre=pHead1,*last;   </span><br><span class="line">        <span class="keyword">if</span>(pHead1-&gt;val&gt;pHead2-&gt;val)&#123;</span><br><span class="line">			<span class="built_in">list</span>=pHead2;</span><br><span class="line">            pre=index2;</span><br><span class="line">            index2=index2-&gt;next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> index1=index1-&gt;next;</span><br><span class="line">        <span class="keyword">while</span>(index1!=<span class="literal">nullptr</span>&amp;&amp;index2!=<span class="literal">nullptr</span>)&#123;</span><br><span class="line">            </span><br><span class="line">          <span class="keyword">if</span>(index2-&gt;val&lt;index1-&gt;val)&#123;</span><br><span class="line">              last=index2-&gt;next;</span><br><span class="line">              pre-&gt;next=index2;</span><br><span class="line">              index2-&gt;next=index1;</span><br><span class="line">              pre=index2;</span><br><span class="line">              index2=last;</span><br><span class="line">          &#125;</span><br><span class="line">          <span class="keyword">else</span></span><br><span class="line">          &#123;</span><br><span class="line">              pre=index1;</span><br><span class="line">              index1=index1-&gt;next;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        pre-&gt;next=index2;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">list</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
     </div>
@@ -411,7 +413,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">97</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -424,7 +426,7 @@
             <a href="/categories/">
           
         
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">26</span>
         <span class="site-state-item-name">categories</span>
         </a>
       </div>
@@ -437,7 +439,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-count">62</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
@@ -515,6 +517,7 @@
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
 
+
         
 <div class="busuanzi-count">
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
@@ -584,6 +587,19 @@
 
 
 
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
 

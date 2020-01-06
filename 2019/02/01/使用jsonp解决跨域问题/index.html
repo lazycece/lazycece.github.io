@@ -302,8 +302,11 @@
       
         <p>在前后端交互的过程中，不可避免遇上跨域问题。跨域问题有很多种解决方法，下面给出使用jsonp解决跨域的案例：</p>
 <h4 id="客户端的请求"><a href="#客户端的请求" class="headerlink" title="客户端的请求"></a>客户端的请求</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">$.ajax(&#123;</span><br><span class="line">     url: URL,</span><br><span class="line">     type: <span class="string">"GET"</span>,</span><br><span class="line">     <span class="keyword">async</span>: <span class="literal">false</span>,</span><br><span class="line">     data: requestParam,</span><br><span class="line">     dataType: <span class="string">"jsonp"</span>,</span><br><span class="line">     jsonp: <span class="string">"callback"</span>,</span><br><span class="line">     jsonpCallback: <span class="string">"dataDeal"</span>,</span><br><span class="line">     success: <span class="function"><span class="keyword">function</span> (<span class="params">message</span>) </span>&#123;</span><br><span class="line">        </span><br><span class="line">     &#125;,</span><br><span class="line">     error: <span class="function"><span class="keyword">function</span> (<span class="params">XMLHttpRequest, textStatus, errorThrown</span>) </span>&#123;</span><br><span class="line">         alert(<span class="string">"statusText:"</span> + XMLHttpRequest.statusText + <span class="string">"\nstatus: "</span> + XMLHttpRequest.status + <span class="string">";\nreadyState: "</span> + XMLHttpRequest.readyState +</span><br><span class="line">             <span class="string">";\ntextStatus: "</span> + textStatus);</span><br><span class="line">         <span class="keyword">this</span>;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
 <a id="more"></a>
+
 <h4 id="服务端的接口处理"><a href="#服务端的接口处理" class="headerlink" title="服务端的接口处理"></a>服务端的接口处理</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(<span class="string">"/doManage"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">serviceForManage</span><span class="params">(HttpServletRequest httpServletRequest,</span></span></span><br><span class="line"><span class="function"><span class="params">                             String callback,</span></span></span><br><span class="line"><span class="function"><span class="params">                             HttpServletResponse httpServletResponse)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        Writer out = httpServletResponse.getWriter();</span><br><span class="line">        ResponseEntity response = service();<span class="comment">//service处理逻辑</span></span><br><span class="line">        log.info(<span class="string">"callback = \n"</span> + callback + <span class="string">"("</span> + response.toJsonString() + <span class="string">")"</span>);</span><br><span class="line">        out.write(callback + <span class="string">"("</span> + JSONUtils.toJSONString(response) + <span class="string">")"</span>);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        log.error(<span class="string">"api error:  "</span> + e.getMessage());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>在这里，client需要一个jsonp和jsonpcallback的两个参数，其中jsonp的参数callback对应于服务端的接口参数callback，而jsonpcallback的dataDeal对应于服务端接口中参数callback的值。</p>
 
     </div>
@@ -414,7 +417,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">97</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -427,7 +430,7 @@
             <a href="/categories/">
           
         
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">26</span>
         <span class="site-state-item-name">categories</span>
         </a>
       </div>
@@ -440,7 +443,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-count">62</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
@@ -518,6 +521,7 @@
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
 
+
         
 <div class="busuanzi-count">
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
@@ -587,6 +591,19 @@
 
 
 
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
 

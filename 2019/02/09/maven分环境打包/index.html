@@ -55,18 +55,18 @@
   };
 </script>
 
-  <meta name="description" content="maven项目管理中，分环境（开发、测试、生产）打包是在所难免的事情，只需要在pom文件中做一些配置。 首先是配置profiles（此处设置develop为默认环境）：123456789101112131415161718&amp;lt;!-- project environment --&amp;gt;    &amp;lt;profiles&amp;gt;        &amp;lt;profile&amp;gt;">
+  <meta name="description" content="maven项目管理中，分环境（开发、测试、生产）打包是在所难免的事情，只需要在pom文件中做一些配置。 首先是配置profiles（此处设置develop为默认环境）： 123456789101112131415161718&amp;lt;!-- project environment --&amp;gt;    &amp;lt;profiles&amp;gt;        &amp;lt;profile&amp;gt;">
 <meta name="keywords" content="maven">
 <meta property="og:type" content="article">
 <meta property="og:title" content="maven分环境打包">
 <meta property="og:url" content="https://lazycece.github.io/2019/02/09/maven分环境打包/index.html">
 <meta property="og:site_name" content="W  pit">
-<meta property="og:description" content="maven项目管理中，分环境（开发、测试、生产）打包是在所难免的事情，只需要在pom文件中做一些配置。 首先是配置profiles（此处设置develop为默认环境）：123456789101112131415161718&amp;lt;!-- project environment --&amp;gt;    &amp;lt;profiles&amp;gt;        &amp;lt;profile&amp;gt;">
+<meta property="og:description" content="maven项目管理中，分环境（开发、测试、生产）打包是在所难免的事情，只需要在pom文件中做一些配置。 首先是配置profiles（此处设置develop为默认环境）： 123456789101112131415161718&amp;lt;!-- project environment --&amp;gt;    &amp;lt;profiles&amp;gt;        &amp;lt;profile&amp;gt;">
 <meta property="og:locale" content="en">
 <meta property="og:updated_time" content="2020-01-01T14:48:52.472Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="maven分环境打包">
-<meta name="twitter:description" content="maven项目管理中，分环境（开发、测试、生产）打包是在所难免的事情，只需要在pom文件中做一些配置。 首先是配置profiles（此处设置develop为默认环境）：123456789101112131415161718&amp;lt;!-- project environment --&amp;gt;    &amp;lt;profiles&amp;gt;        &amp;lt;profile&amp;gt;">
+<meta name="twitter:description" content="maven项目管理中，分环境（开发、测试、生产）打包是在所难免的事情，只需要在pom文件中做一些配置。 首先是配置profiles（此处设置develop为默认环境）： 123456789101112131415161718&amp;lt;!-- project environment --&amp;gt;    &amp;lt;profiles&amp;gt;        &amp;lt;profile&amp;gt;">
   <link rel="canonical" href="https://lazycece.github.io/2019/02/09/maven分环境打包/">
 
 
@@ -301,10 +301,13 @@
 
       
         <p>maven项目管理中，分环境（开发、测试、生产）打包是在所难免的事情，只需要在pom文件中做一些配置。</p>
-<p>首先是配置profiles（此处设置develop为默认环境）：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- project environment --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">profiles</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">profile</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">activation</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">activeByDefault</span>&gt;</span>true<span class="tag">&lt;/<span class="name">activeByDefault</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">activation</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">id</span>&gt;</span>develop<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">package.environment</span>&gt;</span>develop<span class="tag">&lt;/<span class="name">package.environment</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">profile</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">profile</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">id</span>&gt;</span>product<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">package.environment</span>&gt;</span>product<span class="tag">&lt;/<span class="name">package.environment</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">profile</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">profiles</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
-<a id="more"></a>
-<p>然后在build中配置打包时配置文件的位置。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">finalName</span>&gt;</span>projectname<span class="tag">&lt;/<span class="name">finalName</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">sourceDirectory</span>&gt;</span>src/main/java<span class="tag">&lt;/<span class="name">sourceDirectory</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">resources</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">resource</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">directory</span>&gt;</span>src/main/resources<span class="tag">&lt;/<span class="name">directory</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;/<span class="name">resource</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">resource</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">directory</span>&gt;</span>src/main/environment/$&#123;package.environment&#125;<span class="tag">&lt;/<span class="name">directory</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;/<span class="name">resource</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">resources</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">build</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>首先是配置profiles（此处设置develop为默认环境）：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- project environment --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">profiles</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">profile</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">activation</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">activeByDefault</span>&gt;</span>true<span class="tag">&lt;/<span class="name">activeByDefault</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">activation</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">id</span>&gt;</span>develop<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">package.environment</span>&gt;</span>develop<span class="tag">&lt;/<span class="name">package.environment</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">profile</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">profile</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">id</span>&gt;</span>product<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">package.environment</span>&gt;</span>product<span class="tag">&lt;/<span class="name">package.environment</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">profile</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">profiles</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
+<a id="more"></a>
+
+<p>然后在build中配置打包时配置文件的位置。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">finalName</span>&gt;</span>projectname<span class="tag">&lt;/<span class="name">finalName</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">sourceDirectory</span>&gt;</span>src/main/java<span class="tag">&lt;/<span class="name">sourceDirectory</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">resources</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">resource</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">directory</span>&gt;</span>src/main/resources<span class="tag">&lt;/<span class="name">directory</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;/<span class="name">resource</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">resource</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">directory</span>&gt;</span>src/main/environment/$&#123;package.environment&#125;<span class="tag">&lt;/<span class="name">directory</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;/<span class="name">resource</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">resources</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">build</span>&gt;</span></span><br></pre></td></tr></table></figure>
     </div>
 
     
@@ -407,7 +410,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">97</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -420,7 +423,7 @@
             <a href="/categories/">
           
         
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">26</span>
         <span class="site-state-item-name">categories</span>
         </a>
       </div>
@@ -433,7 +436,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-count">62</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
@@ -511,6 +514,7 @@
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
 
+
         
 <div class="busuanzi-count">
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
@@ -580,6 +584,19 @@
 
 
 
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
 

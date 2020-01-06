@@ -55,18 +55,18 @@
   };
 </script>
 
-  <meta name="description" content="定时任务的是很常见的开发工作，在springboot中我们可以用注解很easy的实现。首先，需要加入@EnableScheduling注解开启定时任务功能，如下所示：123456789@SpringBootApplication@EnableSchedulingpublic class SpringbootAcTaskApplication &amp;#123;	public static void ma">
+  <meta name="description" content="定时任务的是很常见的开发工作，在springboot中我们可以用注解很easy的实现。首先，需要加入@EnableScheduling注解开启定时任务功能，如下所示： 123456789@SpringBootApplication@EnableSchedulingpublic class SpringbootAcTaskApplication &amp;#123;	public static void m">
 <meta name="keywords" content="定时任务,springboot">
 <meta property="og:type" content="article">
 <meta property="og:title" content="springboot中执行定时任务">
 <meta property="og:url" content="https://lazycece.github.io/2019/06/16/springboot中执行定时任务/index.html">
 <meta property="og:site_name" content="W  pit">
-<meta property="og:description" content="定时任务的是很常见的开发工作，在springboot中我们可以用注解很easy的实现。首先，需要加入@EnableScheduling注解开启定时任务功能，如下所示：123456789@SpringBootApplication@EnableSchedulingpublic class SpringbootAcTaskApplication &amp;#123;	public static void ma">
+<meta property="og:description" content="定时任务的是很常见的开发工作，在springboot中我们可以用注解很easy的实现。首先，需要加入@EnableScheduling注解开启定时任务功能，如下所示： 123456789@SpringBootApplication@EnableSchedulingpublic class SpringbootAcTaskApplication &amp;#123;	public static void m">
 <meta property="og:locale" content="en">
 <meta property="og:updated_time" content="2020-01-01T14:48:52.476Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="springboot中执行定时任务">
-<meta name="twitter:description" content="定时任务的是很常见的开发工作，在springboot中我们可以用注解很easy的实现。首先，需要加入@EnableScheduling注解开启定时任务功能，如下所示：123456789@SpringBootApplication@EnableSchedulingpublic class SpringbootAcTaskApplication &amp;#123;	public static void ma">
+<meta name="twitter:description" content="定时任务的是很常见的开发工作，在springboot中我们可以用注解很easy的实现。首先，需要加入@EnableScheduling注解开启定时任务功能，如下所示： 123456789@SpringBootApplication@EnableSchedulingpublic class SpringbootAcTaskApplication &amp;#123;	public static void m">
   <link rel="canonical" href="https://lazycece.github.io/2019/06/16/springboot中执行定时任务/">
 
 
@@ -300,16 +300,23 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>定时任务的是很常见的开发工作，在springboot中我们可以用注解很easy的实现。首先，需要加入<code>@EnableScheduling</code>注解开启定时任务功能，如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="meta">@EnableScheduling</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SpringbootAcTaskApplication</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		SpringApplication.run(SpringbootAcTaskApplication<span class="class">.<span class="keyword">class</span>, <span class="title">args</span>)</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+        <p>定时任务的是很常见的开发工作，在springboot中我们可以用注解很easy的实现。首先，需要加入<code>@EnableScheduling</code>注解开启定时任务功能，如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="meta">@EnableScheduling</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SpringbootAcTaskApplication</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		SpringApplication.run(SpringbootAcTaskApplication<span class="class">.<span class="keyword">class</span>, <span class="title">args</span>)</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <a id="more"></a>
-<p>然后使用<code>@Scheduled</code>注解来实现定时任务执行，如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ScheduleDemo</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Scheduled</span>(cron = <span class="string">"$&#123;task.cron&#125;"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">" schedule running"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>其中<code>${task.cron}</code>参数在配置文件中配置如下：<br><figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">task:</span></span><br><span class="line">  <span class="attr">cron:</span> <span class="number">0</span><span class="string">/1</span> <span class="string">*</span> <span class="string">*</span> <span class="string">*</span> <span class="string">*</span> <span class="string">*</span></span><br></pre></td></tr></table></figure></p>
+
+<p>然后使用<code>@Scheduled</code>注解来实现定时任务执行，如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ScheduleDemo</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Scheduled</span>(cron = <span class="string">"$&#123;task.cron&#125;"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">" schedule running"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中<code>${task.cron}</code>参数在配置文件中配置如下：</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">task:</span></span><br><span class="line">  <span class="attr">cron:</span> <span class="number">0</span><span class="string">/1</span> <span class="string">*</span> <span class="string">*</span> <span class="string">*</span> <span class="string">*</span> <span class="string">*</span></span><br></pre></td></tr></table></figure>
+
 <blockquote>
 <p>有关<code>cron</code>表达式的设定可参考<a href="https://lazycece.github.io/2019/06/16/Cron%E8%A1%A8%E8%BE%BE%E5%BC%8F%E8%AE%B2%E8%A7%A3/">《Cron表达式讲解》</a></p>
 </blockquote>
 <p>当然<code>@Scheduled</code>注解还有其他参数可用，如<code>fixedDelay</code>、<code>fixedRate</code>等。</p>
-<p>因为springboot有自动配置的功能，所以任务池也可以进行配置，如下所示：<br><figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">task:</span></span><br><span class="line">    <span class="attr">scheduling:</span></span><br><span class="line">      <span class="attr">pool:</span></span><br><span class="line">        <span class="attr">size:</span> <span class="number">1</span></span><br></pre></td></tr></table></figure></p>
-
+<p>因为springboot有自动配置的功能，所以任务池也可以进行配置，如下所示：</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">task:</span></span><br><span class="line">    <span class="attr">scheduling:</span></span><br><span class="line">      <span class="attr">pool:</span></span><br><span class="line">        <span class="attr">size:</span> <span class="number">1</span></span><br></pre></td></tr></table></figure>
     </div>
 
     
@@ -414,7 +421,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">97</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -427,7 +434,7 @@
             <a href="/categories/">
           
         
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">26</span>
         <span class="site-state-item-name">categories</span>
         </a>
       </div>
@@ -440,7 +447,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-count">62</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
@@ -518,6 +525,7 @@
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
 
+
         
 <div class="busuanzi-count">
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
@@ -587,6 +595,19 @@
 
 
 
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
 

@@ -305,20 +305,29 @@
         <p>计算文本相似度有多种方式，这里简单介绍一下其中的一种：词向量余弦。</p>
 <h2 id="词向量余弦"><a href="#词向量余弦" class="headerlink" title="词向量余弦"></a>词向量余弦</h2><p>词向量余弦算法，是将文本作为一个多维空间的向量，计算两个文本的相识度即计算判断两个向量在这个多维空间中的方向是否是一样的。而这个多维空间的构成是通过将文本进行分词，每个分词代表空间的一个维度。</p>
 <a id="more"></a>
-<p>下面通过例子来说明多维空间的构成即词向量问题。比如要计算如下两个短文本的相识度：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">文本一：天气预报说，明天会下雨，你明天早上去上班的时候记得带上伞。</span><br><span class="line">文本二：你明天早上去上班的时候记得带上伞，天气预报说的可能会下雨。</span><br></pre></td></tr></table></figure></p>
+
+<p>下面通过例子来说明多维空间的构成即词向量问题。比如要计算如下两个短文本的相识度：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">文本一：天气预报说，明天会下雨，你明天早上去上班的时候记得带上伞。</span><br><span class="line">文本二：你明天早上去上班的时候记得带上伞，天气预报说的可能会下雨。</span><br></pre></td></tr></table></figure>
+
 <p>首先我们利用某种分词方法将文本进行分词，如下：</p>
 <blockquote>
 <p>这里不考虑标点符号，当然也可以涵盖</p>
 </blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">文本一分词：[天气 预报 说 明天 会 下雨 你 明天 早上 去 上班 的 时候 记 得 带 上 伞]</span><br><span class="line">文本二分词：[你 明天 早上 去 上班 的 时候 记 得 带 上 伞 天气 预报 说 的 可能会 下 雨]</span><br></pre></td></tr></table></figure>
-<p>多维空间的词集合如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[天气 你 的 带 可能会 雨 上班 上 下 早上 时候 记 预报 说 明天 下雨 得 会 去 伞]</span><br></pre></td></tr></table></figure></p>
-<p>这是便可以得出连个文本在这个词集合构建的多维空间的词向量。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">文本一的词向量：[1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1 ]</span><br><span class="line">文本二的词向量：[1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1]</span><br></pre></td></tr></table></figure></p>
+
+<p>多维空间的词集合如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[天气 你 的 带 可能会 雨 上班 上 下 早上 时候 记 预报 说 明天 下雨 得 会 去 伞]</span><br></pre></td></tr></table></figure>
+
+<p>这是便可以得出连个文本在这个词集合构建的多维空间的词向量。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">文本一的词向量：[1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1 ]</span><br><span class="line">文本二的词向量：[1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1]</span><br></pre></td></tr></table></figure>
+
 <p>词向量得到了，这是便可以根据词向量余弦的公式计算出相似度值了，公式如下：</p>
 <p><img src="/images/article/cosine-expression.png" alt="cosine-expression"></p>
 <p>计算出的相似度值为： similarity = 0.8295150620062532</p>
 <p>由余弦定理可知，cosine值的范围为[0,1]，越趋近于1时两个向量的夹角越小，也代表两个文本越相似，</p>
 <h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><p>这里用java实现词向量余弦算法，用一个矩阵来保存词向量的各维度的值。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">double</span> <span class="title">cosine</span><span class="params">(List&lt;String&gt; originWord, List&lt;String&gt; targetWord)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    Map&lt;String, <span class="keyword">int</span>[]&gt; wordDict = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    originWord.forEach(word -&gt; &#123;</span><br><span class="line">        <span class="keyword">if</span> (!wordDict.containsKey(word)) &#123;</span><br><span class="line">            <span class="keyword">int</span>[] value = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>];</span><br><span class="line">            value[<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">            wordDict.put(word, value);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            wordDict.get(word)[<span class="number">0</span>] += <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    targetWord.forEach(word -&gt; &#123;</span><br><span class="line">        <span class="keyword">if</span> (!wordDict.containsKey(word)) &#123;</span><br><span class="line">            <span class="keyword">int</span>[] value = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>];</span><br><span class="line">            value[<span class="number">1</span>] = <span class="number">1</span>;</span><br><span class="line">            wordDict.put(word, value);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            wordDict.get(word)[<span class="number">1</span>] += <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="keyword">double</span> dictNum = <span class="number">0</span>, originNum = <span class="number">0</span>, desNum = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (Map.Entry&lt;String, <span class="keyword">int</span>[]&gt; entry : wordDict.entrySet()) &#123;</span><br><span class="line">        <span class="keyword">int</span> origin = entry.getValue()[<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">int</span> des = entry.getValue()[<span class="number">1</span>];</span><br><span class="line">        originNum += origin * origin;</span><br><span class="line">        desNum += des * des;</span><br><span class="line">        dictNum += origin * des;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dictNum / Math.sqrt(originNum * desNum);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <h2 id="案例代码"><a href="#案例代码" class="headerlink" title="案例代码"></a>案例代码</h2><p>案例代码地址：<a href="https://github.com/lazycece/cosine-similar" target="_blank" rel="noopener">https://github.com/lazycece/cosine-similar</a></p>
 
     </div>
@@ -429,7 +438,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">97</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -442,7 +451,7 @@
             <a href="/categories/">
           
         
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">26</span>
         <span class="site-state-item-name">categories</span>
         </a>
       </div>
@@ -455,7 +464,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-count">62</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
@@ -533,6 +542,7 @@
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
 
+
         
 <div class="busuanzi-count">
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
@@ -602,6 +612,19 @@
 
 
 
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
 

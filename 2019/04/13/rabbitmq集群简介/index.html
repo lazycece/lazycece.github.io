@@ -305,6 +305,7 @@
       
         <p>rabbitmq自带内建集群，其旨在rabbitmq的高可用，允许消费者和生产者在rabbitmq节点崩溃的情况下继续运行，以及通过添加更多节点的方式来线性扩展消息的吞吐量。但是即便是将消息、队列、交换器设置成可持久化，当集群中的一个节点挂掉后，该节点上队列中的消息也会消失，因为在默认情况下rabbitmq是不会将队列的内容复制到整个集群中（<em>除非进行特别的设置：镜像队列</em>）。</p>
 <a id="more"></a>
+
 <p>这里不会对rabbitmq集群做深入探讨，是对集群的关键信息做出总结，想了解详细的集群方面的指引可查看<a href="https://www.rabbitmq.com/clustering.html" target="_blank" rel="noopener">官方文档</a>。</p>
 <h4 id="集群中的元数据"><a href="#集群中的元数据" class="headerlink" title="集群中的元数据"></a>集群中的元数据</h4><p>集群模式下包括如下元数据：</p>
 <ul>
@@ -446,7 +447,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">97</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -459,7 +460,7 @@
             <a href="/categories/">
           
         
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">26</span>
         <span class="site-state-item-name">categories</span>
         </a>
       </div>
@@ -472,7 +473,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-count">62</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
@@ -550,6 +551,7 @@
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
 
+
         
 <div class="busuanzi-count">
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
@@ -619,6 +621,19 @@
 
 
 
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
 

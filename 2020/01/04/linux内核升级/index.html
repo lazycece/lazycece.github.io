@@ -55,18 +55,18 @@
   };
 </script>
 
-  <meta name="description" content="这里以 ubuntu18.04 LTS 系统为例  查看系统内核版本：1uname -a 查看已安装内核信息，确认需要安装的相应包：1sudo dpkg --get-selections |grep linux">
+  <meta name="description" content="这里以 ubuntu18.04 LTS 系统为例  查看系统内核版本： 1uname -a  查看已安装内核信息，确认需要安装的相应包： 1sudo dpkg --get-selections |grep linux">
 <meta name="keywords" content="linux">
 <meta property="og:type" content="article">
 <meta property="og:title" content="linux内核升级">
 <meta property="og:url" content="https://lazycece.github.io/2020/01/04/linux内核升级/index.html">
 <meta property="og:site_name" content="W  pit">
-<meta property="og:description" content="这里以 ubuntu18.04 LTS 系统为例  查看系统内核版本：1uname -a 查看已安装内核信息，确认需要安装的相应包：1sudo dpkg --get-selections |grep linux">
+<meta property="og:description" content="这里以 ubuntu18.04 LTS 系统为例  查看系统内核版本： 1uname -a  查看已安装内核信息，确认需要安装的相应包： 1sudo dpkg --get-selections |grep linux">
 <meta property="og:locale" content="en">
 <meta property="og:updated_time" content="2020-01-04T08:09:27.641Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="linux内核升级">
-<meta name="twitter:description" content="这里以 ubuntu18.04 LTS 系统为例  查看系统内核版本：1uname -a 查看已安装内核信息，确认需要安装的相应包：1sudo dpkg --get-selections |grep linux">
+<meta name="twitter:description" content="这里以 ubuntu18.04 LTS 系统为例  查看系统内核版本： 1uname -a  查看已安装内核信息，确认需要安装的相应包： 1sudo dpkg --get-selections |grep linux">
   <link rel="canonical" href="https://lazycece.github.io/2020/01/04/linux内核升级/">
 
 
@@ -295,19 +295,31 @@
         <blockquote>
 <p>这里以 ubuntu18.04 LTS 系统为例</p>
 </blockquote>
-<p>查看系统内核版本：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uname -a</span><br></pre></td></tr></table></figure></p>
-<p>查看已安装内核信息，确认需要安装的相应包：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo dpkg --get-selections |grep linux</span><br></pre></td></tr></table></figure></p>
+<p>查看系统内核版本：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uname -a</span><br></pre></td></tr></table></figure>
+
+<p>查看已安装内核信息，确认需要安装的相应包：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo dpkg --get-selections |grep linux</span><br></pre></td></tr></table></figure>
+
 <a id="more"></a>
+
 <h2 id="官网下载"><a href="#官网下载" class="headerlink" title="官网下载"></a>官网下载</h2><p>查看最新稳定版本：<a href="https://www.kernel.org/" target="_blank" rel="noopener">https://www.kernel.org/</a></p>
 <p><a href="https://kernel.ubuntu.com/~kernel-ppa/mainline/" target="_blank" rel="noopener">官网</a>选择版本下载， 这里以<code>amd64</code>的5.4.6_generic版本为例:</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">linux-headers-5.4.6-050406_5.4.6-050406.201912211140_all.deb</span><br><span class="line">linux-headers-5.4.6-050406-generic_5.4.6-050406.201912211140_amd64.deb</span><br><span class="line">linux-image-unsigned-5.4.6-050406-generic_5.4.6-050406.201912211140_amd64.deb</span><br><span class="line">linux-modules-5.4.6-050406-generic_5.4.6-050406.201912211140_amd64.deb</span><br></pre></td></tr></table></figure>
-<p>安装<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo dpkg -i *.deb</span><br></pre></td></tr></table></figure></p>
+
+<p>安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo dpkg -i *.deb</span><br></pre></td></tr></table></figure>
+
 <p>安装后重启系统生效</p>
 <h2 id="apt源下载（推荐）"><a href="#apt源下载（推荐）" class="headerlink" title="apt源下载（推荐）"></a>apt源下载（推荐）</h2><blockquote>
 <p><code>软件和更新</code>切换下在源（下载速度快），如aliyun</p>
 </blockquote>
-<p>查看包源中可用可用内核版本信息：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt list |grep linux-headers</span><br><span class="line">sudo apt list |grep linux-image</span><br><span class="line">sudo apt list |grep linux-modules</span><br></pre></td></tr></table></figure></p>
-<p>下载最新的可支持版本，如下（以5.3.0-24版本为例）：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install linux-headers-5.3.0-24</span><br><span class="line">sudo apt install linux-headers-5.3.0-24-generic</span><br><span class="line">sudo apt install linux-image-5.3.0-24-generic </span><br><span class="line">sudo apt install linux-modules-5.3.0-24-generic</span><br><span class="line">sudo apt install linux-modules-extra-5.3.0-24-generic</span><br></pre></td></tr></table></figure></p>
+<p>查看包源中可用可用内核版本信息：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt list |grep linux-headers</span><br><span class="line">sudo apt list |grep linux-image</span><br><span class="line">sudo apt list |grep linux-modules</span><br></pre></td></tr></table></figure>
+
+<p>下载最新的可支持版本，如下（以5.3.0-24版本为例）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install linux-headers-5.3.0-24</span><br><span class="line">sudo apt install linux-headers-5.3.0-24-generic</span><br><span class="line">sudo apt install linux-image-5.3.0-24-generic </span><br><span class="line">sudo apt install linux-modules-5.3.0-24-generic</span><br><span class="line">sudo apt install linux-modules-extra-5.3.0-24-generic</span><br></pre></td></tr></table></figure>
+
 
     </div>
 
@@ -342,6 +354,10 @@
             <span class="post-nav-divider"></span>
 
             <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2020/01/06/浅谈大文件上传方案/" rel="prev" title="浅谈大文件上传方案">
+                  浅谈大文件上传方案 <i class="fa fa-chevron-right"></i>
+                </a>
               
             </div>
           </div>
@@ -409,7 +425,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">97</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -422,7 +438,7 @@
             <a href="/categories/">
           
         
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">26</span>
         <span class="site-state-item-name">categories</span>
         </a>
       </div>
@@ -435,7 +451,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-count">62</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
@@ -513,6 +529,7 @@
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
 
+
         
 <div class="busuanzi-count">
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
@@ -582,6 +599,19 @@
 
 
 
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
 

@@ -303,9 +303,13 @@
         <h2 id="dozer是什么？"><a href="#dozer是什么？" class="headerlink" title="dozer是什么？"></a>dozer是什么？</h2><p>在开发过程中，常常会涉及到对象之间的转换，bean到dto到vo等等，dozer便是很好的一个对象转换的组件。它可以将一个对象递归拷贝到另外一个对象。既支持简单的对象映射，也支持复杂的对象映射。</p>
 <h2 id="对象映射"><a href="#对象映射" class="headerlink" title="对象映射"></a>对象映射</h2><p>dozer支持两种映射方式，调用api的简单映射方式和使用xml的映射方式。api调用的方式约束我们定义的两个bean中的成员变量名要一样，方便自动映射，至于类型可以不一样，比如类A的成员变量 ++Integer num++ 和类B的 ++String num++ 是可以直接映射的。xml的方式是通过编写xml文件来定义映射规则。</p>
 <a id="more"></a>
-<h2 id="dozer使用"><a href="#dozer使用" class="headerlink" title="dozer使用"></a>dozer使用</h2><p>使用dozer时，只需要加上dozer的依赖即可，下面以maven为例（版本号可以根据最新的做修改）：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;com.github.dozermapper&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;dozer-core&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;6.2.0&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure></p>
+
+<h2 id="dozer使用"><a href="#dozer使用" class="headerlink" title="dozer使用"></a>dozer使用</h2><p>使用dozer时，只需要加上dozer的依赖即可，下面以maven为例（版本号可以根据最新的做修改）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;com.github.dozermapper&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;dozer-core&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;6.2.0&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+
 <p>如下是以简单映射方式封装的uitl：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">public class BeanMapperUtils &#123;</span><br><span class="line"></span><br><span class="line">    private static Mapper MAPPER = DozerBeanMapperBuilder.buildDefault();</span><br><span class="line"></span><br><span class="line">    public static &lt;T&gt; T map(Object source, Class&lt;T&gt; destinationClass) &#123;</span><br><span class="line">        if (source == null) &#123;</span><br><span class="line">            return null;</span><br><span class="line">        &#125;</span><br><span class="line">        return MAPPER.map(source, destinationClass);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static void map(Object source, Object destination) &#123;</span><br><span class="line">        MAPPER.map(source, destination);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static &lt;T&gt; List&lt;T&gt; mapList(Collection sourceList, Class&lt;T&gt; destinationClass) &#123;</span><br><span class="line">        List&lt;T&gt; destinationList = new ArrayList&lt;&gt;();</span><br><span class="line">        for (Object sourceObject : sourceList) &#123;</span><br><span class="line">            destinationList.add(MAPPER.map(sourceObject, destinationClass));</span><br><span class="line">        &#125;</span><br><span class="line">        return destinationList;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>关于dozer的详细介绍，以及通过编写xml的使用方式，详见<a href="https://dozermapper.github.io/gitbook/" target="_blank" rel="noopener">官方文档</a>。</p>
 
     </div>
@@ -414,7 +418,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">97</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -427,7 +431,7 @@
             <a href="/categories/">
           
         
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">26</span>
         <span class="site-state-item-name">categories</span>
         </a>
       </div>
@@ -440,7 +444,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-count">62</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
@@ -518,6 +522,7 @@
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
 
+
         
 <div class="busuanzi-count">
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
@@ -587,6 +592,19 @@
 
 
 
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
 

@@ -302,6 +302,7 @@
       
         <p>jQuery动态创建form表单提交参数案例如下：</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">example</span>(<span class="params">page</span>)</span>&#123;</span><br><span class="line">	<span class="keyword">var</span> currentPage=page;</span><br><span class="line">	<span class="comment">//创建url</span></span><br><span class="line">	<span class="keyword">var</span> url=<span class="string">"/notice/s"</span>;</span><br><span class="line">	<span class="comment">//创建要提交的参数</span></span><br><span class="line">	<span class="keyword">var</span> type=$(<span class="string">"#typeSelect"</span>).val();</span><br><span class="line">	<span class="keyword">var</span> number=$(<span class="string">"#noticeNumber"</span>).val();</span><br><span class="line">	<span class="keyword">var</span> status=$(<span class="string">"#statusSelect"</span>).val();</span><br><span class="line">  <span class="comment">//创建form</span></span><br><span class="line">	<span class="keyword">var</span> form=$(<span class="string">"&lt;form&gt;&lt;/form&gt;"</span>);</span><br><span class="line">	<span class="comment">//设置属性</span></span><br><span class="line">	form.attr(<span class="string">"action"</span>,url);</span><br><span class="line">	form.attr(<span class="string">"method"</span>,<span class="string">"post"</span>);</span><br><span class="line">	<span class="comment">//创建input，即参数</span></span><br><span class="line">	<span class="keyword">var</span> inputType=$(<span class="string">"&lt;input type='text' name='pType'/&gt;"</span>);</span><br><span class="line">	inputType.attr(<span class="string">"value"</span>,type);</span><br><span class="line">	<span class="keyword">var</span> inputNumber=$(<span class="string">"&lt;input type='text' name='pNumber'/&gt;"</span>);</span><br><span class="line">	inputNumber.attr(<span class="string">"value"</span>,number);</span><br><span class="line">	<span class="keyword">var</span> inputStatus=$(<span class="string">"&lt;input type='text' name='pStatus'/&gt;"</span>);</span><br><span class="line">	inputStatus.attr(<span class="string">"value"</span>,status);</span><br><span class="line">	<span class="keyword">var</span> inputPage=$(<span class="string">"&lt;input type='text' name='pCurrentPage'/&gt;"</span>);</span><br><span class="line">	inputPage.attr(<span class="string">"value"</span>,currentPage);</span><br><span class="line">	<span class="comment">//注入参数到表单</span></span><br><span class="line">	form.append(inputType);</span><br><span class="line">	form.append(inputNumber);</span><br><span class="line">	form.append(inputStatus);</span><br><span class="line">	form.append(inputPage);</span><br><span class="line">	form.appendTo(<span class="string">"body"</span>);  </span><br><span class="line">	form.hide();</span><br><span class="line">	<span class="comment">//提交表单</span></span><br><span class="line">	form.submit();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <a id="more"></a>
     </div>
 
@@ -409,7 +410,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">97</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -422,7 +423,7 @@
             <a href="/categories/">
           
         
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">26</span>
         <span class="site-state-item-name">categories</span>
         </a>
       </div>
@@ -435,7 +436,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-count">62</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
@@ -513,6 +514,7 @@
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
 
+
         
 <div class="busuanzi-count">
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
@@ -582,6 +584,19 @@
 
 
 
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
 

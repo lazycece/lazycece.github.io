@@ -55,18 +55,18 @@
   };
 </script>
 
-  <meta name="description" content="ubuntu源安装安装/查看版本信息12apt install redis-serverredis-server -version redis服务启动/重启/关闭/查看状态1234service redis startservice redis rstartservice redis stopservice redis status">
-<meta name="keywords" content="ubuntu,redis">
+  <meta name="description" content="ubuntu源安装安装/查看版本信息12apt install redis-serverredis-server -version  redis服务启动/重启/关闭/查看状态1234service redis startservice redis rstartservice redis stopservice redis status">
+<meta name="keywords" content="redis,ubuntu">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ubuntu下redis安装、配置及使用">
 <meta property="og:url" content="https://lazycece.github.io/2018/12/02/ubuntu下redis安装、配置及使用/index.html">
 <meta property="og:site_name" content="W  pit">
-<meta property="og:description" content="ubuntu源安装安装/查看版本信息12apt install redis-serverredis-server -version redis服务启动/重启/关闭/查看状态1234service redis startservice redis rstartservice redis stopservice redis status">
+<meta property="og:description" content="ubuntu源安装安装/查看版本信息12apt install redis-serverredis-server -version  redis服务启动/重启/关闭/查看状态1234service redis startservice redis rstartservice redis stopservice redis status">
 <meta property="og:locale" content="en">
 <meta property="og:updated_time" content="2020-01-01T14:48:52.476Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ubuntu下redis安装、配置及使用">
-<meta name="twitter:description" content="ubuntu源安装安装/查看版本信息12apt install redis-serverredis-server -version redis服务启动/重启/关闭/查看状态1234service redis startservice redis rstartservice redis stopservice redis status">
+<meta name="twitter:description" content="ubuntu源安装安装/查看版本信息12apt install redis-serverredis-server -version  redis服务启动/重启/关闭/查看状态1234service redis startservice redis rstartservice redis stopservice redis status">
   <link rel="canonical" href="https://lazycece.github.io/2018/12/02/ubuntu下redis安装、配置及使用/">
 
 
@@ -301,22 +301,34 @@
 
       
         <h2 id="ubuntu源安装"><a href="#ubuntu源安装" class="headerlink" title="ubuntu源安装"></a>ubuntu源安装</h2><h3 id="安装-查看版本信息"><a href="#安装-查看版本信息" class="headerlink" title="安装/查看版本信息"></a>安装/查看版本信息</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">apt install redis-server</span><br><span class="line">redis-server -version</span><br></pre></td></tr></table></figure>
+
 <h3 id="redis服务启动-重启-关闭-查看状态"><a href="#redis服务启动-重启-关闭-查看状态" class="headerlink" title="redis服务启动/重启/关闭/查看状态"></a>redis服务启动/重启/关闭/查看状态</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">service redis start</span><br><span class="line">service redis rstart</span><br><span class="line">service redis stop</span><br><span class="line">service redis status</span><br></pre></td></tr></table></figure>
+
 <a id="more"></a>
+
 <h3 id="卸载服务"><a href="#卸载服务" class="headerlink" title="卸载服务"></a>卸载服务</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">apt --purge remove redis-server</span><br><span class="line">apt autoremove</span><br></pre></td></tr></table></figure>
+
 <h3 id="配置修改"><a href="#配置修改" class="headerlink" title="配置修改"></a>配置修改</h3><p>通过源安装redis后，其配置文件路径为/etc/redis/redis.conf,可以进行修改配置（如ip监听、默认端口、l日志文件路径、快照文件存储路径、aof持久化策略、主从及集群配置等等信息），然后重启服务即可。</p>
 <h2 id="源码安装"><a href="#源码安装" class="headerlink" title="源码安装"></a>源码安装</h2><h3 id="下载redis"><a href="#下载redis" class="headerlink" title="下载redis"></a>下载redis</h3><p>可以在redis<a href="https://redis.io/download" target="_blank" rel="noopener">官网</a>或<a href="https://github.com/antirez/redis/releases" target="_blank" rel="noopener">github</a>上找到想下载的发布版本，也可用如下方式进行下载某版本（这里以4.0稳定版本为例）：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget http://download.redis.io/releases/redis-4.0.11.tar.gz</span><br></pre></td></tr></table></figure>
-<p>然后进行解压编译即可：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 解压</span></span><br><span class="line">tar xzf redis-4.0.11.tar.gz</span><br><span class="line"><span class="comment"># 进入到解压目录</span></span><br><span class="line"><span class="built_in">cd</span> redis-4.0.11</span><br><span class="line"><span class="comment"># 编译</span></span><br><span class="line">make</span><br></pre></td></tr></table></figure></p>
+
+<p>然后进行解压编译即可：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 解压</span></span><br><span class="line">tar xzf redis-4.0.11.tar.gz</span><br><span class="line"><span class="comment"># 进入到解压目录</span></span><br><span class="line"><span class="built_in">cd</span> redis-4.0.11</span><br><span class="line"><span class="comment"># 编译</span></span><br><span class="line">make</span><br></pre></td></tr></table></figure>
+
 <h3 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h3><p>可以先修改配置文件（在当级目录下的redis.conf），然后运行（带上配置文件）src目录下的redis-server文件，即可开启服务：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> src</span><br><span class="line">./redis-server ../redis.conf</span><br></pre></td></tr></table></figure>
-<h3 id="install-redis服务"><a href="#install-redis服务" class="headerlink" title="install redis服务"></a>install redis服务</h3><p>下载可执行文件：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># install 可执行文件（默认下载到/usr/local/bin路径下）</span></span><br><span class="line">make install</span><br><span class="line"><span class="comment"># 自定义路径</span></span><br><span class="line">make PREFIX=/some/other/directory install</span><br></pre></td></tr></table></figure></p>
+
+<h3 id="install-redis服务"><a href="#install-redis服务" class="headerlink" title="install redis服务"></a>install redis服务</h3><p>下载可执行文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># install 可执行文件（默认下载到/usr/local/bin路径下）</span></span><br><span class="line">make install</span><br><span class="line"><span class="comment"># 自定义路径</span></span><br><span class="line">make PREFIX=/some/other/directory install</span><br></pre></td></tr></table></figure>
+
 <p>进入utils目录，执行install_server.sh脚本:(执行过程中根据提示配置log文件路径、redis.conf路径、redis data路径等等)</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> utils</span><br><span class="line">./install_server.sh</span><br></pre></td></tr></table></figure>
+
 <p>自此之后，变可用服务的方式来启动/停止/重启redis服务了。</p>
 <h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p>通过源码安装的方式，可以直接参考源码包中的README文件，里面对安装过程都做了详细的描述。</p>
 <h2 id="redis命令操作"><a href="#redis命令操作" class="headerlink" title="redis命令操作"></a>redis命令操作</h2><p>可以启动redis客户端来通过命令操作redis，执行redis-cli（在安装redis服务的时候已一并安装）便可进入。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 进入</span></span><br><span class="line">redis-cli</span><br><span class="line"><span class="comment"># 退出</span></span><br><span class="line">QUIT</span><br></pre></td></tr></table></figure>
+
 
     </div>
 
@@ -332,9 +344,9 @@
           
           <div class="post-tags">
             
-              <a href="/tags/ubuntu/" rel="tag"># ubuntu</a>
-            
               <a href="/tags/redis/" rel="tag"># redis</a>
+            
+              <a href="/tags/ubuntu/" rel="tag"># ubuntu</a>
             
           </div>
         
@@ -420,7 +432,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">97</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -433,7 +445,7 @@
             <a href="/categories/">
           
         
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">26</span>
         <span class="site-state-item-name">categories</span>
         </a>
       </div>
@@ -446,7 +458,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-count">62</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
@@ -524,6 +536,7 @@
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
 
+
         
 <div class="busuanzi-count">
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
@@ -593,6 +606,19 @@
 
 
 
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
 

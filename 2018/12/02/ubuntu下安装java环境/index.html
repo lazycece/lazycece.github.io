@@ -55,18 +55,18 @@
   };
 </script>
 
-  <meta name="description" content="JDK下载下载地址：http://www.oracle.com/technetwork/java/javase/downloads/index.html 选linux版的下载(如tar.gz类型的包，下面也将以该类型包为例)，先了解是否已有java环境。1java -version">
+  <meta name="description" content="JDK下载下载地址：http://www.oracle.com/technetwork/java/javase/downloads/index.html 选linux版的下载(如tar.gz类型的包，下面也将以该类型包为例)，先了解是否已有java环境。 1java -version">
 <meta name="keywords" content="java,ubuntu">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ubuntu下安装java环境">
 <meta property="og:url" content="https://lazycece.github.io/2018/12/02/ubuntu下安装java环境/index.html">
 <meta property="og:site_name" content="W  pit">
-<meta property="og:description" content="JDK下载下载地址：http://www.oracle.com/technetwork/java/javase/downloads/index.html 选linux版的下载(如tar.gz类型的包，下面也将以该类型包为例)，先了解是否已有java环境。1java -version">
+<meta property="og:description" content="JDK下载下载地址：http://www.oracle.com/technetwork/java/javase/downloads/index.html 选linux版的下载(如tar.gz类型的包，下面也将以该类型包为例)，先了解是否已有java环境。 1java -version">
 <meta property="og:locale" content="en">
 <meta property="og:updated_time" content="2020-01-01T14:48:52.476Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ubuntu下安装java环境">
-<meta name="twitter:description" content="JDK下载下载地址：http://www.oracle.com/technetwork/java/javase/downloads/index.html 选linux版的下载(如tar.gz类型的包，下面也将以该类型包为例)，先了解是否已有java环境。1java -version">
+<meta name="twitter:description" content="JDK下载下载地址：http://www.oracle.com/technetwork/java/javase/downloads/index.html 选linux版的下载(如tar.gz类型的包，下面也将以该类型包为例)，先了解是否已有java环境。 1java -version">
   <link rel="canonical" href="https://lazycece.github.io/2018/12/02/ubuntu下安装java环境/">
 
 
@@ -301,13 +301,23 @@
 
       
         <h4 id="JDK下载"><a href="#JDK下载" class="headerlink" title="JDK下载"></a>JDK下载</h4><p>下载地址：<a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html" target="_blank" rel="noopener">http://www.oracle.com/technetwork/java/javase/downloads/index.html</a></p>
-<p>选linux版的下载(如tar.gz类型的包，下面也将以该类型包为例)，先了解是否已有java环境。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -version</span><br></pre></td></tr></table></figure></p>
+<p>选linux版的下载(如tar.gz类型的包，下面也将以该类型包为例)，先了解是否已有java环境。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -version</span><br></pre></td></tr></table></figure>
+
 <a id="more"></a>
-<h4 id="解压"><a href="#解压" class="headerlink" title="解压"></a>解压</h4><p>将包放在自己希望放在的路径下进行解压，解压命令如下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf jdk-8u172-linux-x64.tar.gz</span><br></pre></td></tr></table></figure></p>
-<h4 id="设置环境变量"><a href="#设置环境变量" class="headerlink" title="设置环境变量"></a>设置环境变量</h4><p>修改/etc/profile文件进行环境变量设置，添加如下内容：（其中“/home/environment/jdk1.8.0_172”为jdk的路径）<br>注：不要直接在命令行输入该命令，因为直接输入命令只对当前shell有效<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> JAVA_HOME=/home/environment/jdk1.8.0_172/  </span><br><span class="line"><span class="built_in">export</span> JRE_HOME=/home/environment/jdk1.8.0_172/jre/  </span><br><span class="line"><span class="built_in">export</span> CLASSPATH=.:<span class="variable">$JAVA_HOME</span>/lib/dt.jar:<span class="variable">$JAVA_HOME</span>/lib/tools.jar:<span class="variable">$JAVA_HOME</span>/lib:<span class="variable">$JRE_HOME</span>/lib:<span class="variable">$CLASSPATH</span>  </span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$JAVA_HOME</span>/bin:<span class="variable">$PATH</span></span><br></pre></td></tr></table></figure></p>
-<p>随后执行如下命令使配置生效：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">source</span> /etc/profile</span><br></pre></td></tr></table></figure></p>
+
+<h4 id="解压"><a href="#解压" class="headerlink" title="解压"></a>解压</h4><p>将包放在自己希望放在的路径下进行解压，解压命令如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf jdk-8u172-linux-x64.tar.gz</span><br></pre></td></tr></table></figure>
+
+<h4 id="设置环境变量"><a href="#设置环境变量" class="headerlink" title="设置环境变量"></a>设置环境变量</h4><p>修改/etc/profile文件进行环境变量设置，添加如下内容：（其中“/home/environment/jdk1.8.0_172”为jdk的路径）<br>注：不要直接在命令行输入该命令，因为直接输入命令只对当前shell有效</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> JAVA_HOME=/home/environment/jdk1.8.0_172/  </span><br><span class="line"><span class="built_in">export</span> JRE_HOME=/home/environment/jdk1.8.0_172/jre/  </span><br><span class="line"><span class="built_in">export</span> CLASSPATH=.:<span class="variable">$JAVA_HOME</span>/lib/dt.jar:<span class="variable">$JAVA_HOME</span>/lib/tools.jar:<span class="variable">$JAVA_HOME</span>/lib:<span class="variable">$JRE_HOME</span>/lib:<span class="variable">$CLASSPATH</span>  </span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$JAVA_HOME</span>/bin:<span class="variable">$PATH</span></span><br></pre></td></tr></table></figure>
+
+<p>随后执行如下命令使配置生效：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">source</span> /etc/profile</span><br></pre></td></tr></table></figure>
+
 <p>在完成环境变量设置后，即可查看安装结果，命令如下：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -version</span><br></pre></td></tr></table></figure>
+
 <h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><p>linux配置java环境变量：<br><a href="https://www.cnblogs.com/samcn/archive/2011/03/16/1986248.html" target="_blank" rel="noopener">https://www.cnblogs.com/samcn/archive/2011/03/16/1986248.html</a></p>
 
     </div>
@@ -416,7 +426,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">97</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -429,7 +439,7 @@
             <a href="/categories/">
           
         
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">26</span>
         <span class="site-state-item-name">categories</span>
         </a>
       </div>
@@ -442,7 +452,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-count">62</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
@@ -520,6 +530,7 @@
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
 
+
         
 <div class="busuanzi-count">
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
@@ -589,6 +600,19 @@
 
 
 
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
 

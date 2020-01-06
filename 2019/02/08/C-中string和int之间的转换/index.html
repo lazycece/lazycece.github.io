@@ -55,18 +55,18 @@
   };
 </script>
 
-  <meta name="description" content="下述转换属于字符串流，需要附带头文件1#include&amp;lt;&amp;lt;sstream&amp;gt; int 转string12345int number=100;string str;stringstream buffer;buffer&amp;lt;&amp;lt;number;buffer&amp;gt;&amp;gt;str;&amp;lt;/span&amp;gt; string转int12345int number;string str=&quot;">
+  <meta name="description" content="下述转换属于字符串流，需要附带头文件 1#include&amp;lt;&amp;lt;sstream&amp;gt;  int 转string12345int number=100;string str;stringstream buffer;buffer&amp;lt;&amp;lt;number;buffer&amp;gt;&amp;gt;str;&amp;lt;/span&amp;gt;  string转int12345int number;string st">
 <meta name="keywords" content="C++">
 <meta property="og:type" content="article">
 <meta property="og:title" content="C++中string和int之间的转换">
 <meta property="og:url" content="https://lazycece.github.io/2019/02/08/C-中string和int之间的转换/index.html">
 <meta property="og:site_name" content="W  pit">
-<meta property="og:description" content="下述转换属于字符串流，需要附带头文件1#include&amp;lt;&amp;lt;sstream&amp;gt; int 转string12345int number=100;string str;stringstream buffer;buffer&amp;lt;&amp;lt;number;buffer&amp;gt;&amp;gt;str;&amp;lt;/span&amp;gt; string转int12345int number;string str=&quot;">
+<meta property="og:description" content="下述转换属于字符串流，需要附带头文件 1#include&amp;lt;&amp;lt;sstream&amp;gt;  int 转string12345int number=100;string str;stringstream buffer;buffer&amp;lt;&amp;lt;number;buffer&amp;gt;&amp;gt;str;&amp;lt;/span&amp;gt;  string转int12345int number;string st">
 <meta property="og:locale" content="en">
 <meta property="og:updated_time" content="2020-01-01T14:48:52.460Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="C++中string和int之间的转换">
-<meta name="twitter:description" content="下述转换属于字符串流，需要附带头文件1#include&amp;lt;&amp;lt;sstream&amp;gt; int 转string12345int number=100;string str;stringstream buffer;buffer&amp;lt;&amp;lt;number;buffer&amp;gt;&amp;gt;str;&amp;lt;/span&amp;gt; string转int12345int number;string str=&quot;">
+<meta name="twitter:description" content="下述转换属于字符串流，需要附带头文件 1#include&amp;lt;&amp;lt;sstream&amp;gt;  int 转string12345int number=100;string str;stringstream buffer;buffer&amp;lt;&amp;lt;number;buffer&amp;gt;&amp;gt;str;&amp;lt;/span&amp;gt;  string转int12345int number;string st">
   <link rel="canonical" href="https://lazycece.github.io/2019/02/08/C-中string和int之间的转换/">
 
 
@@ -300,9 +300,13 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>下述转换属于字符串流，需要附带头文件<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;&lt;sstream&gt;</span></span></span><br></pre></td></tr></table></figure></p>
+        <p>下述转换属于字符串流，需要附带头文件</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;&lt;sstream&gt;</span></span></span><br></pre></td></tr></table></figure>
+
 <h4 id="int-转string"><a href="#int-转string" class="headerlink" title="int 转string"></a>int 转string</h4><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> number=<span class="number">100</span>;</span><br><span class="line"><span class="built_in">string</span> str;</span><br><span class="line"><span class="built_in">stringstream</span> buffer;</span><br><span class="line">buffer&lt;&lt;number;</span><br><span class="line">buffer&gt;&gt;str;&lt;/span&gt;</span><br></pre></td></tr></table></figure>
+
 <h4 id="string转int"><a href="#string转int" class="headerlink" title="string转int"></a>string转int</h4><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> number;</span><br><span class="line"><span class="built_in">string</span> str=<span class="string">"666"</span>；</span><br><span class="line"><span class="built_in">stringstream</span> buffer;</span><br><span class="line">buffer&lt;&lt;str;</span><br><span class="line">buffer&gt;&gt;number;&lt;/span&gt;</span><br></pre></td></tr></table></figure>
+
 
     </div>
 
@@ -408,7 +412,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">97</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -421,7 +425,7 @@
             <a href="/categories/">
           
         
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">26</span>
         <span class="site-state-item-name">categories</span>
         </a>
       </div>
@@ -434,7 +438,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-count">62</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
@@ -512,6 +516,7 @@
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
 
+
         
 <div class="busuanzi-count">
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
@@ -581,6 +586,19 @@
 
 
 
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
 

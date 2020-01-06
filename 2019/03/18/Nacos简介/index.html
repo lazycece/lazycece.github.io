@@ -303,6 +303,7 @@
         <p>Nacos 第一次映入眼帘时，是在18年dubbo的一次线下沙龙中，那时还是v0.1.0版本；而如今，nacos已经经历过了可生产环境使用的 v0.8.0 Pre-GA版，到了v0.9.0版本。下面，就一起来简单了解一下nacos。</p>
 <h2 id="nacos是什么？"><a href="#nacos是什么？" class="headerlink" title="nacos是什么？"></a>nacos是什么？</h2><p>Nacos 是一个集服务动态发现、服务配置、服务元数据及流量管理于一体的管理中心，能帮助我们更好的发现、配置和管理微服务。</p>
 <a id="more"></a>
+
 <p>Nacos 支持几乎所有主流类型的“服务”的发现、配置和管理，如：</p>
 <ul>
 <li>Kubernetes Service</li>
@@ -325,7 +326,8 @@
 <li>服务及其元数据管理</li>
 </ul>
 <h2 id="Nacos中引入的概念"><a href="#Nacos中引入的概念" class="headerlink" title="Nacos中引入的概念"></a>Nacos中引入的概念</h2><ul>
-<li>地域 （Region）<br>物理的数据中心，资源创建成功后不能更换。</li>
+<li><p>地域 （Region）<br>物理的数据中心，资源创建成功后不能更换。</p>
+</li>
 <li><p>可用区（Available Zone）<br>同一地域内，电力和网络互相独立的物理区域。同一可用区内，实例的网络延迟较低。</p>
 </li>
 <li><p>接入点（Endpoint）<br>地域的某个服务的入口域名。</p>
@@ -480,7 +482,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">97</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -493,7 +495,7 @@
             <a href="/categories/">
           
         
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">26</span>
         <span class="site-state-item-name">categories</span>
         </a>
       </div>
@@ -506,7 +508,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-count">62</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
@@ -584,6 +586,7 @@
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
 
+
         
 <div class="busuanzi-count">
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
@@ -653,6 +656,19 @@
 
 
 
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
 

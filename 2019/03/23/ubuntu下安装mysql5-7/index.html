@@ -55,18 +55,18 @@
   };
 </script>
 
-  <meta name="description" content="下载安装12sudo apt install mysql-servermysql --version 运行安全脚本 mysql_secure_installation安全脚本主要做如下事项，根据自己情况设置即可：  为root用户设置密码 删除匿名账号 取消root用户远程登录 删除test库和对test库的访问权限 刷新授权表使修改生效">
+  <meta name="description" content="下载安装12sudo apt install mysql-servermysql --version  运行安全脚本 mysql_secure_installation安全脚本主要做如下事项，根据自己情况设置即可：  为root用户设置密码 删除匿名账号 取消root用户远程登录 删除test库和对test库的访问权限 刷新授权表使修改生效">
 <meta name="keywords" content="mysql,ubuntu">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ubuntu下安装mysql5.7">
 <meta property="og:url" content="https://lazycece.github.io/2019/03/23/ubuntu下安装mysql5-7/index.html">
 <meta property="og:site_name" content="W  pit">
-<meta property="og:description" content="下载安装12sudo apt install mysql-servermysql --version 运行安全脚本 mysql_secure_installation安全脚本主要做如下事项，根据自己情况设置即可：  为root用户设置密码 删除匿名账号 取消root用户远程登录 删除test库和对test库的访问权限 刷新授权表使修改生效">
+<meta property="og:description" content="下载安装12sudo apt install mysql-servermysql --version  运行安全脚本 mysql_secure_installation安全脚本主要做如下事项，根据自己情况设置即可：  为root用户设置密码 删除匿名账号 取消root用户远程登录 删除test库和对test库的访问权限 刷新授权表使修改生效">
 <meta property="og:locale" content="en">
 <meta property="og:updated_time" content="2020-01-01T14:48:52.476Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ubuntu下安装mysql5.7">
-<meta name="twitter:description" content="下载安装12sudo apt install mysql-servermysql --version 运行安全脚本 mysql_secure_installation安全脚本主要做如下事项，根据自己情况设置即可：  为root用户设置密码 删除匿名账号 取消root用户远程登录 删除test库和对test库的访问权限 刷新授权表使修改生效">
+<meta name="twitter:description" content="下载安装12sudo apt install mysql-servermysql --version  运行安全脚本 mysql_secure_installation安全脚本主要做如下事项，根据自己情况设置即可：  为root用户设置密码 删除匿名账号 取消root用户远程登录 删除test库和对test库的访问权限 刷新授权表使修改生效">
   <link rel="canonical" href="https://lazycece.github.io/2019/03/23/ubuntu下安装mysql5-7/">
 
 
@@ -301,6 +301,7 @@
 
       
         <h4 id="下载安装"><a href="#下载安装" class="headerlink" title="下载安装"></a>下载安装</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install mysql-server</span><br><span class="line">mysql --version</span><br></pre></td></tr></table></figure>
+
 <h4 id="运行安全脚本-mysql-secure-installation"><a href="#运行安全脚本-mysql-secure-installation" class="headerlink" title="运行安全脚本 mysql_secure_installation"></a>运行安全脚本 mysql_secure_installation</h4><p>安全脚本主要做如下事项，根据自己情况设置即可：</p>
 <ul>
 <li>为root用户设置密码</li>
@@ -310,14 +311,21 @@
 <li>刷新授权表使修改生效</li>
 </ul>
 <a id="more"></a>
+
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">lazycece@cc-ubuntu:~$ sudo mysql_secure_installation </span><br><span class="line"></span><br><span class="line">Securing the MySQL server deployment.</span><br><span class="line"></span><br><span class="line">Connecting to MySQL using a blank password.</span><br><span class="line"></span><br><span class="line">VALIDATE PASSWORD PLUGIN can be used to <span class="built_in">test</span> passwords</span><br><span class="line">and improve security. It checks the strength of password</span><br><span class="line">and allows the users to <span class="built_in">set</span> only those passwords <span class="built_in">which</span> are</span><br><span class="line">secure enough. Would you like to setup VALIDATE PASSWORD plugin?</span><br><span class="line"></span><br><span class="line">Press y|Y <span class="keyword">for</span> Yes, any other key <span class="keyword">for</span> No: n</span><br><span class="line">Please <span class="built_in">set</span> the password <span class="keyword">for</span> root here.</span><br><span class="line"></span><br><span class="line">New password: </span><br><span class="line"></span><br><span class="line">Re-enter new password: </span><br><span class="line">By default, a MySQL installation has an anonymous user,</span><br><span class="line">allowing anyone to <span class="built_in">log</span> into MySQL without having to have</span><br><span class="line">a user account created <span class="keyword">for</span> them. This is intended only <span class="keyword">for</span></span><br><span class="line">testing, and to make the installation go a bit smoother.</span><br><span class="line">You should remove them before moving into a production</span><br><span class="line">environment.</span><br><span class="line"></span><br><span class="line">Remove anonymous users? (Press y|Y <span class="keyword">for</span> Yes, any other key <span class="keyword">for</span> No) : n</span><br><span class="line"></span><br><span class="line"> ... skipping.</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Normally, root should only be allowed to connect from</span><br><span class="line"><span class="string">'localhost'</span>. This ensures that someone cannot guess at</span><br><span class="line">the root password from the network.</span><br><span class="line"></span><br><span class="line">Disallow root login remotely? (Press y|Y <span class="keyword">for</span> Yes, any other key <span class="keyword">for</span> No) : n</span><br><span class="line"></span><br><span class="line"> ... skipping.</span><br><span class="line">By default, MySQL comes with a database named <span class="string">'test'</span> that</span><br><span class="line">anyone can access. This is also intended only <span class="keyword">for</span> testing,</span><br><span class="line">and should be removed before moving into a production</span><br><span class="line">environment.</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Remove <span class="built_in">test</span> database and access to it? (Press y|Y <span class="keyword">for</span> Yes, any other key <span class="keyword">for</span> No) : n</span><br><span class="line"></span><br><span class="line"> ... skipping.</span><br><span class="line">Reloading the privilege tables will ensure that all changes</span><br><span class="line">made so far will take effect immediately.</span><br><span class="line"></span><br><span class="line">Reload privilege tables now? (Press y|Y <span class="keyword">for</span> Yes, any other key <span class="keyword">for</span> No) : </span><br><span class="line"></span><br><span class="line"> ... skipping.</span><br><span class="line">All <span class="keyword">done</span>!</span><br></pre></td></tr></table></figure>
+
 <h4 id="初始化数据库"><a href="#初始化数据库" class="headerlink" title="初始化数据库"></a>初始化数据库</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mysqld --initialize</span><br></pre></td></tr></table></figure>
+
 <h4 id="mysql服务操作"><a href="#mysql服务操作" class="headerlink" title="mysql服务操作"></a>mysql服务操作</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service mysql start|stop|restart|reload|force-reload|status</span><br></pre></td></tr></table></figure>
+
 <h4 id="安装workbench"><a href="#安装workbench" class="headerlink" title="安装workbench"></a>安装workbench</h4><blockquote>
 <p>若无法连接可参考 <a href="https://lazycece.github.io/2019/03/23/ubuntu%E4%B8%8Bmysql5-7%E5%AE%89%E8%A3%85%E5%90%8E%E6%97%A0%E6%B3%95%E8%BF%9C%E7%A8%8B%E7%99%BB%E5%BD%95%E9%97%AE%E9%A2%98/">ubuntu下mysql5.7安装后无法远程登录问题</a>  </p>
 </blockquote>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install mysql-workbench</span><br><span class="line">mysql-workbench --version</span><br></pre></td></tr></table></figure>
-<p>启动workbench连接mysql即可，亦可以如下命令行连接：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql -u root -p</span><br></pre></td></tr></table></figure></p>
+
+<p>启动workbench连接mysql即可，亦可以如下命令行连接：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql -u root -p</span><br></pre></td></tr></table></figure>
+
 <h4 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h4><p>官方文档：<a href="https://dev.mysql.com/doc/mysql-apt-repo-quick-guide/en/" target="_blank" rel="noopener">https://dev.mysql.com/doc/mysql-apt-repo-quick-guide/en/</a></p>
 
     </div>
@@ -426,7 +434,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">97</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -439,7 +447,7 @@
             <a href="/categories/">
           
         
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">26</span>
         <span class="site-state-item-name">categories</span>
         </a>
       </div>
@@ -452,7 +460,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-count">62</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
@@ -530,6 +538,7 @@
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
 
+
         
 <div class="busuanzi-count">
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
@@ -599,6 +608,19 @@
 
 
 
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
 

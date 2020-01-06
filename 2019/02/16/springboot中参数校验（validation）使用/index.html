@@ -305,8 +305,13 @@
 <p>关于如何自定义validation注解详见《springboot中参数校验（validation）注解自定义》</p>
 </blockquote>
 <a id="more"></a>
-<h2 id="validation引入"><a href="#validation引入" class="headerlink" title="validation引入"></a>validation引入</h2><p>在<a href="https://docs.spring.io/spring-boot/docs/2.1.0.RELEASE/reference/htmlsingle/#boot-features-validation" target="_blank" rel="noopener">springboot官方文档上对validation的使用介绍</a>中，说明了只要JSR-303实现（例如Hibernate验证器）在类路径上，Bean Validation 1.1支持的方法验证功能就会自动启用。为此springboot为我们提供了一个 validation starter：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-validation<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--&lt;version&gt;2.1.0.RELEASE&lt;/version&gt;--&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>里面校验的核心依赖就是JSR-303标准的实现（Hibernate验证器）：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.hibernate<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>hibernate-validator<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+
+<h2 id="validation引入"><a href="#validation引入" class="headerlink" title="validation引入"></a>validation引入</h2><p>在<a href="https://docs.spring.io/spring-boot/docs/2.1.0.RELEASE/reference/htmlsingle/#boot-features-validation" target="_blank" rel="noopener">springboot官方文档上对validation的使用介绍</a>中，说明了只要JSR-303实现（例如Hibernate验证器）在类路径上，Bean Validation 1.1支持的方法验证功能就会自动启用。为此springboot为我们提供了一个 validation starter：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-validation<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--&lt;version&gt;2.1.0.RELEASE&lt;/version&gt;--&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>里面校验的核心依赖就是JSR-303标准的实现（Hibernate验证器）：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.hibernate<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>hibernate-validator<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
 <p>如果我们在进行web开发的话，就不需要在引用“spring-boot-starter-validation”了，因为“spring-boot-starter-web”中已经引用了“hibernate-validator”。</p>
 <h2 id="可用约束（constraint）"><a href="#可用约束（constraint）" class="headerlink" title="可用约束（constraint）"></a>可用约束（constraint）</h2><p>hibernate-validator沿用了validation-api中的所有注解约束，同时也定义了一些自己的约束：</p>
 <table>
@@ -317,8 +322,7 @@
 <th>来源</th>
 </tr>
 </thead>
-<tbody>
-<tr>
+<tbody><tr>
 <td>@AssertFalse</td>
 <td>被约束的元素必须是false</td>
 <td>validation-api</td>
@@ -438,14 +442,23 @@
 <td>验证身份认证是否有效</td>
 <td>hibernate-validator</td>
 </tr>
-</tbody>
-</table>
-<h2 id="应用实战"><a href="#应用实战" class="headerlink" title="应用实战"></a>应用实战</h2><h3 id="约束应用"><a href="#约束应用" class="headerlink" title="约束应用"></a>约束应用</h3><h4 id="实体型"><a href="#实体型" class="headerlink" title="实体型"></a>实体型</h4><p>首先是使用约束性注解，在实体型参数上使用，代码样例如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> lazycece</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2019/02/15</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Setter</span></span><br><span class="line"><span class="meta">@Getter</span></span><br><span class="line"><span class="meta">@ToString</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserInfoReq</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@NotNull</span>(message = <span class="string">"id不能为null"</span>, groups = &#123;Update<span class="class">.<span class="keyword">class</span>&#125;)</span></span><br><span class="line"><span class="class">    <span class="title">private</span> <span class="title">Long</span> <span class="title">id</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@NotBlank</span>(message = <span class="string">"username不能为空"</span>)</span><br><span class="line">    <span class="keyword">private</span> String username;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@NotNull</span>(message = <span class="string">"age不能为null"</span>)</span><br><span class="line">    <span class="meta">@Min</span>(value = <span class="number">1</span>, message = <span class="string">"年龄不符合要求"</span>)</span><br><span class="line">    <span class="meta">@Max</span>(value = <span class="number">200</span>, message = <span class="string">"年龄不符合要求"</span>)</span><br><span class="line">    <span class="keyword">private</span> Integer age;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h4 id="接口参数型"><a href="#接口参数型" class="headerlink" title="接口参数型"></a>接口参数型</h4><p>在接口参数上使用，代码样例如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@GetMapping</span>(<span class="string">"/query"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">queryUserInfo</span><span class="params">(@NotBlank(message = <span class="string">"username不能为空"</span>)</span> String username) </span>&#123;</span><br><span class="line">    log.info(<span class="string">"查询用户成功: &#123;&#125;"</span>, username);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">"success"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+</tbody></table>
+<h2 id="应用实战"><a href="#应用实战" class="headerlink" title="应用实战"></a>应用实战</h2><h3 id="约束应用"><a href="#约束应用" class="headerlink" title="约束应用"></a>约束应用</h3><h4 id="实体型"><a href="#实体型" class="headerlink" title="实体型"></a>实体型</h4><p>首先是使用约束性注解，在实体型参数上使用，代码样例如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> lazycece</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2019/02/15</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Setter</span></span><br><span class="line"><span class="meta">@Getter</span></span><br><span class="line"><span class="meta">@ToString</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserInfoReq</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@NotNull</span>(message = <span class="string">"id不能为null"</span>, groups = &#123;Update<span class="class">.<span class="keyword">class</span>&#125;)</span></span><br><span class="line"><span class="class">    <span class="title">private</span> <span class="title">Long</span> <span class="title">id</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@NotBlank</span>(message = <span class="string">"username不能为空"</span>)</span><br><span class="line">    <span class="keyword">private</span> String username;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@NotNull</span>(message = <span class="string">"age不能为null"</span>)</span><br><span class="line">    <span class="meta">@Min</span>(value = <span class="number">1</span>, message = <span class="string">"年龄不符合要求"</span>)</span><br><span class="line">    <span class="meta">@Max</span>(value = <span class="number">200</span>, message = <span class="string">"年龄不符合要求"</span>)</span><br><span class="line">    <span class="keyword">private</span> Integer age;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="接口参数型"><a href="#接口参数型" class="headerlink" title="接口参数型"></a>接口参数型</h4><p>在接口参数上使用，代码样例如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@GetMapping</span>(<span class="string">"/query"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">queryUserInfo</span><span class="params">(@NotBlank(message = <span class="string">"username不能为空"</span>)</span> String username) </span>&#123;</span><br><span class="line">    log.info(<span class="string">"查询用户成功: &#123;&#125;"</span>, username);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">"success"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <h3 id="约束生效"><a href="#约束生效" class="headerlink" title="约束生效"></a>约束生效</h3><p>要使我们添加的约束注解生效，那么还得使用另一个注解：@Validated 或者 @Valid（只针对实体性有用）。</p>
-<h4 id="实体型-1"><a href="#实体型-1" class="headerlink" title="实体型"></a>实体型</h4><p>要使得实体性参数生效，需要在接口参数上添加 @Validated 或者 @Valid 注解。代码样例如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@PutMapping</span>(<span class="string">"/add"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">addUserInfo</span><span class="params">(@Validated UserInfoReq req)</span> </span>&#123;</span><br><span class="line">    log.info(<span class="string">"添加用户成功: &#123;&#125;"</span>, req.toString());</span><br><span class="line">    <span class="keyword">return</span> <span class="string">"success"</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">@PostMapping</span>(<span class="string">"/update"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">updateUserInfo</span><span class="params">(@Validated(value = &#123;Update.class&#125;)</span> UserInfoReq req) </span>&#123;</span><br><span class="line">    log.info(<span class="string">"更新用户成功: &#123;&#125;"</span>, req.toString());</span><br><span class="line">    <span class="keyword">return</span> <span class="string">"success"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>而最好使用@Validated，因为它可以使用验证组，使得某一个参数只针对属于该组的情况下验证生效，如实体参数中使用：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@NotNull</span>(message = <span class="string">"id不能为null"</span>, groups = &#123;Update<span class="class">.<span class="keyword">class</span>&#125;)</span></span><br><span class="line"><span class="class"><span class="title">private</span> <span class="title">Long</span> <span class="title">id</span></span>;</span><br></pre></td></tr></table></figure></p>
-<p>然后生效注解上加上组：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Validated</span>(value = &#123;Update<span class="class">.<span class="keyword">class</span>&#125;)</span></span><br></pre></td></tr></table></figure></p>
+<h4 id="实体型-1"><a href="#实体型-1" class="headerlink" title="实体型"></a>实体型</h4><p>要使得实体性参数生效，需要在接口参数上添加 @Validated 或者 @Valid 注解。代码样例如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@PutMapping</span>(<span class="string">"/add"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">addUserInfo</span><span class="params">(@Validated UserInfoReq req)</span> </span>&#123;</span><br><span class="line">    log.info(<span class="string">"添加用户成功: &#123;&#125;"</span>, req.toString());</span><br><span class="line">    <span class="keyword">return</span> <span class="string">"success"</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">@PostMapping</span>(<span class="string">"/update"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">updateUserInfo</span><span class="params">(@Validated(value = &#123;Update.class&#125;)</span> UserInfoReq req) </span>&#123;</span><br><span class="line">    log.info(<span class="string">"更新用户成功: &#123;&#125;"</span>, req.toString());</span><br><span class="line">    <span class="keyword">return</span> <span class="string">"success"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>而最好使用@Validated，因为它可以使用验证组，使得某一个参数只针对属于该组的情况下验证生效，如实体参数中使用：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@NotNull</span>(message = <span class="string">"id不能为null"</span>, groups = &#123;Update<span class="class">.<span class="keyword">class</span>&#125;)</span></span><br><span class="line"><span class="class"><span class="title">private</span> <span class="title">Long</span> <span class="title">id</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>然后生效注解上加上组：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Validated</span>(value = &#123;Update<span class="class">.<span class="keyword">class</span>&#125;)</span></span><br></pre></td></tr></table></figure>
+
 <p>这样即表示，参数id的验证只针对更新操作(update)生效，而在执行添加操作(add)的时候是不验证的。</p>
 <h4 id="接口参数型-1"><a href="#接口参数型-1" class="headerlink" title="接口参数型"></a>接口参数型</h4><p>要使得接口参数型的验证生效，是必须在类头加@Validated注解的。（此类型和实体性验证失败所产生的异常是不同的）</p>
 <h2 id="案例源码"><a href="#案例源码" class="headerlink" title="案例源码"></a>案例源码</h2><p>案例源码地址：<a href="https://github.com/lazycece/springboot-actual-combat/tree/master/springboot-ac-validation" target="_blank" rel="noopener">https://github.com/lazycece/springboot-actual-combat/tree/master/springboot-ac-validation</a></p>
@@ -556,7 +569,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">97</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -569,7 +582,7 @@
             <a href="/categories/">
           
         
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">26</span>
         <span class="site-state-item-name">categories</span>
         </a>
       </div>
@@ -582,7 +595,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-count">62</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
@@ -660,6 +673,7 @@
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
 
+
         
 <div class="busuanzi-count">
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
@@ -729,6 +743,19 @@
 
 
 
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
 

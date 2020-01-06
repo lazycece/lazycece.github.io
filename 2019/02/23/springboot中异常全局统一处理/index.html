@@ -302,12 +302,14 @@
       
         <p>日常后端业务开发中，在提供接口服务时会遇到各种异常处理，通常涉及到参数校验异常、自定义异常以及一些不可预知的异常等等。下面就来说一下在springboot中如何在接口层进行全局性的异常处理。</p>
 <a id="more"></a>
+
 <h2 id="全局异常处理"><a href="#全局异常处理" class="headerlink" title="全局异常处理"></a>全局异常处理</h2><p>全局异常处理借用springmvc中的@ControllerAdvice注解来实现，当然在springboot中我们就用@RestControllerAdvice（内部包含@ControllerAdvice和@ResponseBody的特性）。此注解用来监听controller层抛出的异常，以至于让我们能进一步对异常做处理。</p>
 <p>下面给出一个全局异常处理案例代码,涉及的有validaton注解校验的异常处理，自定义异常的处理，未知异常的处理。</p>
 <blockquote>
 <p>注意：异常的handler域是由小至大的，所以有先后顺序。</p>
 </blockquote>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.lazycece.sbac.exception.controller;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.lazycece.sbac.exception.exception.AbstractGlobalException;</span><br><span class="line"><span class="keyword">import</span> com.lazycece.sbac.exception.response.ResCode;</span><br><span class="line"><span class="keyword">import</span> com.lazycece.sbac.exception.response.ResMsg;</span><br><span class="line"><span class="keyword">import</span> com.lazycece.sbac.exception.response.ResponseData;</span><br><span class="line"><span class="keyword">import</span> lombok.extern.slf4j.Slf4j;</span><br><span class="line"><span class="keyword">import</span> org.springframework.validation.BindException;</span><br><span class="line"><span class="keyword">import</span> org.springframework.validation.BindingResult;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.MethodArgumentNotValidException;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.ExceptionHandler;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RestControllerAdvice;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.servlet.ServletException;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> lazycece</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2019/02/23</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@RestControllerAdvice</span></span><br><span class="line"><span class="meta">@Slf</span>4j</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GlobalExceptionHandler</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 参数校验错误异常</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> e MethodArgumentNotValidException|BindException</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> ResponseData</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@ExceptionHandler</span>(value = &#123;BindException<span class="class">.<span class="keyword">class</span>, <span class="title">MethodArgumentNotValidException</span>.<span class="title">class</span>&#125;)</span></span><br><span class="line"><span class="class">    <span class="title">public</span> <span class="title">ResponseData</span> <span class="title">bindExceptionHandler</span>(<span class="title">Exception</span> <span class="title">e</span>) </span>&#123;</span><br><span class="line">        BindingResult bindingResult;</span><br><span class="line">        <span class="keyword">if</span> (e <span class="keyword">instanceof</span> BindException) &#123;</span><br><span class="line">            bindingResult = ((BindException) e).getBindingResult();</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            bindingResult = ((MethodArgumentNotValidException) e).getBindingResult();</span><br><span class="line">        &#125;</span><br><span class="line">        StringBuilder stringBuilder = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">        bindingResult.getAllErrors().forEach(</span><br><span class="line">                objectError -&gt;</span><br><span class="line">                        stringBuilder.append(<span class="string">","</span>).append(objectError.getDefaultMessage())</span><br><span class="line">        );</span><br><span class="line">        String errorMessage = stringBuilder.toString();</span><br><span class="line">        errorMessage = errorMessage.substring(<span class="number">1</span>, errorMessage.length());</span><br><span class="line">        <span class="keyword">return</span> ResponseData.builder().code(ResCode.FAIL).message(errorMessage).build();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 捕获自定义的统一全局异常</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> e AbstractGlobalException</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> ResponseData</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@ExceptionHandler</span>(value = AbstractGlobalException<span class="class">.<span class="keyword">class</span>)</span></span><br><span class="line"><span class="class">    <span class="title">public</span> <span class="title">ResponseData</span> <span class="title">customExceptionHandler</span>(<span class="title">AbstractGlobalException</span> <span class="title">e</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> ResponseData.builder().code(e.getCode()).message(e.getMessage()).build();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 捕获未知异常</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> e Exception</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> ResponseData</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@ExceptionHandler</span>(value = Exception<span class="class">.<span class="keyword">class</span>)</span></span><br><span class="line"><span class="class">    <span class="title">public</span> <span class="title">ResponseData</span> <span class="title">commonExceptionHandler</span>(<span class="title">Exception</span> <span class="title">e</span>) <span class="title">throws</span> <span class="title">ServletException</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (e <span class="keyword">instanceof</span> ServletException) &#123;</span><br><span class="line">            <span class="keyword">throw</span> (ServletException) e;</span><br><span class="line">        &#125;</span><br><span class="line">        log.error(<span class="string">"server inner error: &#123;&#125;"</span>, e);</span><br><span class="line">        <span class="keyword">return</span> ResponseData.builder().code(ResCode.FAIL).message(ResMsg.SERVER_INNER_ERROR).build();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <h2 id="案例源码"><a href="#案例源码" class="headerlink" title="案例源码"></a>案例源码</h2><p>案例源码地址：<a href="https://github.com/lazycece/springboot-actual-combat/tree/master/springboot-ac-exception" target="_blank" rel="noopener">https://github.com/lazycece/springboot-actual-combat/tree/master/springboot-ac-exception</a> </p>
 
     </div>
@@ -416,7 +418,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">97</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -429,7 +431,7 @@
             <a href="/categories/">
           
         
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">26</span>
         <span class="site-state-item-name">categories</span>
         </a>
       </div>
@@ -442,7 +444,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-count">62</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
@@ -520,6 +522,7 @@
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
 
+
         
 <div class="busuanzi-count">
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
@@ -589,6 +592,19 @@
 
 
 
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
 

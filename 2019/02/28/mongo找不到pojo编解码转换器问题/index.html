@@ -55,18 +55,18 @@
   };
 </script>
 
-  <meta name="description" content="问题描述异常是在mongo执行存储函数向数据库写入数据的时候发生的，业务伪代码如下：12345Document dbObject = new Document();dbObject.append(&quot;$eval&quot;, &quot;function(x1,x2,x3)&amp;#123;return statisticsFunction(x1, x2, x3);&amp;#125;&quot;)        .append(&quot;args&quot;">
+  <meta name="description" content="问题描述异常是在mongo执行存储函数向数据库写入数据的时候发生的，业务伪代码如下： 12345Document dbObject = new Document();dbObject.append(&quot;$eval&quot;, &quot;function(x1,x2,x3)&amp;#123;return statisticsFunction(x1, x2, x3);&amp;#125;&quot;)        .append(&quot;args">
 <meta name="keywords" content="mongodb">
 <meta property="og:type" content="article">
 <meta property="og:title" content="mongo找不到pojo编解码转换器问题">
 <meta property="og:url" content="https://lazycece.github.io/2019/02/28/mongo找不到pojo编解码转换器问题/index.html">
 <meta property="og:site_name" content="W  pit">
-<meta property="og:description" content="问题描述异常是在mongo执行存储函数向数据库写入数据的时候发生的，业务伪代码如下：12345Document dbObject = new Document();dbObject.append(&quot;$eval&quot;, &quot;function(x1,x2,x3)&amp;#123;return statisticsFunction(x1, x2, x3);&amp;#125;&quot;)        .append(&quot;args&quot;">
+<meta property="og:description" content="问题描述异常是在mongo执行存储函数向数据库写入数据的时候发生的，业务伪代码如下： 12345Document dbObject = new Document();dbObject.append(&quot;$eval&quot;, &quot;function(x1,x2,x3)&amp;#123;return statisticsFunction(x1, x2, x3);&amp;#125;&quot;)        .append(&quot;args">
 <meta property="og:locale" content="en">
 <meta property="og:updated_time" content="2020-01-01T14:48:52.472Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="mongo找不到pojo编解码转换器问题">
-<meta name="twitter:description" content="问题描述异常是在mongo执行存储函数向数据库写入数据的时候发生的，业务伪代码如下：12345Document dbObject = new Document();dbObject.append(&quot;$eval&quot;, &quot;function(x1,x2,x3)&amp;#123;return statisticsFunction(x1, x2, x3);&amp;#125;&quot;)        .append(&quot;args&quot;">
+<meta name="twitter:description" content="问题描述异常是在mongo执行存储函数向数据库写入数据的时候发生的，业务伪代码如下： 12345Document dbObject = new Document();dbObject.append(&quot;$eval&quot;, &quot;function(x1,x2,x3)&amp;#123;return statisticsFunction(x1, x2, x3);&amp;#125;&quot;)        .append(&quot;args">
   <link rel="canonical" href="https://lazycece.github.io/2019/02/28/mongo找不到pojo编解码转换器问题/">
 
 
@@ -300,16 +300,24 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h4 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h4><p>异常是在mongo执行存储函数向数据库写入数据的时候发生的，业务伪代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Document dbObject = <span class="keyword">new</span> Document();</span><br><span class="line">dbObject.append(<span class="string">"$eval"</span>, <span class="string">"function(x1,x2,x3)&#123;return statisticsFunction(x1, x2, x3);&#125;"</span>)</span><br><span class="line">        .append(<span class="string">"args"</span>, Arrays.asList(arg1, arg2, arg3))</span><br><span class="line">        .append(<span class="string">"nolock"</span>, <span class="keyword">true</span>);</span><br><span class="line">Document result = mongoTemplate.executeCommand(dbObject);</span><br></pre></td></tr></table></figure></p>
+        <h4 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h4><p>异常是在mongo执行存储函数向数据库写入数据的时候发生的，业务伪代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Document dbObject = <span class="keyword">new</span> Document();</span><br><span class="line">dbObject.append(<span class="string">"$eval"</span>, <span class="string">"function(x1,x2,x3)&#123;return statisticsFunction(x1, x2, x3);&#125;"</span>)</span><br><span class="line">        .append(<span class="string">"args"</span>, Arrays.asList(arg1, arg2, arg3))</span><br><span class="line">        .append(<span class="string">"nolock"</span>, <span class="keyword">true</span>);</span><br><span class="line">Document result = mongoTemplate.executeCommand(dbObject);</span><br></pre></td></tr></table></figure>
+
 <p>在没有升级mongo版本之前，POJO通过继承ReflectionDBObject的方式事项映射转换，版本升级之后即不可使用，出现如下异常：</p>
 <a id="more"></a>
+
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">org.bson.codecs.configuration.CodecConfigurationException: Can<span class="string">'t find a codec for class ...</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">	at org.bson.codecs.configuration.CodecCache.getOrThrow(CodecCache.java:46)</span></span><br><span class="line"><span class="string">	at org.bson.codecs.configuration.ProvidersCodecRegistry.get(ProvidersCodecRegistry.java:63)</span></span><br><span class="line"><span class="string">	at org.bson.codecs.configuration.ChildCodecRegistry.get(ChildCodecRegistry.java:51)</span></span><br><span class="line"><span class="string">	at org.bson.codecs.DocumentCodec.writeValue(DocumentCodec.java:184)</span></span><br><span class="line"><span class="string">	at org.bson.codecs.DocumentCodec.writeIterable(DocumentCodec.java:207)</span></span><br><span class="line"><span class="string">	at org.bson.codecs.DocumentCodec.writeValue(DocumentCodec.java:180)</span></span><br><span class="line"><span class="string">	at org.bson.codecs.DocumentCodec.writeIterable(DocumentCodec.java:207)</span></span><br><span class="line"><span class="string">	at org.bson.codecs.DocumentCodec.writeValue(DocumentCodec.java:180)</span></span><br><span class="line"><span class="string">	at org.bson.codecs.DocumentCodec.writeMap(DocumentCodec.java:199)</span></span><br><span class="line"><span class="string">	at org.bson.codecs.DocumentCodec.encode(DocumentCodec.java:141)</span></span><br><span class="line"><span class="string">	at org.bson.codecs.DocumentCodec.encode(DocumentCodec.java:45)</span></span><br></pre></td></tr></table></figure>
-<h4 id="问题分析"><a href="#问题分析" class="headerlink" title="问题分析"></a>问题分析</h4><p>跟进源码查看异常的抛出点可知，是因为在执行过程中拿不到编解码转换器的原因导致。异常抛出点源码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">CodecCache</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ConcurrentMap&lt;Class&lt;?&gt;, Optional&lt;? extends Codec&lt;?&gt;&gt;&gt; codecCache =</span><br><span class="line">            <span class="keyword">new</span> ConcurrentHashMap&lt;Class&lt;?&gt;, Optional&lt;? extends Codec&lt;?&gt;&gt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">containsKey</span><span class="params">(<span class="keyword">final</span> Class&lt;?&gt; clazz)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> codecCache.containsKey(clazz);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">put</span><span class="params">(<span class="keyword">final</span> Class&lt;?&gt; clazz, <span class="keyword">final</span> Codec&lt;?&gt; codec)</span></span>&#123;</span><br><span class="line">        codecCache.put(clazz, Optional.of(codec));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line">    <span class="keyword">public</span> &lt;T&gt; <span class="function">Codec&lt;T&gt; <span class="title">getOrThrow</span><span class="params">(<span class="keyword">final</span> Class&lt;T&gt; clazz)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (codecCache.containsKey(clazz)) &#123;</span><br><span class="line">            Optional&lt;? extends Codec&lt;?&gt;&gt; optionalCodec = codecCache.get(clazz);</span><br><span class="line">            <span class="keyword">if</span> (!optionalCodec.isEmpty()) &#123;</span><br><span class="line">                <span class="keyword">return</span> (Codec&lt;T&gt;) optionalCodec.get();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> CodecConfigurationException(format(<span class="string">"Can't find a codec for %s."</span>, clazz));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+<h4 id="问题分析"><a href="#问题分析" class="headerlink" title="问题分析"></a>问题分析</h4><p>跟进源码查看异常的抛出点可知，是因为在执行过程中拿不到编解码转换器的原因导致。异常抛出点源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">CodecCache</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ConcurrentMap&lt;Class&lt;?&gt;, Optional&lt;? extends Codec&lt;?&gt;&gt;&gt; codecCache =</span><br><span class="line">            <span class="keyword">new</span> ConcurrentHashMap&lt;Class&lt;?&gt;, Optional&lt;? extends Codec&lt;?&gt;&gt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">containsKey</span><span class="params">(<span class="keyword">final</span> Class&lt;?&gt; clazz)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> codecCache.containsKey(clazz);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">put</span><span class="params">(<span class="keyword">final</span> Class&lt;?&gt; clazz, <span class="keyword">final</span> Codec&lt;?&gt; codec)</span></span>&#123;</span><br><span class="line">        codecCache.put(clazz, Optional.of(codec));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line">    <span class="keyword">public</span> &lt;T&gt; <span class="function">Codec&lt;T&gt; <span class="title">getOrThrow</span><span class="params">(<span class="keyword">final</span> Class&lt;T&gt; clazz)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (codecCache.containsKey(clazz)) &#123;</span><br><span class="line">            Optional&lt;? extends Codec&lt;?&gt;&gt; optionalCodec = codecCache.get(clazz);</span><br><span class="line">            <span class="keyword">if</span> (!optionalCodec.isEmpty()) &#123;</span><br><span class="line">                <span class="keyword">return</span> (Codec&lt;T&gt;) optionalCodec.get();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> CodecConfigurationException(format(<span class="string">"Can't find a codec for %s."</span>, clazz));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>ReflectionDBObject 是mongo一种老的POJO映射方式，所使用的POJO需要继承它，在新版本已不适用，目前bson提供了POJO的映射支持。</p>
 <h4 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h4><blockquote>
 <p>参考<a href="https://mongodb.github.io/mongo-java-driver/3.7/driver/getting-started/quick-start-pojo/" target="_blank" rel="noopener">mongo官方文档</a></p>
 </blockquote>
-<p>首先需要注册bson的POJO编解码器；<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CodecRegistry pojoCodecRegistry = fromRegistries(MongoClient.getDefaultCodecRegistry(),</span><br><span class="line">                fromProviders(PojoCodecProvider.builder().automatic(<span class="keyword">true</span>).build()))</span><br></pre></td></tr></table></figure></p>
+<p>首先需要注册bson的POJO编解码器；</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CodecRegistry pojoCodecRegistry = fromRegistries(MongoClient.getDefaultCodecRegistry(),</span><br><span class="line">                fromProviders(PojoCodecProvider.builder().automatic(<span class="keyword">true</span>).build()))</span><br></pre></td></tr></table></figure>
+
 <p>在使用的时候可以选择如下任意一种方式：</p>
 <ul>
 <li><p>在创建MongoClient实例的时候设置pojoCodecRegistry </p>
@@ -320,10 +328,11 @@
 </li>
 <li><p>在使用MongoCollection实例的时候设置pojoCodecRegistry </p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">collection = collection.withCodecRegistry(pojoCodecRegistry);</span><br></pre></td></tr></table></figure>
+
 </li>
 </ul>
-<p>这里选择是使用通过在使用MongoDatabase实例的时候设置pojoCodecRegistry的方式，业务伪代码改变如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Document dbObject = <span class="keyword">new</span> Document();</span><br><span class="line">dbObject.append(<span class="string">"$eval"</span>, <span class="string">"function(x1,x2,x3)&#123;return statisticsFunction(x1, x2, x3);&#125;"</span>)</span><br><span class="line">        .append(<span class="string">"args"</span>, Arrays.asList(arg1, arg2, arg3))</span><br><span class="line">        .append(<span class="string">"nolock"</span>, <span class="keyword">true</span>);</span><br><span class="line">Document result = mongoTemplate.getDb().withCodecRegistry(pojoCodecRegistry).runCommand(dbObject);</span><br></pre></td></tr></table></figure></p>
-
+<p>这里选择是使用通过在使用MongoDatabase实例的时候设置pojoCodecRegistry的方式，业务伪代码改变如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Document dbObject = <span class="keyword">new</span> Document();</span><br><span class="line">dbObject.append(<span class="string">"$eval"</span>, <span class="string">"function(x1,x2,x3)&#123;return statisticsFunction(x1, x2, x3);&#125;"</span>)</span><br><span class="line">        .append(<span class="string">"args"</span>, Arrays.asList(arg1, arg2, arg3))</span><br><span class="line">        .append(<span class="string">"nolock"</span>, <span class="keyword">true</span>);</span><br><span class="line">Document result = mongoTemplate.getDb().withCodecRegistry(pojoCodecRegistry).runCommand(dbObject);</span><br></pre></td></tr></table></figure>
     </div>
 
     
@@ -428,7 +437,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">97</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -441,7 +450,7 @@
             <a href="/categories/">
           
         
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">26</span>
         <span class="site-state-item-name">categories</span>
         </a>
       </div>
@@ -454,7 +463,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-count">62</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
@@ -532,6 +541,7 @@
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
 
+
         
 <div class="busuanzi-count">
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
@@ -601,6 +611,19 @@
 
 
 
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
 
