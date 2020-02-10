@@ -63,7 +63,7 @@
 <meta property="og:site_name" content="W  pit">
 <meta property="og:description" content="文件上传是一个很常见的功能，在业务场景中其又可分为单文件上传、分片上传、断点续传、秒传等。 一个小文件上传在一个http连接便可以很快的完成，其无需担心上传失败重新上传的问题。而一个大文件的上传则不能这样，试想一个场景：10G的文件直接上传，如果上传一方的网速很好，服务器的网络带宽很小，那么服务器的带宽全被这个上传连接占用，其他人上传文件则已没有带宽可用；如果在网速较差的环境下上传，快要上传完成的">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2020-01-06T15:44:10.362Z">
+<meta property="og:updated_time" content="2020-02-10T13:42:17.620Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="浅谈大文件上传方案">
 <meta name="twitter:description" content="文件上传是一个很常见的功能，在业务场景中其又可分为单文件上传、分片上传、断点续传、秒传等。 一个小文件上传在一个http连接便可以很快的完成，其无需担心上传失败重新上传的问题。而一个大文件的上传则不能这样，试想一个场景：10G的文件直接上传，如果上传一方的网速很好，服务器的网络带宽很小，那么服务器的带宽全被这个上传连接占用，其他人上传文件则已没有带宽可用；如果在网速较差的环境下上传，快要上传完成的">
@@ -252,11 +252,19 @@
                 
               
 
-              <time title="Created: 2020-01-06 21:02:56 / Modified: 23:44:10" itemprop="dateCreated datePublished" datetime="2020-01-06T21:02:56+08:00">2020-01-06</time>
+              <time title="Created: 2020-01-06 21:02:56" itemprop="dateCreated datePublished" datetime="2020-01-06T21:02:56+08:00">2020-01-06</time>
             </span>
           
             
 
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-02-10 21:42:17" itemprop="dateModified" datetime="2020-02-10T21:42:17+08:00">2020-02-10</time>
+              </span>
             
           
             <span class="post-meta-item">
@@ -316,12 +324,13 @@
     end
     client -->> user: success</pre>
 
-<p>可见其重要部分在于客户端上传分片到服务端进行处理的这个闭环，而这个闭环中可存在两种实现。</p>
+<p>可见其重要部分在于客户端上传分片到服务端进行处理的这个闭环，而这个闭环中可存在多种实现。</p>
 <h3 id="单分片上传"><a href="#单分片上传" class="headerlink" title="单分片上传"></a>单分片上传</h3><p>单分片上传的流程是一个分片上传形成闭环之后再上传下一个分片，关键点在于每上传一个分片是直接进行合并操作，使得<code>server</code>端只会保留该文件的一份数据，直到最后一个分片上传完成时，也就表示当前文件上传完成。单个闭环过程如下：</p>
 <pre class="mermaid">sequenceDiagram
     participant client
     participant server
     client ->> server: upload slice, index=n
+    server ->> server: verify slice
     server ->> server: merge slice
     server -->> client: response success</pre>
 
@@ -339,11 +348,24 @@
     server -->> client: ...
     server -->> client: index=n success
     client ->> server: upload complete
+    server ->> server: verify slice
     server ->> server: merge slice to file
     server -->> client: response success</pre>
 
 <p>并行上传的优点在于快速,如果文件很大的话就可以节约大量上传时间；但其缺点也很明显，其处理逻辑相对单个分片上传而言复杂，且涉及多分片的存储维护以及最终的多分片合并问题。</p>
-<h2 id="方案详解"><a href="#方案详解" class="headerlink" title="方案详解"></a>方案详解</h2><p>现在以“用户上传文件”为场景描述<strong>单分片上传</strong>方案的简单实现方式，并行上传的实现不作说明。</p>
+<h3 id="单分片上传最终合并"><a href="#单分片上传最终合并" class="headerlink" title="单分片上传最终合并"></a>单分片上传最终合并</h3><p>单分片上传最终合并是对前面两种方案的中和，其过程是一片一片的上传，最后一次上传时进行合并。此方案去除了单分片上传时的k次合并时间消耗代价，对分片的控制亦相对简单合理。方案闭环过程如下：</p>
+<pre class="mermaid">sequenceDiagram
+    participant client
+    participant server
+    client ->> server: upload slice, index=n
+    server ->> server: verify slice
+    server -->> client: response success
+    client ->> server: upload complete
+    server ->> server: merge slice to file
+    server -->> client: response success</pre>
+
+<h3 id="分片的合并时机选取"><a href="#分片的合并时机选取" class="headerlink" title="分片的合并时机选取"></a>分片的合并时机选取</h3><p>对于前面的方案，第一种是一边上传一边合并，后两种是先上传最后进行合并，可见合并操作属于整个上传流程之中。那么上传流程是否可以只上传分片不合并呢？当然是可以的，只是需要业务场景允许用这样的方式。针对<code>并行上传</code>和<code>单分片上传最终合并</code>两种方式，如果去掉最后的合并操作，当需要使用此文件的时候，再来做一次合并操作，那么此时整体的上传流程较少了一笔时间消耗。</p>
+<h2 id="方案实例"><a href="#方案实例" class="headerlink" title="方案实例"></a>方案实例</h2><p>现在以“用户上传文件”为场景描述<strong>单分片上传</strong>方案的简单实现方式，以此来加深印象方便更容易理解。<code>并行上传</code>和<code>单分片上传最终合并</code>的实现不作说明。</p>
 <h3 id="实体信息"><a href="#实体信息" class="headerlink" title="实体信息"></a>实体信息</h3><p>首先，定义出单分片上传方式相关的数据实体信息：</p>
 <blockquote>
 <p>这里对文件的加密值以MD5的方式呈现</p>
@@ -478,7 +500,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#上传方案"><span class="nav-number">1.</span> <span class="nav-text">上传方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#单分片上传"><span class="nav-number">1.1.</span> <span class="nav-text">单分片上传</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#并行上传"><span class="nav-number">1.2.</span> <span class="nav-text">并行上传</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#方案详解"><span class="nav-number">2.</span> <span class="nav-text">方案详解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#实体信息"><span class="nav-number">2.1.</span> <span class="nav-text">实体信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分片处理"><span class="nav-number">2.2.</span> <span class="nav-text">分片处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#续传"><span class="nav-number">2.3.</span> <span class="nav-text">续传</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#秒传"><span class="nav-number">2.4.</span> <span class="nav-text">秒传</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#上传方案"><span class="nav-number">1.</span> <span class="nav-text">上传方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#单分片上传"><span class="nav-number">1.1.</span> <span class="nav-text">单分片上传</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#并行上传"><span class="nav-number">1.2.</span> <span class="nav-text">并行上传</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#单分片上传最终合并"><span class="nav-number">1.3.</span> <span class="nav-text">单分片上传最终合并</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分片的合并时机选取"><span class="nav-number">1.4.</span> <span class="nav-text">分片的合并时机选取</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#方案实例"><span class="nav-number">2.</span> <span class="nav-text">方案实例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#实体信息"><span class="nav-number">2.1.</span> <span class="nav-text">实体信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分片处理"><span class="nav-number">2.2.</span> <span class="nav-text">分片处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#续传"><span class="nav-number">2.3.</span> <span class="nav-text">续传</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#秒传"><span class="nav-number">2.4.</span> <span class="nav-text">秒传</span></a></li></ol></li></ol></div>
         
       </div>
       <!--/noindex-->
