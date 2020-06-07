@@ -222,6 +222,101 @@
   
   
   <div class="post-block home">
+    <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2020/06/07/git常用命令总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="LazyCeCe">
+      <meta itemprop="description" content="Another way to laugh !">
+      <meta itemprop="image" content="/images/avatar-1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="W  pit">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+            
+            <a href="/2020/06/07/git常用命令总结/" class="post-title-link" itemprop="url">git常用命令总结</a>
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2020-06-07 17:05:57 / Modified: 17:08:09" itemprop="dateCreated datePublished" datetime="2020-06-07T17:05:57+08:00">2020-06-07</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/git/" itemprop="url" rel="index"><span itemprop="name">git</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="init-config"><a href="#init-config" class="headerlink" title="init config"></a>init config</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ git config  --global user.name lazycece</span><br><span class="line">$ git config  --global user.email lazycece@gmail.com</span><br><span class="line">$ git config  --global color.ui auto </span><br><span class="line">$ git config  --global color.status auto </span><br><span class="line">$ git config  --global color.branch auto </span><br><span class="line">$ git config  --global color.diff auto</span><br></pre></td></tr></table></figure>
+
+<h2 id="仓库相关"><a href="#仓库相关" class="headerlink" title="仓库相关"></a>仓库相关</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 添加远程仓库</span></span><br><span class="line">git remote add remote-branch-name remote-repository</span><br><span class="line"><span class="comment"># 查看本地仓库对应的远程仓库</span></span><br><span class="line">git remote -v</span><br><span class="line"><span class="comment"># 本地分支与远程分支对应关系</span></span><br><span class="line">git branch -vv</span><br></pre></td></tr></table></figure>
+
+<h2 id="分支操作"><a href="#分支操作" class="headerlink" title="分支操作"></a>分支操作</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 本地仓库当前分支push到远程</span></span><br><span class="line">git push --<span class="built_in">set</span>-upstream origin new-branch-name</span><br><span class="line"><span class="comment"># 创建本地分支</span></span><br><span class="line">git branch new-branch-name</span><br><span class="line"><span class="comment"># 删除目标分支</span></span><br><span class="line">git branch -D master</span><br><span class="line"><span class="comment"># 删除远程分支</span></span><br><span class="line">git push origin --delete branch-name</span><br><span class="line"><span class="comment"># 切换分支</span></span><br><span class="line">git checkout branch-name</span><br><span class="line"><span class="comment"># 创建本地分支并切换</span></span><br><span class="line">git checkout -b new-branch-name</span><br><span class="line"><span class="comment"># 创建本地分支同时关联远程分支</span></span><br><span class="line">git checkout -b new-branch-name origin/origin-branch-name</span><br><span class="line"><span class="comment"># 清除缓存中已删除的分支</span></span><br><span class="line">git fetch -p</span><br></pre></td></tr></table></figure>
+
+<h2 id="stash-操作"><a href="#stash-操作" class="headerlink" title="stash 操作"></a>stash 操作</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 暂存当前修改</span></span><br><span class="line">git stash</span><br><span class="line"><span class="comment"># 列出所有暂存</span></span><br><span class="line">git stash list</span><br><span class="line"><span class="comment"># 取出最新的暂存</span></span><br><span class="line">git statsh pop</span><br><span class="line"><span class="comment"># 取出指定暂存</span></span><br><span class="line">git stash pop stash@&#123;0&#125;</span><br><span class="line"><span class="comment"># 清楚所有暂存</span></span><br><span class="line">git stash clear</span><br><span class="line"><span class="comment"># 删除暂存</span></span><br><span class="line">git stash drop</span><br></pre></td></tr></table></figure>
+
+<h2 id="merge-操作"><a href="#merge-操作" class="headerlink" title="merge 操作"></a>merge 操作</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">git merge --no-ff branch-name</span><br><span class="line">git fetch origin master</span><br><span class="line">git diff <span class="built_in">local</span>-branch oringin/master</span><br><span class="line">git merge origin/master</span><br><span class="line">git rebase origin/master</span><br><span class="line">git reset merge</span><br></pre></td></tr></table></figure>
+
+<h2 id="tag-操作"><a href="#tag-操作" class="headerlink" title="tag 操作"></a>tag 操作</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 列出所有tag</span></span><br><span class="line">git tag</span><br><span class="line"><span class="comment"># 为当前分支最新commit上打tag</span></span><br><span class="line">git tag tag-name</span><br><span class="line"><span class="comment"># 创建带有说明的标签，用-a指定标签名，-m指定说明文字</span></span><br><span class="line">git tag -a tag-name -m <span class="string">"message"</span></span><br><span class="line"><span class="comment"># 列出commit-id</span></span><br><span class="line">git <span class="built_in">log</span> --pretty=oneline --abbrev-commit</span><br><span class="line"><span class="comment"># 在某一个commit上打tag</span></span><br><span class="line">git tag tag-name commit-id</span><br><span class="line"><span class="comment"># 查看tag信息</span></span><br><span class="line">git show tag-name</span><br><span class="line"><span class="comment"># 推送tag到远程</span></span><br><span class="line">git push origin tag-name</span><br><span class="line"><span class="comment"># 一次性推送所有tag到远程</span></span><br><span class="line">git push --tags</span><br><span class="line"><span class="comment"># 删除本地标签</span></span><br><span class="line">git tag -d tag-name</span><br><span class="line"><span class="comment"># 删除远程tag</span></span><br><span class="line">git push origin :refs/tags/tag-name</span><br></pre></td></tr></table></figure>
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-eof"></div>
+        
+      </footer>
+  </div>
+  
+  
+  
+  </article>
+
+    
+        <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block home">
     <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2020/04/16/Mongo BsonUndefined 转换问题（自定义Mongo类型转换器）/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1148,110 +1243,6 @@
   </article>
 
     
-        <article itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block home">
-    <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2019/10/14/rocketmq源码剖析之producer和consumer的启动关闭/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="LazyCeCe">
-      <meta itemprop="description" content="Another way to laugh !">
-      <meta itemprop="image" content="/images/avatar-1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="W  pit">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-            
-            <a href="/2019/10/14/rocketmq源码剖析之producer和consumer的启动关闭/" class="post-title-link" itemprop="url">rocketmq源码剖析之producer和consumer的启动关闭</a>
-          
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              
-                
-              
-
-              <time title="Created: 2019-10-14 21:57:23" itemprop="dateCreated datePublished" datetime="2019-10-14T21:57:23+08:00">2019-10-14</time>
-            </span>
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-01-01 22:48:52" itemprop="dateModified" datetime="2020-01-01T22:48:52+08:00">2020-01-01</time>
-              </span>
-            
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/rocketmq/" itemprop="url" rel="index"><span itemprop="name">rocketmq</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><code>producer</code>在<code>rocketmq</code>的作用是消息的生产者，<code>consumer</code>在<code>rocketmq</code>的作用是消息的消费者，它的生命周期是跟项目相关的，即是由使用者控制的。而为什么要将这两个角色的启动关闭流程放在一起剖析呢？是因为他们都是MQ的客户端，在启动和关闭的行为上，有着很多共同的地方。接下来便将会来仔细探究其启动和关闭的过程。</p>
-<h2 id="Producer"><a href="#Producer" class="headerlink" title="Producer"></a>Producer</h2><h3 id="DefaultMQProducer"><a href="#DefaultMQProducer" class="headerlink" title="DefaultMQProducer"></a>DefaultMQProducer</h3><h4 id="DefaultMQProducer的启动"><a href="#DefaultMQProducer的启动" class="headerlink" title="DefaultMQProducer的启动"></a>DefaultMQProducer的启动</h4><p><code>producer</code>在启动的时候会做一系列的内部初始化，其启动的源码如下所示：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span> <span class="keyword">throws</span> MQClientException </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.setProducerGroup(withNamespace(<span class="keyword">this</span>.producerGroup));</span><br><span class="line">    <span class="keyword">this</span>.defaultMQProducerImpl.start();</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">null</span> != traceDispatcher) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            traceDispatcher.start(<span class="keyword">this</span>.getNamesrvAddr(), <span class="keyword">this</span>.getAccessChannel());</span><br><span class="line">        &#125; <span class="keyword">catch</span> (MQClientException e) &#123;</span><br><span class="line">            log.warn(<span class="string">"trace dispatcher start failed "</span>, e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-          
-            <div class="post-button">
-              <a class="btn" href="/2019/10/14/rocketmq源码剖析之producer和consumer的启动关闭/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-          <div class="post-eof"></div>
-        
-      </footer>
-  </div>
-  
-  
-  
-  </article>
-
-    
   </div>
 
   
@@ -1305,7 +1296,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">99</span>
+          <span class="site-state-item-count">100</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1318,7 +1309,7 @@
             <a href="/categories/">
           
         
-        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-count">27</span>
         <span class="site-state-item-name">categories</span>
         </a>
       </div>
@@ -1331,7 +1322,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">62</span>
+        <span class="site-state-item-count">63</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>

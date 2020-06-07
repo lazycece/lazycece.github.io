@@ -222,6 +222,110 @@
   
   
   <div class="post-block home">
+    <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2019/02/09/Redis源码剖析之字典/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="LazyCeCe">
+      <meta itemprop="description" content="Another way to laugh !">
+      <meta itemprop="image" content="/images/avatar-1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="W  pit">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+            
+            <a href="/2019/02/09/Redis源码剖析之字典/" class="post-title-link" itemprop="url">Redis源码剖析之字典</a>
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2019-02-09 16:32:24" itemprop="dateCreated datePublished" datetime="2019-02-09T16:32:24+08:00">2019-02-09</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-01-01 22:48:52" itemprop="dateModified" datetime="2020-01-01T22:48:52+08:00">2020-01-01</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/redis/" itemprop="url" rel="index"><span itemprop="name">redis</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>以下涉及到的源码均为redis5.0-rc3版本的代码【<a href="https://github.com/antirez/redis/releases" target="_blank" rel="noopener">点击查看官方源码</a>】</p>
+<h2 id="Redis字典"><a href="#Redis字典" class="headerlink" title="Redis字典"></a>Redis字典</h2><p>字典是一个key-value形式的数据结构，使用过java中map结构的都应该了解，因为其也是字典；而了解哈希表的也应该不会陌生，因为字典的底层就是哈希表。而redis本身就是一个key-value形式的nosql数据库，足以见得字典结构在redis中的地位。</p>
+<h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2><p>字典的定义是在redis源码中的dict.h头文件中，其底层是由哈希表构成。</p>
+          <!--noindex-->
+          
+            <div class="post-button">
+              <a class="btn" href="/2019/02/09/Redis源码剖析之字典/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-eof"></div>
+        
+      </footer>
+  </div>
+  
+  
+  
+  </article>
+
+    
+        <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block home">
     <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2019/02/09/Redis源码剖析之SDS/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1119,101 +1223,6 @@
   </article>
 
     
-        <article itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block home">
-    <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2019/02/08/java分页实现/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="LazyCeCe">
-      <meta itemprop="description" content="Another way to laugh !">
-      <meta itemprop="image" content="/images/avatar-1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="W  pit">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-            
-            <a href="/2019/02/08/java分页实现/" class="post-title-link" itemprop="url">java分页实现</a>
-          
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              
-                
-              
-
-              <time title="Created: 2019-02-08 20:43:41" itemprop="dateCreated datePublished" datetime="2019-02-08T20:43:41+08:00">2019-02-08</time>
-            </span>
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-01-01 22:48:52" itemprop="dateModified" datetime="2020-01-01T22:48:52+08:00">2020-01-01</time>
-              </span>
-            
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <a id="more"></a>
-
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.tradingplatform.dto;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 分页原理页面传送数据的Dto</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &lt;T&gt;：传送的数据的类型</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PageJumpDataDto</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span> currentPage=<span class="number">1</span>;	<span class="comment">//当前页</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span> totalPage=<span class="number">0</span>;	<span class="comment">//总共页</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span> totalRecord=<span class="number">0</span>;	<span class="comment">//总记录数</span></span><br><span class="line">	<span class="keyword">private</span> List&lt;T&gt; listData;	<span class="comment">//数据</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span> pageSize=<span class="number">6</span>;		<span class="comment">//每页记录数</span></span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">PageJumpDataDto</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">PageJumpDataDto</span><span class="params">(<span class="keyword">int</span> currentPage, <span class="keyword">int</span> totalPage, <span class="keyword">int</span> totalRecord, List&lt;T&gt; listData, <span class="keyword">int</span> pageSize)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">super</span>();</span><br><span class="line">		<span class="keyword">this</span>.currentPage = currentPage;</span><br><span class="line">		<span class="keyword">this</span>.totalPage = totalPage;</span><br><span class="line">		<span class="keyword">this</span>.totalRecord = totalRecord;</span><br><span class="line">		<span class="keyword">this</span>.listData = listData;</span><br><span class="line">		<span class="keyword">this</span>.pageSize = pageSize;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">PageJumpDataDto</span><span class="params">(<span class="keyword">int</span> currentPage, List&lt;T&gt; listData)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(listData==<span class="keyword">null</span>) <span class="keyword">return</span>;</span><br><span class="line">		<span class="keyword">this</span>.totalRecord = listData.size();</span><br><span class="line">		<span class="comment">//得到总页数</span></span><br><span class="line">		<span class="keyword">this</span>.totalPage = <span class="keyword">this</span>.totalRecord/<span class="keyword">this</span>.pageSize;</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">this</span>.totalRecord%<span class="keyword">this</span>.pageSize!=<span class="number">0</span>) <span class="keyword">this</span>.totalPage+=<span class="number">1</span>;</span><br><span class="line">		<span class="comment">//得到当前页数</span></span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">this</span>.totalPage&lt;currentPage)&#123;</span><br><span class="line">			<span class="keyword">this</span>.currentPage=<span class="keyword">this</span>.totalPage;</span><br><span class="line">		&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">			<span class="keyword">this</span>.currentPage=currentPage;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">this</span>.currentPage&lt;<span class="number">1</span>) <span class="keyword">this</span>.currentPage=<span class="number">1</span>;</span><br><span class="line">		<span class="comment">//得到截取的展示数据</span></span><br><span class="line">		<span class="keyword">int</span> begin=<span class="keyword">this</span>.pageSize*(<span class="keyword">this</span>.currentPage-<span class="number">1</span>);</span><br><span class="line">		<span class="keyword">int</span> end= (<span class="keyword">this</span>.pageSize*<span class="keyword">this</span>.currentPage)&gt;<span class="keyword">this</span>.totalRecord?<span class="keyword">this</span>.totalRecord:(<span class="keyword">this</span>.pageSize*<span class="keyword">this</span>.currentPage);</span><br><span class="line">		<span class="keyword">this</span>.listData=listData.subList(begin, end);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">PageJumpDataDto</span><span class="params">(<span class="keyword">int</span> currentPage, List&lt;T&gt; listData,<span class="keyword">int</span> pageSize)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(listData==<span class="keyword">null</span>) <span class="keyword">return</span>;</span><br><span class="line">		<span class="keyword">this</span>.pageSize=pageSize;</span><br><span class="line">		<span class="keyword">this</span>.totalRecord = listData.size();</span><br><span class="line">		<span class="comment">//得到总页数</span></span><br><span class="line">		<span class="keyword">this</span>.totalPage = <span class="keyword">this</span>.totalRecord/<span class="keyword">this</span>.pageSize;</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">this</span>.totalRecord%<span class="keyword">this</span>.pageSize!=<span class="number">0</span>) <span class="keyword">this</span>.totalPage+=<span class="number">1</span>;</span><br><span class="line">		<span class="comment">//得到当前页数</span></span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">this</span>.totalPage&lt;currentPage)&#123;</span><br><span class="line">			<span class="keyword">this</span>.currentPage=<span class="keyword">this</span>.totalPage;</span><br><span class="line">		&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">			<span class="keyword">this</span>.currentPage=currentPage;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">this</span>.currentPage&lt;<span class="number">1</span>) <span class="keyword">this</span>.currentPage=<span class="number">1</span>;</span><br><span class="line">		<span class="comment">//得到截取的展示数据</span></span><br><span class="line">		<span class="keyword">int</span> begin=<span class="keyword">this</span>.pageSize*(<span class="keyword">this</span>.currentPage-<span class="number">1</span>);</span><br><span class="line">		<span class="keyword">int</span> end= (<span class="keyword">this</span>.pageSize*<span class="keyword">this</span>.currentPage)&gt;<span class="keyword">this</span>.totalRecord?<span class="keyword">this</span>.totalRecord:(<span class="keyword">this</span>.pageSize*<span class="keyword">this</span>.currentPage);</span><br><span class="line">		<span class="keyword">this</span>.listData=listData.subList(begin, end);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getCurrentPage</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> currentPage;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setCurrentPage</span><span class="params">(<span class="keyword">int</span> currentPage)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.currentPage = currentPage;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getTotalPage</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> totalPage;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setTotalPage</span><span class="params">(<span class="keyword">int</span> totalPage)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.totalPage = totalPage;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getTotalRecord</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> totalRecord;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setTotalRecord</span><span class="params">(<span class="keyword">int</span> totalRecord)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.totalRecord = totalRecord;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> List&lt;T&gt; <span class="title">getListData</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> listData;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setListData</span><span class="params">(List&lt;T&gt; listData)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.listData = listData;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getPageSize</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> pageSize;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setPageSize</span><span class="params">(<span class="keyword">int</span> pageSize)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.pageSize = pageSize;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-          <div class="post-eof"></div>
-        
-      </footer>
-  </div>
-  
-  
-  
-  </article>
-
-    
   </div>
 
   
@@ -1267,7 +1276,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">99</span>
+          <span class="site-state-item-count">100</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1280,7 +1289,7 @@
             <a href="/categories/">
           
         
-        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-count">27</span>
         <span class="site-state-item-name">categories</span>
         </a>
       </div>
@@ -1293,7 +1302,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">62</span>
+        <span class="site-state-item-count">63</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
