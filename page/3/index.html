@@ -222,6 +222,109 @@
   
   
   <div class="post-block home">
+    <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2019/08/03/elasticsearch中bucket-script聚合父级必须是多桶聚合/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="LazyCeCe">
+      <meta itemprop="description" content="Another way to laugh !">
+      <meta itemprop="image" content="/images/avatar-1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="W  pit">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+            
+            <a href="/2019/08/03/elasticsearch中bucket-script聚合父级必须是多桶聚合/" class="post-title-link" itemprop="url">elasticsearch中bucket_script聚合父级必须是多桶聚合</a>
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2019-08-03 10:40:38" itemprop="dateCreated datePublished" datetime="2019-08-03T10:40:38+08:00">2019-08-03</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-01-01 22:48:52" itemprop="dateModified" datetime="2020-01-01T22:48:52+08:00">2020-01-01</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/elasticsearch/" itemprop="url" rel="index"><span itemprop="name">elasticsearch</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>业务需求中，在计算人均通话数时，使用聚合的时候使用到了内联以及反内联聚合，当<code>bucket_script</code>聚合作为反内联<code>reverse_nested</code>的子聚和的时候，会报如下错误：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">org.elasticsearch.ElasticsearchException: Elasticsearch exception [<span class="built_in">type</span>=class_cast_exception, reason=org.elasticsearch.search.aggregations.bucket.nested.InternalReverseNested cannot be cast to org.elasticsearch.search.aggregations.InternalMultiBucketAggregation]</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+          
+            <div class="post-button">
+              <a class="btn" href="/2019/08/03/elasticsearch中bucket-script聚合父级必须是多桶聚合/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-eof"></div>
+        
+      </footer>
+  </div>
+  
+  
+  
+  </article>
+
+    
+        <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block home">
     <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2019/08/03/elasticsearch中max-result-window有上限限制/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1140,108 +1243,6 @@
   </article>
 
     
-        <article itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block home">
-    <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2019/05/21/springboot中实现发送邮件功能/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="LazyCeCe">
-      <meta itemprop="description" content="Another way to laugh !">
-      <meta itemprop="image" content="/images/avatar-1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="W  pit">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-            
-            <a href="/2019/05/21/springboot中实现发送邮件功能/" class="post-title-link" itemprop="url">springboot中实现发送邮件功能</a>
-          
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              
-                
-              
-
-              <time title="Created: 2019-05-21 23:45:41" itemprop="dateCreated datePublished" datetime="2019-05-21T23:45:41+08:00">2019-05-21</time>
-            </span>
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-01-01 22:48:52" itemprop="dateModified" datetime="2020-01-01T22:48:52+08:00">2020-01-01</time>
-              </span>
-            
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/springboot/" itemprop="url" rel="index"><span itemprop="name">springboot</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>发送邮件的功能有时在业务中还是需要使用到的，比如订单方面的业务，用户下单后需要给用户发送一个订单相关的邮件；又或者是某些系统在业务层来集成预警功能，出现问题时及时给开发和运维发送预警邮件。那么，接下来将讲一下在springboot项目中邮件发送功能的集成与其简单的使用。</p>
-          <!--noindex-->
-          
-            <div class="post-button">
-              <a class="btn" href="/2019/05/21/springboot中实现发送邮件功能/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-          <div class="post-eof"></div>
-        
-      </footer>
-  </div>
-  
-  
-  
-  </article>
-
-    
   </div>
 
   
@@ -1295,7 +1296,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">103</span>
+          <span class="site-state-item-count">104</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1321,7 +1322,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">65</span>
+        <span class="site-state-item-count">67</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>

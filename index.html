@@ -222,6 +222,131 @@
   
   
   <div class="post-block home">
+    <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2020/12/20/PlantUml-程序员的画图利器/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="LazyCeCe">
+      <meta itemprop="description" content="Another way to laugh !">
+      <meta itemprop="image" content="/images/avatar-1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="W  pit">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+            
+            <a href="/2020/12/20/PlantUml-程序员的画图利器/" class="post-title-link" itemprop="url">PlantUml-程序员的画图利器</a>
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2020-12-20 23:43:07 / Modified: 23:44:58" itemprop="dateCreated datePublished" datetime="2020-12-20T23:43:07+08:00">2020-12-20</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/其他/" itemprop="url" rel="index"><span itemprop="name">其他</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="PlantUml-程序员的画图利器"><a href="#PlantUml-程序员的画图利器" class="headerlink" title="PlantUml-程序员的画图利器"></a><code>PlantUml</code>-程序员的画图利器</h1><h2 id="1-PlantUml简介"><a href="#1-PlantUml简介" class="headerlink" title="1. PlantUml简介"></a>1. <code>PlantUml</code>简介</h2><p><code>PlantUML</code>是一个组可以用来在<code>markdown</code>文件中快速生成<code>UML</code>工程图的组件，比如：</p>
+<ul>
+<li><a href="https://plantuml.com/sequence-diagram" target="_blank" rel="noopener">时序图</a></li>
+<li><a href="https://plantuml.com/use-case-diagram" target="_blank" rel="noopener">用例图</a></li>
+<li><a href="https://plantuml.com/class-diagram" target="_blank" rel="noopener">类图</a></li>
+<li><a href="https://plantuml.com/activity-diagram-beta" target="_blank" rel="noopener">活动图(这是传统语法)</a></li>
+<li><a href="https://plantuml.com/component-diagram" target="_blank" rel="noopener">组件图</a></li>
+<li><a href="https://plantuml.com/state-diagram" target="_blank" rel="noopener">状态图</a></li>
+<li><a href="https://plantuml.com/object-diagram" target="_blank" rel="noopener">对象图</a></li>
+<li><a href="https://plantuml.com/deployment-diagram" target="_blank" rel="noopener">部署图</a></li>
+<li><a href="https://plantuml.com/timing-diagram" target="_blank" rel="noopener">计时图</a> 　　</li>
+</ul>
+<p>除此之外，还支持下面这些非<code>UML</code>图的展示：</p>
+<ul>
+<li><a href="https://plantuml.com/json" target="_blank" rel="noopener">JSON数据</a></li>
+<li><a href="https://plantuml.com/salt" target="_blank" rel="noopener">线框图形界面</a></li>
+<li><a href="https://plantuml.com/archimate-diagram" target="_blank" rel="noopener">Archimate图</a></li>
+<li><a href="https://plantuml.com/activity-diagram-beta#sdl" target="_blank" rel="noopener">规范和描述语言(SDL)</a></li>
+<li><a href="https://plantuml.com/ditaa" target="_blank" rel="noopener">Ditaa图</a> </li>
+<li><a href="https://plantuml.com/gantt-diagram" target="_blank" rel="noopener">甘特图</a></li>
+<li><a href="https://plantuml.com/mindmap-diagram" target="_blank" rel="noopener">构思图</a></li>
+<li><a href="https://plantuml.com/wbs-diagram" target="_blank" rel="noopener">工作分解结构图</a></li>
+<li><a href="https://plantuml.com/ascii-math" target="_blank" rel="noopener">数学与AsciiMath或JLaTeXMath符号</a></li>
+<li><a href="https://plantuml.com/ie-diagram" target="_blank" rel="noopener">实体关系图</a></li>
+</ul>
+<h2 id="2-案例图"><a href="#2-案例图" class="headerlink" title="2. 案例图"></a>2. 案例图</h2><p>下面给出几个常用的图形为例，至于语法和剩余图形画法可详见<a href="https://plantuml.com/" target="_blank" rel="noopener">官方文档</a>说明。</p>
+<h3 id="2-1-时序图"><a href="#2-1-时序图" class="headerlink" title="2.1 时序图"></a>2.1 时序图</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">@startuml</span><br><span class="line">actor user</span><br><span class="line">participant client</span><br><span class="line">participant server</span><br><span class="line">database database as db <span class="comment">#gray</span></span><br><span class="line"></span><br><span class="line">user -&gt; client :</span><br><span class="line">client -&gt; server : request</span><br><span class="line">alt validate fail <span class="keyword">case</span></span><br><span class="line">    client &lt;-- server : validate fail !</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    server -[<span class="comment">#blue]&gt; db : crud</span></span><br><span class="line">    server &lt;-[<span class="comment">#blue]- db</span></span><br><span class="line">        note right</span><br><span class="line">        notes </span><br><span class="line">        end note</span><br><span class="line">    server -&gt; server : deal data</span><br><span class="line">    client &lt;-- server :response</span><br><span class="line">    client --&gt; user : tips</span><br><span class="line">end</span><br><span class="line">@enduml</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">@startuml</span><br><span class="line">actor user</span><br><span class="line">participant client</span><br><span class="line">participant server</span><br><span class="line">database database as db #gray</span><br><span class="line"></span><br><span class="line">user -&gt; client :</span><br><span class="line">client -&gt; server : request</span><br><span class="line">alt validate fail case</span><br><span class="line">    client &lt;-- server : validate fail !</span><br><span class="line">else</span><br><span class="line">    server -[#blue]&gt; db : crud</span><br><span class="line">    server &lt;-[#blue]- db</span><br><span class="line">        note right</span><br><span class="line">        notes </span><br><span class="line">        end note</span><br><span class="line">    server -&gt; server : deal data</span><br><span class="line">    client &lt;-- server :response</span><br><span class="line">    client --&gt; user : tips</span><br><span class="line">end</span><br><span class="line">@enduml</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-用例图"><a href="#2-2-用例图" class="headerlink" title="2.2 用例图"></a>2.2 用例图</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">@startuml</span><br><span class="line">actor user as user</span><br><span class="line">rectangle usecase &#123;</span><br><span class="line">    usecase login as uc1</span><br><span class="line">    usecase <span class="built_in">logout</span> as uc2</span><br><span class="line">    usecase <span class="string">"query user info"</span> as uc3</span><br><span class="line">    usecase <span class="string">"view info"</span> as uc3</span><br><span class="line">    usecase (guest view) as uc4</span><br><span class="line">    uc3 &lt;|-- uc4</span><br><span class="line">&#125;</span><br><span class="line">package guest &#123;</span><br><span class="line">    actor guest1 as guest1</span><br><span class="line">    actor guest2 as guest2</span><br><span class="line">&#125;</span><br><span class="line">user &lt;|-- guest1</span><br><span class="line">user &lt;|-- guest2</span><br><span class="line"></span><br><span class="line">left to right direction</span><br><span class="line">user --&gt; uc1: operate</span><br><span class="line">user --&gt; uc2</span><br><span class="line">user --&gt; uc3</span><br><span class="line">guest1 --&gt; uc4</span><br><span class="line">guest2 --&gt; uc4</span><br><span class="line">@enduml</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">@startuml</span><br><span class="line">actor user as user</span><br><span class="line">rectangle usecase &#123;</span><br><span class="line">    usecase login as uc1</span><br><span class="line">    usecase logout as uc2</span><br><span class="line">    usecase &quot;query user info&quot; as uc3</span><br><span class="line">    usecase &quot;view info&quot; as uc3</span><br><span class="line">    usecase (guest view) as uc4</span><br><span class="line">    uc3 &lt;|-- uc4</span><br><span class="line">&#125;</span><br><span class="line">package guest &#123;</span><br><span class="line">    actor guest1 as guest1</span><br><span class="line">    actor guest2 as guest2</span><br><span class="line">&#125;</span><br><span class="line">user &lt;|-- guest1</span><br><span class="line">user &lt;|-- guest2</span><br><span class="line"></span><br><span class="line">left to right direction</span><br><span class="line">user --&gt; uc1: operate</span><br><span class="line">user --&gt; uc2</span><br><span class="line">user --&gt; uc3</span><br><span class="line">guest1 --&gt; uc4</span><br><span class="line">guest2 --&gt; uc4</span><br><span class="line">@enduml</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-3-类图"><a href="#2-3-类图" class="headerlink" title="2.3 类图"></a>2.3 类图</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">@startuml</span><br><span class="line">abstract Abstract</span><br><span class="line">annotation Annotation</span><br><span class="line">class ClassB</span><br><span class="line">enum enum</span><br><span class="line">interface interface</span><br><span class="line">class ClassA &#123;</span><br><span class="line">    &#123;static&#125; String id</span><br><span class="line">    --</span><br><span class="line">    - List&lt;ClassB&gt; classBList</span><br><span class="line">    ==</span><br><span class="line">    <span class="comment"># enum enum</span></span><br><span class="line">    ~ interface interface</span><br><span class="line">    .. method ..</span><br><span class="line">    + void init()</span><br><span class="line">    + &#123;abstract&#125; void method()</span><br><span class="line">    .. setter ..</span><br><span class="line">    + void <span class="built_in">set</span>()</span><br><span class="line">&#125;</span><br><span class="line">note right of ClassA::method</span><br><span class="line">  This member is notes <span class="keyword">for</span> method or field</span><br><span class="line">end note</span><br><span class="line"></span><br><span class="line">Abstract &lt;|-- ClassA</span><br><span class="line">ClassA o--ClassB</span><br><span class="line">ClassA *-- enum</span><br><span class="line">@enduml</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">@startuml</span><br><span class="line">abstract Abstract</span><br><span class="line">annotation Annotation</span><br><span class="line">class ClassB</span><br><span class="line">enum enum</span><br><span class="line">interface interface</span><br><span class="line">class ClassA &#123;</span><br><span class="line">    &#123;static&#125; String id</span><br><span class="line">    --</span><br><span class="line">    - List&lt;ClassB&gt; classBList</span><br><span class="line">    ==</span><br><span class="line">    # enum enum</span><br><span class="line">    ~ interface interface</span><br><span class="line">    .. method ..</span><br><span class="line">    + void init()</span><br><span class="line">    + &#123;abstract&#125; void method()</span><br><span class="line">    .. setter ..</span><br><span class="line">    + void set()</span><br><span class="line">&#125;</span><br><span class="line">note right of ClassA::method</span><br><span class="line">  This member is notes for method or field</span><br><span class="line">end note</span><br><span class="line"></span><br><span class="line">Abstract &lt;|-- ClassA</span><br><span class="line">ClassA o--ClassB</span><br><span class="line">ClassA *-- enum</span><br><span class="line">@enduml</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-4-活动图"><a href="#2-4-活动图" class="headerlink" title="2.4 活动图"></a>2.4 活动图</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">@startuml</span><br><span class="line">start</span><br><span class="line">partition patition &#123;</span><br><span class="line">    :this node1;</span><br><span class="line">    :this node2;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span>(condition) <span class="keyword">then</span> (yes)</span><br><span class="line">    <span class="comment">#white: yes node;</span></span><br><span class="line"><span class="keyword">else</span> (no)</span><br><span class="line">    <span class="comment">#gray: no node;</span></span><br><span class="line">endif</span><br><span class="line">repeat: description</span><br><span class="line">    : process;</span><br><span class="line">    : process..;</span><br><span class="line">repeat <span class="keyword">while</span>(more?) is (yes)</span><br><span class="line">-&gt;no;</span><br><span class="line"><span class="keyword">while</span> (<span class="keyword">while</span> description)</span><br><span class="line">    : ...;</span><br><span class="line">endwhile</span><br><span class="line">stop</span><br><span class="line">@enduml</span><br><span class="line">`</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">@startuml</span><br><span class="line">start</span><br><span class="line">partition patition &#123;</span><br><span class="line">    :this node1;</span><br><span class="line">    :this node2;</span><br><span class="line">&#125;</span><br><span class="line">if(condition) then (yes)</span><br><span class="line">    #white: yes node;</span><br><span class="line">else (no)</span><br><span class="line">    #gray: no node;</span><br><span class="line">endif</span><br><span class="line">repeat: description</span><br><span class="line">    : process;</span><br><span class="line">    : process..;</span><br><span class="line">repeat while(more?) is (yes)</span><br><span class="line">-&gt;no;</span><br><span class="line">while (while description)</span><br><span class="line">    : ...;</span><br><span class="line">endwhile</span><br><span class="line">stop</span><br><span class="line">@enduml</span><br></pre></td></tr></table></figure>
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-eof"></div>
+        
+      </footer>
+  </div>
+  
+  
+  
+  </article>
+
+    
+        <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block home">
     <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2020/07/09/JUC之ReentrantLock解读/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -251,7 +376,7 @@
                 
               
 
-              <time title="Created: 2020-07-09 22:06:15 / Modified: 22:07:51" itemprop="dateCreated datePublished" datetime="2020-07-09T22:06:15+08:00">2020-07-09</time>
+              <time title="Created: 2020-07-09 22:06:15 / Modified: 22:09:43" itemprop="dateCreated datePublished" datetime="2020-07-09T22:06:15+08:00">2020-07-09</time>
             </span>
           
             
@@ -1111,112 +1236,6 @@
   </article>
 
     
-        <article itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block home">
-    <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2019/10/22/rocketmq实战之消息的有序发送与有序消费/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="LazyCeCe">
-      <meta itemprop="description" content="Another way to laugh !">
-      <meta itemprop="image" content="/images/avatar-1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="W  pit">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-            
-            <a href="/2019/10/22/rocketmq实战之消息的有序发送与有序消费/" class="post-title-link" itemprop="url">rocketmq实战之消息的有序发送与有序消费</a>
-          
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              
-                
-              
-
-              <time title="Created: 2019-10-22 21:32:55" itemprop="dateCreated datePublished" datetime="2019-10-22T21:32:55+08:00">2019-10-22</time>
-            </span>
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-01-01 22:48:52" itemprop="dateModified" datetime="2020-01-01T22:48:52+08:00">2020-01-01</time>
-              </span>
-            
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/rocketmq/" itemprop="url" rel="index"><span itemprop="name">rocketmq</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>rocketmq支持有序的发送消息，有序的消费消息，这里便来看一下如何实现？</p>
-<blockquote>
-<p>实战方面均以<code>RocketMQTemplate</code>形式展现，集成方案详见<a href="https://lazycece.github.io/2019/06/16/springboot%E4%B8%ADrocketmq%E7%9A%84%E9%9B%86%E6%88%90%E4%B8%8E%E4%BD%BF%E7%94%A8/">《springboot中rocketmq的集成与使用》</a></p>
-</blockquote>
-<p>消息的有序发送方面，我们可以直接使用<code>syncSendOrderly</code>（同步有序发送）和<code>asyncSendOrderly</code>（异步有序发送）两种类型的方法进行发送消息，他们的区别就如命名一样是同步和异步的区别。</p>
-          <!--noindex-->
-          
-            <div class="post-button">
-              <a class="btn" href="/2019/10/22/rocketmq实战之消息的有序发送与有序消费/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-          <div class="post-eof"></div>
-        
-      </footer>
-  </div>
-  
-  
-  
-  </article>
-
-    
   </div>
 
   
@@ -1270,7 +1289,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">103</span>
+          <span class="site-state-item-count">104</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1296,7 +1315,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">65</span>
+        <span class="site-state-item-count">67</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
