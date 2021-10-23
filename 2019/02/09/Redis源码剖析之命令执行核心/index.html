@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":true,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="以下涉及到的源码均为redis5.0-rc3版本的代码【点击查看官方源码】 Redis命令执行Redis执行命令时都会先建立一个客户端，然后由客户端去和服务器连接，在执行命令（使用lua脚本执行亦如此，只不过lua的客户端是个伪客户端而已）。redis的命令执行中有一个核心部分，就是call()方法，call函数声明如下： 1void call(client *c, int flags)  可见有">
+<meta name="keywords" content="redis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis源码剖析之命令执行核心">
+<meta property="og:url" content="https://lazycece.github.io/2019/02/09/Redis源码剖析之命令执行核心/index.html">
+<meta property="og:site_name" content="W  pit">
+<meta property="og:description" content="以下涉及到的源码均为redis5.0-rc3版本的代码【点击查看官方源码】 Redis命令执行Redis执行命令时都会先建立一个客户端，然后由客户端去和服务器连接，在执行命令（使用lua脚本执行亦如此，只不过lua的客户端是个伪客户端而已）。redis的命令执行中有一个核心部分，就是call()方法，call函数声明如下： 1void call(client *c, int flags)  可见有">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2021-01-31T14:11:26.611Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Redis源码剖析之命令执行核心">
+<meta name="twitter:description" content="以下涉及到的源码均为redis5.0-rc3版本的代码【点击查看官方源码】 Redis命令执行Redis执行命令时都会先建立一个客户端，然后由客户端去和服务器连接，在执行命令（使用lua脚本执行亦如此，只不过lua的客户端是个伪客户端而已）。redis的命令执行中有一个核心部分，就是call()方法，call函数声明如下： 1void call(client *c, int flags)  可见有">
+  <link rel="canonical" href="https://lazycece.github.io/2019/02/09/Redis源码剖析之命令执行核心/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Redis源码剖析之命令执行核心 | W  pit</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">W  pit</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">A thousand miles begins with a single step .</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a class="book-mark-link book-mark-link-fixed" href="#"></a>
+
+  <a href="https://github.com/lazycece" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2019/02/09/Redis源码剖析之命令执行核心/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="LazyCeCe">
+      <meta itemprop="description" content="Another way to laugh !">
+      <meta itemprop="image" content="/images/avatar-1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="W  pit">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">Redis源码剖析之命令执行核心
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2019-02-09 17:11:48" itemprop="dateCreated datePublished" datetime="2019-02-09T17:11:48+08:00">2019-02-09</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-01-31 22:11:26" itemprop="dateModified" datetime="2021-01-31T22:11:26+08:00">2021-01-31</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/redis/" itemprop="url" rel="index"><span itemprop="name">redis</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>以下涉及到的源码均为redis5.0-rc3版本的代码【<a href="https://github.com/antirez/redis/releases" target="_blank" rel="noopener">点击查看官方源码</a>】</p>
+<h2 id="Redis命令执行"><a href="#Redis命令执行" class="headerlink" title="Redis命令执行"></a>Redis命令执行</h2><p>Redis执行命令时都会先建立一个客户端，然后由客户端去和服务器连接，在执行命令（使用lua脚本执行亦如此，只不过lua的客户端是个伪客户端而已）。redis的命令执行中有一个核心部分，就是call()方法，call函数声明如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">void call(client *c, int flags)</span><br></pre></td></tr></table></figure>
+
+<p>可见有两个参数，client是代表客户端（redis的命令执行都是以客户端向服务端发送的方式，请求执行的一方即为客户端）；flags是一个特殊标识。</p>
+<a id="more"></a>
+
+<h2 id="命令执行附加标识"><a href="#命令执行附加标识" class="headerlink" title="命令执行附加标识"></a>命令执行附加标识</h2><p>call方法的flags标识可以设置以下情况的值：</p>
+<table>
+<thead>
+<tr>
+<th>flags宏定义值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>CMD_CALL_NONE</td>
+<td>代表不设标识</td>
+</tr>
+<tr>
+<td>CMD_CALL_SLOWLOG</td>
+<td>有此标识的时候，会去检查命令的执行速度，以便决策是否加入慢日志中</td>
+</tr>
+<tr>
+<td>CMD_CALL_STATS</td>
+<td>统计命令被执行的数量</td>
+</tr>
+<tr>
+<td>CMD_CALL_PROPAGATE_AOF</td>
+<td>如果命令会改变值或客户端强制命令传播，则将命令追加到AOF文件</td>
+</tr>
+<tr>
+<td>CMD_CALL_PROPAGATE_REPL</td>
+<td>如果命令会改变值或客户端强制命令传播，则将命令传播给服务器的从节点</td>
+</tr>
+<tr>
+<td>CMD_CALL_PROPAGATE</td>
+<td>PROPAGATE_AOF和PROPAGATE_REPL两个标识的别名</td>
+</tr>
+<tr>
+<td>CMD_CALL_FULL</td>
+<td>SLOWLOG,STATS,PROPAGATE三个标识的别名</td>
+</tr>
+</tbody></table>
+<p>而在执行传播的行为上会依赖客户端的flags，特殊的情况如下：</p>
+<ol>
+<li>如果客户端的标识为CLIENT_FORCE_AOF或者CLIENT_FORCE_REPL，而call方法设置的flags为CMD_CALL_PROPAGATE_AOF/REPL，这种情况下即便命令没有改变值也会被传播。</li>
+<li>如果客户端的flags被设置成CLIENT_PREVENT_REPL_PROP 或 CLIENT_PREVENT_AOF_PROP，基本执行的命令会影响数据库值，那么也不会被传播给从节点，同样亦不会被追加写入AOF文件。</li>
+</ol>
+<p>但是有点需要注明的是，无论客户端的标识设置的是什么，如果call函数的flags没有被设置成CMD_CALL_PROPAGATE_AOF或 CMD_CALL_PROPAGATE_REPL，那么AOF命令追加和从节点复制都将永远不会发生；</p>
+<p>客户端（client）的flags可以被如下API修改：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">forceCommandPropagation(client *c, int flags);</span><br><span class="line">preventCommandPropagation(client *c);</span><br><span class="line">preventCommandAOF(client *c);</span><br><span class="line">preventCommandReplication(client *c);</span><br></pre></td></tr></table></figure>
+
+<h2 id="核心函数CALL的源码"><a href="#核心函数CALL的源码" class="headerlink" title="核心函数CALL的源码"></a>核心函数CALL的源码</h2><p>call函数的具体实现如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br></pre></td><td class="code"><pre><span class="line">void call(client *c, int flags) &#123;</span><br><span class="line">    long long dirty, start, duration;</span><br><span class="line">    int client_old_flags = c-&gt;flags;</span><br><span class="line"></span><br><span class="line">    //将命令发送至监视器节点的客户端（仅当这些命令不是从aof中读取的时候）</span><br><span class="line">    if (listLength(server.monitors) &amp;&amp;</span><br><span class="line">        !server.loading &amp;&amp;</span><br><span class="line">        !(c-&gt;cmd-&gt;flags &amp; (CMD_SKIP_MONITOR|CMD_ADMIN)))</span><br><span class="line">    &#123;</span><br><span class="line">        replicationFeedMonitors(c,server.monitors,c-&gt;db-&gt;id,c-&gt;argv,c-&gt;argc);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /* Initialization: clear the flags that must be set by the command on</span><br><span class="line">     * demand, and initialize the array for additional commands propagation. */</span><br><span class="line">     //初始化，</span><br><span class="line">    c-&gt;flags &amp;= ~(CLIENT_FORCE_AOF|CLIENT_FORCE_REPL|CLIENT_PREVENT_PROP);</span><br><span class="line">    redisOpArray prev_also_propagate = server.also_propagate;</span><br><span class="line">    redisOpArrayInit(&amp;server.also_propagate);</span><br><span class="line"></span><br><span class="line">    /* Call the command. */</span><br><span class="line">    dirty = server.dirty;</span><br><span class="line">    start = ustime();</span><br><span class="line">    c-&gt;cmd-&gt;proc(c);</span><br><span class="line">    duration = ustime()-start;</span><br><span class="line">    dirty = server.dirty-dirty;</span><br><span class="line">    if (dirty &lt; 0) dirty = 0;</span><br><span class="line"></span><br><span class="line">    /* When EVAL is called loading the AOF we don&apos;t want commands called</span><br><span class="line">     * from Lua to go into the slowlog or to populate statistics. */</span><br><span class="line">    if (server.loading &amp;&amp; c-&gt;flags &amp; CLIENT_LUA)</span><br><span class="line">        flags &amp;= ~(CMD_CALL_SLOWLOG | CMD_CALL_STATS);</span><br><span class="line"></span><br><span class="line">    //当执行命令的是lua脚本的时候，如果命令的flags或者客户端的flags是强制传播行为，那么我们将强制命令调用者去传播lua脚本</span><br><span class="line">    if (c-&gt;flags &amp; CLIENT_LUA &amp;&amp; server.lua_caller) &#123;</span><br><span class="line">        if (c-&gt;flags &amp; CLIENT_FORCE_REPL)</span><br><span class="line">            server.lua_caller-&gt;flags |= CLIENT_FORCE_REPL;</span><br><span class="line">        if (c-&gt;flags &amp; CLIENT_FORCE_AOF)</span><br><span class="line">            server.lua_caller-&gt;flags |= CLIENT_FORCE_AOF;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //如果需要，将命令加入慢日志，统计命令热度等信息</span><br><span class="line">    if (flags &amp; CMD_CALL_SLOWLOG &amp;&amp; c-&gt;cmd-&gt;proc != execCommand) &#123;</span><br><span class="line">        char *latency_event = (c-&gt;cmd-&gt;flags &amp; CMD_FAST) ?</span><br><span class="line">                              &quot;fast-command&quot; : &quot;command&quot;;</span><br><span class="line">        latencyAddSampleIfNeeded(latency_event,duration/1000);</span><br><span class="line">        slowlogPushEntryIfNeeded(c,c-&gt;argv,c-&gt;argc,duration);</span><br><span class="line">    &#125;</span><br><span class="line">    if (flags &amp; CMD_CALL_STATS) &#123;</span><br><span class="line">        //计算命令的统计数据</span><br><span class="line">        c-&gt;lastcmd-&gt;microseconds += duration;</span><br><span class="line">        c-&gt;lastcmd-&gt;calls++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //命令的复制和向AOF传播</span><br><span class="line">    if (flags &amp; CMD_CALL_PROPAGATE &amp;&amp;</span><br><span class="line">        (c-&gt;flags &amp; CLIENT_PREVENT_PROP) != CLIENT_PREVENT_PROP)</span><br><span class="line">    &#123;</span><br><span class="line">        int propagate_flags = PROPAGATE_NONE;</span><br><span class="line"></span><br><span class="line">        //检查命令操作是否改变数据，若是则进行传播向aof追加和复制（主从or集群）</span><br><span class="line">        if (dirty) propagate_flags |= (PROPAGATE_AOF|PROPAGATE_REPL);</span><br><span class="line"></span><br><span class="line">        //如果客户端强制命令向aof追加写入/节点复制，则重置flags为能影响数据的命令</span><br><span class="line">        if (c-&gt;flags &amp; CLIENT_FORCE_REPL) propagate_flags |= PROPAGATE_REPL;</span><br><span class="line">        if (c-&gt;flags &amp; CLIENT_FORCE_AOF) propagate_flags |= PROPAGATE_AOF;</span><br><span class="line"></span><br><span class="line">        /* However prevent AOF / replication propagation if the command</span><br><span class="line">         * implementatino called preventCommandPropagation() or similar,</span><br><span class="line">         * or if we don&apos;t have the call() flags to do so. */</span><br><span class="line">        if (c-&gt;flags &amp; CLIENT_PREVENT_REPL_PROP ||</span><br><span class="line">            !(flags &amp; CMD_CALL_PROPAGATE_REPL))</span><br><span class="line">                propagate_flags &amp;= ~PROPAGATE_REPL;</span><br><span class="line">        if (c-&gt;flags &amp; CLIENT_PREVENT_AOF_PROP ||</span><br><span class="line">            !(flags &amp; CMD_CALL_PROPAGATE_AOF))</span><br><span class="line">                propagate_flags &amp;= ~PROPAGATE_AOF;</span><br><span class="line"></span><br><span class="line">        //调用传播方法</span><br><span class="line">        /* Call propagate() only if at least one of AOF / replication</span><br><span class="line">         * propagation is needed. Note that modules commands handle replication</span><br><span class="line">         * in an explicit way, so we never replicate them automatically. */</span><br><span class="line">        if (propagate_flags != PROPAGATE_NONE &amp;&amp; !(c-&gt;cmd-&gt;flags &amp; CMD_MODULE))</span><br><span class="line">            propagate(c-&gt;cmd,c-&gt;db-&gt;id,c-&gt;argv,c-&gt;argc,propagate_flags);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //恢复旧的复制标志（原因是可能执行命令的递归调用）</span><br><span class="line">    c-&gt;flags &amp;= ~(CLIENT_FORCE_AOF|CLIENT_FORCE_REPL|CLIENT_PREVENT_PROP);</span><br><span class="line">    c-&gt;flags |= client_old_flags &amp;</span><br><span class="line">        (CLIENT_FORCE_AOF|CLIENT_FORCE_REPL|CLIENT_PREVENT_PROP);</span><br><span class="line"></span><br><span class="line">    /* Handle the alsoPropagate() API to handle commands that want to propagate</span><br><span class="line">     * multiple separated commands. Note that alsoPropagate() is not affected</span><br><span class="line">     * by CLIENT_PREVENT_PROP flag. */</span><br><span class="line">    if (server.also_propagate.numops) &#123;</span><br><span class="line">        int j;</span><br><span class="line">        redisOp *rop;</span><br><span class="line"></span><br><span class="line">        if (flags &amp; CMD_CALL_PROPAGATE) &#123;</span><br><span class="line">            for (j = 0; j &lt; server.also_propagate.numops; j++) &#123;</span><br><span class="line">                rop = &amp;server.also_propagate.ops[j];</span><br><span class="line">                int target = rop-&gt;target;</span><br><span class="line">                /* Whatever the command wish is, we honor the call() flags. */</span><br><span class="line">                if (!(flags&amp;CMD_CALL_PROPAGATE_AOF)) target &amp;= ~PROPAGATE_AOF;</span><br><span class="line">                if (!(flags&amp;CMD_CALL_PROPAGATE_REPL)) target &amp;= ~PROPAGATE_REPL;</span><br><span class="line">                if (target)</span><br><span class="line">                    propagate(rop-&gt;cmd,rop-&gt;dbid,rop-&gt;argv,rop-&gt;argc,target);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        redisOpArrayFree(&amp;server.also_propagate);</span><br><span class="line">    &#125;</span><br><span class="line">    server.also_propagate = prev_also_propagate;</span><br><span class="line">    server.stat_numcommands++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/redis/" rel="tag"># redis</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/02/09/Redis源码剖析之数据库结构/" rel="next" title="Redis源码剖析之数据库结构">
+                  <i class="fa fa-chevron-left"></i> Redis源码剖析之数据库结构
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/02/09/Redis源码剖析之服务器/" rel="prev" title="Redis源码剖析之服务器">
+                  Redis源码剖析之服务器 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis命令执行"><span class="nav-number">1.</span> <span class="nav-text">Redis命令执行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#命令执行附加标识"><span class="nav-number">2.</span> <span class="nav-text">命令执行附加标识</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#核心函数CALL的源码"><span class="nav-number">3.</span> <span class="nav-text">核心函数CALL的源码</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar-1.jpg"
+      alt="LazyCeCe">
+  <p class="site-author-name" itemprop="name">LazyCeCe</p>
+  <div class="site-description" itemprop="description">Another way to laugh !</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">105</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">68</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/lazycece" title="GitHub &rarr; https://github.com/lazycece" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:lazycece@qq.com" title="E-Mail &rarr; mailto:lazycece@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://blog.csdn.net/qq_28851503" title="CSDN &rarr; https://blog.csdn.net/qq_28851503" rel="noopener" target="_blank"><i class="fa fa-fw fa-vk"></i>CSDN</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://leetcode-cn.com/u/lazycece" title="LeetCode &rarr; https://leetcode-cn.com/u/lazycece" rel="noopener" target="_blank"><i class="fa fa-fw fa-vk"></i>LeetCode</a>
+      </span>
+    
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LazyCeCe</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script><script src="/js/bookmark.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":true,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="以下涉及到的源码均为redis5.0-rc3版本的代码【点击查看官方源码】 整数集合整数集合（intset），故名思意，是存放整数的集合数据结构，从而可知其是集合（Set）的底层实现之一。而从源码中可知，整数集合中的元素又是从小到大来排序的。 数据结构整数集合的定义在源码头文件intset.h中，如下所示： 12345typedef struct intset &amp;#123;    uint32_t">
+<meta name="keywords" content="redis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis源码剖析之整数集合">
+<meta property="og:url" content="https://lazycece.github.io/2019/02/09/Redis源码剖析之整数集合/index.html">
+<meta property="og:site_name" content="W  pit">
+<meta property="og:description" content="以下涉及到的源码均为redis5.0-rc3版本的代码【点击查看官方源码】 整数集合整数集合（intset），故名思意，是存放整数的集合数据结构，从而可知其是集合（Set）的底层实现之一。而从源码中可知，整数集合中的元素又是从小到大来排序的。 数据结构整数集合的定义在源码头文件intset.h中，如下所示： 12345typedef struct intset &amp;#123;    uint32_t">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2021-01-31T14:11:26.612Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Redis源码剖析之整数集合">
+<meta name="twitter:description" content="以下涉及到的源码均为redis5.0-rc3版本的代码【点击查看官方源码】 整数集合整数集合（intset），故名思意，是存放整数的集合数据结构，从而可知其是集合（Set）的底层实现之一。而从源码中可知，整数集合中的元素又是从小到大来排序的。 数据结构整数集合的定义在源码头文件intset.h中，如下所示： 12345typedef struct intset &amp;#123;    uint32_t">
+  <link rel="canonical" href="https://lazycece.github.io/2019/02/09/Redis源码剖析之整数集合/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Redis源码剖析之整数集合 | W  pit</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">W  pit</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">A thousand miles begins with a single step .</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a class="book-mark-link book-mark-link-fixed" href="#"></a>
+
+  <a href="https://github.com/lazycece" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2019/02/09/Redis源码剖析之整数集合/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="LazyCeCe">
+      <meta itemprop="description" content="Another way to laugh !">
+      <meta itemprop="image" content="/images/avatar-1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="W  pit">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">Redis源码剖析之整数集合
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2019-02-09 16:34:39" itemprop="dateCreated datePublished" datetime="2019-02-09T16:34:39+08:00">2019-02-09</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-01-31 22:11:26" itemprop="dateModified" datetime="2021-01-31T22:11:26+08:00">2021-01-31</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/redis/" itemprop="url" rel="index"><span itemprop="name">redis</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>以下涉及到的源码均为redis5.0-rc3版本的代码【<a href="https://github.com/antirez/redis/releases" target="_blank" rel="noopener">点击查看官方源码</a>】</p>
+<h2 id="整数集合"><a href="#整数集合" class="headerlink" title="整数集合"></a>整数集合</h2><p>整数集合（intset），故名思意，是存放整数的集合数据结构，从而可知其是集合（Set）的底层实现之一。而从源码中可知，整数集合中的元素又是从小到大来排序的。</p>
+<h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2><p>整数集合的定义在源码头文件intset.h中，如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">typedef struct intset &#123;</span><br><span class="line">    uint32_t encoding;</span><br><span class="line">    uint32_t length;</span><br><span class="line">    int8_t contents[];</span><br><span class="line">&#125; intset;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>encoding：当前结构内所有元素的类型，如int8_t,int16_t,int32_t,int64_t；</li>
+<li>length：contents数组中元素的个数，也即一个整数集合中存储的元素的个数；</li>
+<li>contents[]：存放元素的数组；</li>
+</ul>
+<a id="more"></a>
+
+<h2 id="类型升级"><a href="#类型升级" class="headerlink" title="类型升级"></a>类型升级</h2><p>整数集合结构中，既然用了encoding字段来标记结构中存储的元素的类型，那么也就会出现类型变动。因为使用者在向集合中添加新元素的时候，并不知道其类型究竟是16位、32位或者又是64位的，所以需要动态的来进行类型升级，并且只升不降。<br>如下是在intset.c文件中对类型所占字节长度的计算函数的宏定义：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#define INTSET_ENC_INT16 (sizeof(int16_t))</span><br><span class="line">#define INTSET_ENC_INT32 (sizeof(int32_t))</span><br><span class="line">#define INTSET_ENC_INT64 (sizeof(int64_t))</span><br></pre></td></tr></table></figure>
+
+<p>下面是升级操作的源码，并且在升级的过程中将要添加的元素也进行了添加。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">/* Upgrades the intset to a larger encoding and inserts the given integer. */</span><br><span class="line">static intset *intsetUpgradeAndAdd(intset *is, int64_t value) &#123;</span><br><span class="line">    uint8_t curenc = intrev32ifbe(is-&gt;encoding);</span><br><span class="line">    uint8_t newenc = _intsetValueEncoding(value);</span><br><span class="line">    int length = intrev32ifbe(is-&gt;length);</span><br><span class="line">    int prepend = value &lt; 0 ? 1 : 0;</span><br><span class="line"></span><br><span class="line">    /* First set new encoding and resize */</span><br><span class="line">    is-&gt;encoding = intrev32ifbe(newenc);</span><br><span class="line">    is = intsetResize(is,intrev32ifbe(is-&gt;length)+1);</span><br><span class="line"></span><br><span class="line">    /* Upgrade back-to-front so we don&apos;t overwrite values.</span><br><span class="line">     * Note that the &quot;prepend&quot; variable is used to make sure we have an empty</span><br><span class="line">     * space at either the beginning or the end of the intset. */</span><br><span class="line">    while(length--)</span><br><span class="line">        _intsetSet(is,length+prepend,_intsetGetEncoded(is,length,curenc));</span><br><span class="line"></span><br><span class="line">    /* Set the value at the beginning or the end. */</span><br><span class="line">    if (prepend)</span><br><span class="line">        _intsetSet(is,0,value);</span><br><span class="line">    else</span><br><span class="line">        _intsetSet(is,intrev32ifbe(is-&gt;length),value);</span><br><span class="line">    is-&gt;length = intrev32ifbe(intrev32ifbe(is-&gt;length)+1);</span><br><span class="line">    return is;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">static intset *intsetResize(intset *is, uint32_t len) &#123;</span><br><span class="line">    uint32_t size = len*intrev32ifbe(is-&gt;encoding);</span><br><span class="line">    is = zrealloc(is,sizeof(intset)+size);</span><br><span class="line">    return is;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="API"><a href="#API" class="headerlink" title="API"></a>API</h2><p>在intset.h头文件中定义了如下API：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">//创建新的整数集合</span><br><span class="line">intset *intsetNew(void);</span><br><span class="line">//添加元素</span><br><span class="line">intset *intsetAdd(intset *is, int64_t value, uint8_t *success);</span><br><span class="line">//移除元素</span><br><span class="line">intset *intsetRemove(intset *is, int64_t value, int *success);</span><br><span class="line">//查询元素</span><br><span class="line">uint8_t intsetFind(intset *is, int64_t value);</span><br><span class="line">//随机返回值</span><br><span class="line">int64_t intsetRandom(intset *is);</span><br><span class="line">//get给定下标的值</span><br><span class="line">uint8_t intsetGet(intset *is, uint32_t pos, int64_t *value);</span><br><span class="line">//元素总个数</span><br><span class="line">uint32_t intsetLen(const intset *is);</span><br><span class="line">//集合占用的内存字节</span><br><span class="line">size_t intsetBlobLen(intset *is);</span><br></pre></td></tr></table></figure>
+
+<p>整体性的概览的了整数集合的API，那么接下来就来看一下源码中api的具体内部是怎么实现的。</p>
+<h3 id="intsetNew"><a href="#intsetNew" class="headerlink" title="intsetNew"></a>intsetNew</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">/* Create an empty intset. */</span><br><span class="line">intset *intsetNew(void) &#123;</span><br><span class="line">    //分配内，创建一个空的整数集合</span><br><span class="line">    intset *is = zmalloc(sizeof(intset));</span><br><span class="line">    //设置编码</span><br><span class="line">    is-&gt;encoding = intrev32ifbe(INTSET_ENC_INT16);</span><br><span class="line">    is-&gt;length = 0;</span><br><span class="line">    return is;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="intsetAdd"><a href="#intsetAdd" class="headerlink" title="intsetAdd"></a>intsetAdd</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">intset *intsetAdd(intset *is, int64_t value, uint8_t *success) &#123;</span><br><span class="line">    //确定当前要添加的元素的类型长度</span><br><span class="line">    uint8_t valenc = _intsetValueEncoding(value);</span><br><span class="line">    uint32_t pos;</span><br><span class="line">    if (success) *success = 1;</span><br><span class="line">    if (valenc &gt; intrev32ifbe(is-&gt;encoding)) &#123;</span><br><span class="line">        //升级，并完成元素添加</span><br><span class="line">        return intsetUpgradeAndAdd(is,value);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        //确定是否已存在该元素</span><br><span class="line">        if (intsetSearch(is,value,&amp;pos)) &#123;</span><br><span class="line">            if (success) *success = 0;</span><br><span class="line">            return is;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        is = intsetResize(is,intrev32ifbe(is-&gt;length)+1);</span><br><span class="line">        if (pos &lt; intrev32ifbe(is-&gt;length)) intsetMoveTail(is,pos,pos+1);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //完成元素添加</span><br><span class="line">    _intsetSet(is,pos,value);</span><br><span class="line">    is-&gt;length = intrev32ifbe(intrev32ifbe(is-&gt;length)+1);</span><br><span class="line">    return is;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="intsetRemove"><a href="#intsetRemove" class="headerlink" title="intsetRemove"></a>intsetRemove</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">intset *intsetRemove(intset *is, int64_t value, int *success) &#123;</span><br><span class="line">    uint8_t valenc = _intsetValueEncoding(value);</span><br><span class="line">    uint32_t pos;</span><br><span class="line">    if (success) *success = 0;</span><br><span class="line"></span><br><span class="line">    if (valenc &lt;= intrev32ifbe(is-&gt;encoding) &amp;&amp; intsetSearch(is,value,&amp;pos)) &#123;</span><br><span class="line">        uint32_t len = intrev32ifbe(is-&gt;length);</span><br><span class="line"></span><br><span class="line">        /* We know we can delete */</span><br><span class="line">        if (success) *success = 1;</span><br><span class="line"></span><br><span class="line">        /* Overwrite value with tail and update length */</span><br><span class="line">        if (pos &lt; (len-1)) intsetMoveTail(is,pos+1,pos);</span><br><span class="line">        is = intsetResize(is,len-1);</span><br><span class="line">        is-&gt;length = intrev32ifbe(len-1);</span><br><span class="line">    &#125;</span><br><span class="line">    return is;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="intsetFind-intsetRandom-intsetGet-intsetLen-intsetBlobLen"><a href="#intsetFind-intsetRandom-intsetGet-intsetLen-intsetBlobLen" class="headerlink" title="intsetFind,intsetRandom,intsetGet,intsetLen,intsetBlobLen"></a>intsetFind,intsetRandom,intsetGet,intsetLen,intsetBlobLen</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">uint8_t intsetFind(intset *is, int64_t value) &#123;</span><br><span class="line">    uint8_t valenc = _intsetValueEncoding(value);</span><br><span class="line">    return valenc &lt;= intrev32ifbe(is-&gt;encoding) &amp;&amp; intsetSearch(is,value,NULL);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int64_t intsetRandom(intset *is) &#123;</span><br><span class="line">    return _intsetGet(is,rand()%intrev32ifbe(is-&gt;length));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">uint8_t intsetGet(intset *is, uint32_t pos, int64_t *value) &#123;</span><br><span class="line">    if (pos &lt; intrev32ifbe(is-&gt;length)) &#123;</span><br><span class="line">        *value = _intsetGet(is,pos);</span><br><span class="line">        return 1;</span><br><span class="line">    &#125;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">uint32_t intsetLen(const intset *is) &#123;</span><br><span class="line">    return intrev32ifbe(is-&gt;length);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">size_t intsetBlobLen(intset *is) &#123;</span><br><span class="line">    return sizeof(intset)+intrev32ifbe(is-&gt;length)*intrev32ifbe(is-&gt;encoding);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="内部函数"><a href="#内部函数" class="headerlink" title="内部函数"></a>内部函数</h3><p>这是来看一下上面api中一些重要的内部调用函数的实现，在看这些函数的时候可以进一步来看api的实现。<br><strong>intsetMoveTail</strong>是在添加元素和删除元素中都会用到的一个方法，其作用在于集合中元素的移动。通过从一个结构中把元素从另一个结构中的方式来完成操作。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">static void intsetMoveTail(intset *is, uint32_t from, uint32_t to) &#123;</span><br><span class="line">    void *src, *dst;</span><br><span class="line">    uint32_t bytes = intrev32ifbe(is-&gt;length)-from;</span><br><span class="line">    uint32_t encoding = intrev32ifbe(is-&gt;encoding);</span><br><span class="line">    //计算内存</span><br><span class="line">    if (encoding == INTSET_ENC_INT64) &#123;</span><br><span class="line">        src = (int64_t*)is-&gt;contents+from;</span><br><span class="line">        dst = (int64_t*)is-&gt;contents+to;</span><br><span class="line">        bytes *= sizeof(int64_t);</span><br><span class="line">    &#125; else if (encoding == INTSET_ENC_INT32) &#123;</span><br><span class="line">        src = (int32_t*)is-&gt;contents+from;</span><br><span class="line">        dst = (int32_t*)is-&gt;contents+to;</span><br><span class="line">        bytes *= sizeof(int32_t);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        src = (int16_t*)is-&gt;contents+from;</span><br><span class="line">        dst = (int16_t*)is-&gt;contents+to;</span><br><span class="line">        bytes *= sizeof(int16_t);</span><br><span class="line">    &#125;//进行元素移动</span><br><span class="line">    memmove(dst,src,bytes);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>intsetSearch</strong>在查询、插入、删除等api中用到，用于查询确认元素的具体索引位置。当找到了对应的元素时，pos为索引，函数返回1；否则函数返回0，且pos代表可以进行插入元素的索引位置。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">static uint8_t intsetSearch(intset *is, int64_t value, uint32_t *pos) &#123;</span><br><span class="line">    int min = 0, max = intrev32ifbe(is-&gt;length)-1, mid = -1;</span><br><span class="line">    int64_t cur = -1;</span><br><span class="line"></span><br><span class="line">    if (intrev32ifbe(is-&gt;length) == 0) &#123;</span><br><span class="line">        //当集合没有元素的时候，可插入索引0</span><br><span class="line">        if (pos) *pos = 0;</span><br><span class="line">        return 0;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        //当没有指定的元素情况下，确定可插入元素的位置</span><br><span class="line">        if (value &gt; _intsetGet(is,intrev32ifbe(is-&gt;length)-1)) &#123;</span><br><span class="line">            //确认元素可插入在最后</span><br><span class="line">            if (pos) *pos = intrev32ifbe(is-&gt;length);</span><br><span class="line">            return 0;</span><br><span class="line">        &#125; else if (value &lt; _intsetGet(is,0)) &#123;</span><br><span class="line">            //确认元素可插入在第0位</span><br><span class="line">            if (pos) *pos = 0;</span><br><span class="line">            return 0;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    //二分查找</span><br><span class="line">    while(max &gt;= min) &#123;</span><br><span class="line">        //求中位数</span><br><span class="line">        mid = ((unsigned int)min + (unsigned int)max) &gt;&gt; 1;</span><br><span class="line">        cur = _intsetGet(is,mid);</span><br><span class="line">        if (value &gt; cur) &#123;</span><br><span class="line">            min = mid+1;</span><br><span class="line">        &#125; else if (value &lt; cur) &#123;</span><br><span class="line">            max = mid-1;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    if (value == cur) &#123;</span><br><span class="line">        //元素存在</span><br><span class="line">        if (pos) *pos = mid;</span><br><span class="line">        return 1;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        //元素不存在</span><br><span class="line">        if (pos) *pos = min;</span><br><span class="line">        return 0;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>_intsetSet</strong>函数是用来set值的，在添加元素和升级操作中用到。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">static void _intsetSet(intset *is, int pos, int64_t value) &#123;</span><br><span class="line">    uint32_t encoding = intrev32ifbe(is-&gt;encoding);</span><br><span class="line"></span><br><span class="line">    if (encoding == INTSET_ENC_INT64) &#123;</span><br><span class="line">        ((int64_t*)is-&gt;contents)[pos] = value;</span><br><span class="line">        memrev64ifbe(((int64_t*)is-&gt;contents)+pos);</span><br><span class="line">    &#125; else if (encoding == INTSET_ENC_INT32) &#123;</span><br><span class="line">        ((int32_t*)is-&gt;contents)[pos] = value;</span><br><span class="line">        memrev32ifbe(((int32_t*)is-&gt;contents)+pos);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        ((int16_t*)is-&gt;contents)[pos] = value;</span><br><span class="line">        memrev16ifbe(((int16_t*)is-&gt;contents)+pos);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>_intsetGetEncoded</strong>通过给定pos和encoding得到指定值</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">static int64_t _intsetGetEncoded(intset *is, int pos, uint8_t enc) &#123;</span><br><span class="line">    int64_t v64;</span><br><span class="line">    int32_t v32;</span><br><span class="line">    int16_t v16;</span><br><span class="line"></span><br><span class="line">    if (enc == INTSET_ENC_INT64) &#123;</span><br><span class="line">        memcpy(&amp;v64,((int64_t*)is-&gt;contents)+pos,sizeof(v64));</span><br><span class="line">        memrev64ifbe(&amp;v64);</span><br><span class="line">        return v64;</span><br><span class="line">    &#125; else if (enc == INTSET_ENC_INT32) &#123;</span><br><span class="line">        memcpy(&amp;v32,((int32_t*)is-&gt;contents)+pos,sizeof(v32));</span><br><span class="line">        memrev32ifbe(&amp;v32);</span><br><span class="line">        return v32;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        memcpy(&amp;v16,((int16_t*)is-&gt;contents)+pos,sizeof(v16));</span><br><span class="line">        memrev16ifbe(&amp;v16);</span><br><span class="line">        return v16;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/redis/" rel="tag"># redis</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/02/09/Redis源码剖析之字典/" rel="next" title="Redis源码剖析之字典">
+                  <i class="fa fa-chevron-left"></i> Redis源码剖析之字典
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/02/09/Redis源码剖析之压缩列表/" rel="prev" title="Redis源码剖析之压缩列表">
+                  Redis源码剖析之压缩列表 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#整数集合"><span class="nav-number">1.</span> <span class="nav-text">整数集合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据结构"><span class="nav-number">2.</span> <span class="nav-text">数据结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#类型升级"><span class="nav-number">3.</span> <span class="nav-text">类型升级</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#API"><span class="nav-number">4.</span> <span class="nav-text">API</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#intsetNew"><span class="nav-number">4.1.</span> <span class="nav-text">intsetNew</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#intsetAdd"><span class="nav-number">4.2.</span> <span class="nav-text">intsetAdd</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#intsetRemove"><span class="nav-number">4.3.</span> <span class="nav-text">intsetRemove</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#intsetFind-intsetRandom-intsetGet-intsetLen-intsetBlobLen"><span class="nav-number">4.4.</span> <span class="nav-text">intsetFind,intsetRandom,intsetGet,intsetLen,intsetBlobLen</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内部函数"><span class="nav-number">4.5.</span> <span class="nav-text">内部函数</span></a></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar-1.jpg"
+      alt="LazyCeCe">
+  <p class="site-author-name" itemprop="name">LazyCeCe</p>
+  <div class="site-description" itemprop="description">Another way to laugh !</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">105</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">68</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/lazycece" title="GitHub &rarr; https://github.com/lazycece" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:lazycece@qq.com" title="E-Mail &rarr; mailto:lazycece@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://blog.csdn.net/qq_28851503" title="CSDN &rarr; https://blog.csdn.net/qq_28851503" rel="noopener" target="_blank"><i class="fa fa-fw fa-vk"></i>CSDN</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://leetcode-cn.com/u/lazycece" title="LeetCode &rarr; https://leetcode-cn.com/u/lazycece" rel="noopener" target="_blank"><i class="fa fa-fw fa-vk"></i>LeetCode</a>
+      </span>
+    
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LazyCeCe</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script><script src="/js/bookmark.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":true,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="Elasticsearch基础配置elasticsearch的配置信息在elasticsearch.yml中，下面列出一些重要的配置： 集群名称默认情况下es的集群名称是elasticsearch，在实际应用中应该设置一个有意义的集群名称： 1cluster.name: elasticsearch-cluster-demo  节点信息es节点是es集群中的某一个节点，可由基本的三个信息描述，节点名">
+<meta name="keywords" content="elasticsearch">
+<meta property="og:type" content="article">
+<meta property="og:title" content="elasticsearch重要配置详解">
+<meta property="og:url" content="https://lazycece.github.io/2019/01/30/elasticsearch重要配置详解/index.html">
+<meta property="og:site_name" content="W  pit">
+<meta property="og:description" content="Elasticsearch基础配置elasticsearch的配置信息在elasticsearch.yml中，下面列出一些重要的配置： 集群名称默认情况下es的集群名称是elasticsearch，在实际应用中应该设置一个有意义的集群名称： 1cluster.name: elasticsearch-cluster-demo  节点信息es节点是es集群中的某一个节点，可由基本的三个信息描述，节点名">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2021-01-31T14:11:26.615Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="elasticsearch重要配置详解">
+<meta name="twitter:description" content="Elasticsearch基础配置elasticsearch的配置信息在elasticsearch.yml中，下面列出一些重要的配置： 集群名称默认情况下es的集群名称是elasticsearch，在实际应用中应该设置一个有意义的集群名称： 1cluster.name: elasticsearch-cluster-demo  节点信息es节点是es集群中的某一个节点，可由基本的三个信息描述，节点名">
+  <link rel="canonical" href="https://lazycece.github.io/2019/01/30/elasticsearch重要配置详解/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>elasticsearch重要配置详解 | W  pit</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">W  pit</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">A thousand miles begins with a single step .</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a class="book-mark-link book-mark-link-fixed" href="#"></a>
+
+  <a href="https://github.com/lazycece" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2019/01/30/elasticsearch重要配置详解/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="LazyCeCe">
+      <meta itemprop="description" content="Another way to laugh !">
+      <meta itemprop="image" content="/images/avatar-1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="W  pit">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">elasticsearch重要配置详解
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2019-01-30 22:29:14" itemprop="dateCreated datePublished" datetime="2019-01-30T22:29:14+08:00">2019-01-30</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-01-31 22:11:26" itemprop="dateModified" datetime="2021-01-31T22:11:26+08:00">2021-01-31</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/elasticsearch/" itemprop="url" rel="index"><span itemprop="name">elasticsearch</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="Elasticsearch基础配置"><a href="#Elasticsearch基础配置" class="headerlink" title="Elasticsearch基础配置"></a>Elasticsearch基础配置</h2><p>elasticsearch的配置信息在elasticsearch.yml中，下面列出一些重要的配置：</p>
+<h3 id="集群名称"><a href="#集群名称" class="headerlink" title="集群名称"></a>集群名称</h3><p>默认情况下es的集群名称是elasticsearch，在实际应用中应该设置一个有意义的集群名称：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cluster.name: elasticsearch-cluster-demo</span><br></pre></td></tr></table></figure>
+
+<h3 id="节点信息"><a href="#节点信息" class="headerlink" title="节点信息"></a>节点信息</h3><p>es节点是es集群中的某一个节点，可由基本的三个信息描述，节点名称（node.name）,是否为主节点（node.master）,是否为数据节点（node.data）。默认情况下，节点名称在每次启动的时候会随机生成，所以应该为节点设置一个有意义的名称，以方便排查问题。而节点又分为主节点、数据节点、客户端节点、部落节点，下面是一个节点（只为主节点）的配置样例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">node.name: node-master-one</span><br><span class="line">node.master: <span class="literal">true</span></span><br><span class="line">node.data: <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+
+<a id="more"></a>
+
+<h3 id="数据存储路径-日志路径"><a href="#数据存储路径-日志路径" class="headerlink" title="数据存储路径/日志路径"></a>数据存储路径/日志路径</h3><p>默认情况下，es数据和日志的存储路径是在安装目录下，为了防止被误删掉，应该重新设置路径。配置样例如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Path to directory where to store the data (separate multiple locations by comma):</span></span><br><span class="line"><span class="comment"># es data 存储路径（多个路径可用','隔开）</span></span><br><span class="line">path.data: /home/environment/elasticsearch-cluster/elasticsearch-master-one/data</span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Path to log files:</span></span><br><span class="line"><span class="comment"># log存储路径</span></span><br><span class="line">path.logs: /home/environment/elasticsearch-cluster/elasticsearch-master-one/logs</span><br></pre></td></tr></table></figure>
+
+<h3 id="网络绑定监听"><a href="#网络绑定监听" class="headerlink" title="网络绑定监听"></a>网络绑定监听</h3><p>在搭建es的时候，也应该去修改其监听的主机IP，至于端口可以用默认的：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Set the bind address to a specific IP (IPv4 or IPv6):</span></span><br><span class="line"><span class="comment"># 网路监听</span></span><br><span class="line">network.host: 0.0.0.0</span><br><span class="line">http.port: 9200</span><br><span class="line">transport.tcp.port: 9300</span><br></pre></td></tr></table></figure>
+
+<h3 id="最小主节点数"><a href="#最小主节点数" class="headerlink" title="最小主节点数"></a>最小主节点数</h3><p>如果是搭建es集群，那么应该设置最小主节点这个设置，以便防止脑裂现象：多个主节点同时存在与一个集群（一个集群只允许有一个主节点）。集群的主节点是集群的最高统治者，控制着索引的创建和分片的移动策略等；如果一个集群出现多个主节点，那么就好比一个团队出现两个leader一样，原本的一个整体被划分，对于es集群来讲就是原本的分片（数据）被分开，这样数据就可能出现不完整性。</p>
+<p>集群的主节点是靠所有有资格竞选主节点的节点（即节点信息设置node.master为true）投票选举出来的，所以现在获得的投票数量应该大于总票数半。所以在es中，是设定当候选的master节点达到设定的法定个数的时候才进行主节点选举：法定个数 = master-eligible nodes / 2 + 1</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Prevent the "split brain" by configuring the majority of nodes (total number of master-eligible nodes / 2 + 1):</span></span><br><span class="line"><span class="comment"># 最小主节点个数</span></span><br><span class="line">discovery.zen.minimum_master_nodes: 2</span><br></pre></td></tr></table></figure>
+
+<p>因为es节点是可以动态删除和添加的，所以这个设置是可以通过API动态设置的。</p>
+<h3 id="集群恢复"><a href="#集群恢复" class="headerlink" title="集群恢复"></a>集群恢复</h3><p>es集群在启动的时候，会做数据平衡操作。比如，一个10个节点5/1分片策略（5个分片，5个副本分片）的集群，平衡下来是每个节点一个分片，如果集群在重启的时候，有5个节点因为网络原因一段时间内未启动成功，可能会出现一种情况：启动的5个节点中有3个主分片，2个副分片。这时候就会出现主分片数据不完整和不均匀分布，此时集群会自动做数据的平衡操作。若一段时间后，另外的5个节点重新上线了，发现本身的数据在集群中已存在，则又会做平衡操作。这样，两次数据平衡移动操作，会占用磁盘和带宽，若数据量大则影响可想而知。所以可以做如下控制，来保障集群重启时数据恢复花费时间尽可能短：</p>
+<ol>
+<li><p>设置集群可提供服务的条件：最小上线节点数</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gateway.recover_after_nodes: 8</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>设置集群数据恢复条件：等待多少分钟，或这有多少个节点上线（具体取决与条件的先达性）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gateway.expected_nodes: 10</span><br><span class="line">gateway.recover_after_time: 5m</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h3 id="集群节点发现"><a href="#集群节点发现" class="headerlink" title="集群节点发现"></a>集群节点发现</h3><p>使用单播方式，为节点提供其应该去尝试连接的节点列表，连接成功，得到集群的状态信息，便加入集群。节点列表中可以不是全部节点，只要能保障能进入集群即可（可以选用部分候选主节点）。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Pass an initial list of hosts to perform discovery when new node is started:</span></span><br><span class="line"><span class="comment"># The default list of hosts is ["127.0.0.1", "[::1]"]</span></span><br><span class="line"><span class="comment"># 候选主节点ip:port</span></span><br><span class="line">discovery.zen.ping.unicast.hosts: [<span class="string">"127.0.0.1:9300"</span>]</span><br></pre></td></tr></table></figure>
+
+<h3 id="推迟分片分配"><a href="#推迟分片分配" class="headerlink" title="推迟分片分配"></a>推迟分片分配</h3><p>es集群在运行的时候，当有节点加入或离开的时候，会进行分片均衡操作，这个过程有些像集群重启时的数据恢复过程，可能会导致出现多次分片在均衡的过程，所以需要设置延迟分片分配，以尽量避免该情形出现。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 延迟5min</span></span><br><span class="line">delayed_timeout: 5m</span><br></pre></td></tr></table></figure>
+
+<p>该设置同样可以通过API的形式动态设置。</p>
+<h3 id="禁止内存交换"><a href="#禁止内存交换" class="headerlink" title="禁止内存交换"></a>禁止内存交换</h3><p>内存交换会影响性能，es官方推荐允许JVM锁住内存，禁止出现内存交换的情况：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bootstrap.mlockall: <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="其他配置"><a href="#其他配置" class="headerlink" title="其他配置"></a>其他配置</h2><h3 id="Elasticsearch-JVM内存"><a href="#Elasticsearch-JVM内存" class="headerlink" title="Elasticsearch JVM内存"></a>Elasticsearch JVM内存</h3><p>es默认的安装内存是1g，这个可以根据需要来设置，在es的config目录中的jvm.options中：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Xms represents the initial size of total heap space</span></span><br><span class="line"><span class="comment"># Xmx represents the maximum size of total heap space</span></span><br><span class="line"></span><br><span class="line">-Xms1g</span><br><span class="line">-Xmx1g</span><br></pre></td></tr></table></figure>
+
+<p>当然，这个内存不是随便设置的，推荐的是最大值和最小值一样，以避免堆内存改变时浪费系统资源。其次是即便硬件资源足购大，也不要分配超过32g（具体原因可以详见<a href="https://www.elastic.co/guide/cn/elasticsearch/guide/current/heap-sizing.html#compressed_oops" target="_blank" rel="noopener">Elasticsearch权威指南</a>），可以多给底层lucenen多分点。</p>
+<h3 id="文件描述符和MMap内存映射"><a href="#文件描述符和MMap内存映射" class="headerlink" title="文件描述符和MMap内存映射"></a>文件描述符和MMap内存映射</h3><p>es在节点在通信时会产生大量套接字，以及es底层的lucene使用了大量文件，所以需要足够的文件描述符，而linux中一般都是做有限制的，所以应该修改为大一点的值。</p>
+<p>可以修改文件/etc/security/limits.conf</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/security/limits.conf</span><br></pre></td></tr></table></figure>
+
+<p>添加如下配置,配置值设为需要的值即可：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#&lt;domain&gt;   &lt;type&gt;  &lt;item&gt;  &lt;value&gt;</span></span><br><span class="line"><span class="comment">#四个元素的意义在该文件中均有详细描述</span></span><br><span class="line">elasticsearch soft nofile 65536</span><br><span class="line">elasticsearch hard nofile 65536</span><br></pre></td></tr></table></figure>
+
+<p>es对文件混合使用了NioFs（非阻塞文件系统）和 MMapFs （ 内存映射文件系统），所以要保障有足够的虚拟内存用于映射。</p>
+<p>可以直接修改/etc/sysctl.conf文件添加如下配置，配置值设为需要的值即可</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vm.max_map_count=655360</span><br></pre></td></tr></table></figure>
+
+<p>然后执行如下命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sysctl -p</span><br></pre></td></tr></table></figure>
+
+<p>这两项如果在启动elasticsearch之前不进行设置的话，在启动es的时候也可能会直接报相关的error以致无法启动成功。</p>
+<h3 id="GC配置和线程池"><a href="#GC配置和线程池" class="headerlink" title="GC配置和线程池"></a>GC配置和线程池</h3><p>这两个配置，es官方强烈建议不要做修改，具体原因可参考  <a href="https://www.elastic.co/guide/cn/elasticsearch/guide/current/dont-touch-these-settings.html" target="_blank" rel="noopener">Elasticsearch权威指南: 不要触碰这些配置</a></p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ol>
+<li>《<a href="https://www.elastic.co/guide/cn/elasticsearch/guide/current/important-configuration-changes.html" target="_blank" rel="noopener">Elasticsearch权威指南</a>》</li>
+<li>《Elasticsearch技术解析与实战》</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/elasticsearch/" rel="tag"># elasticsearch</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/01/30/linux下elasticsearch启动问题/" rel="next" title="linux下elasticsearch启动问题">
+                  <i class="fa fa-chevron-left"></i> linux下elasticsearch启动问题
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/01/30/ubuntu下搭建elasticsearch集群/" rel="prev" title="ubuntu下搭建elasticsearch集群">
+                  ubuntu下搭建elasticsearch集群 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Elasticsearch基础配置"><span class="nav-number">1.</span> <span class="nav-text">Elasticsearch基础配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#集群名称"><span class="nav-number">1.1.</span> <span class="nav-text">集群名称</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#节点信息"><span class="nav-number">1.2.</span> <span class="nav-text">节点信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据存储路径-日志路径"><span class="nav-number">1.3.</span> <span class="nav-text">数据存储路径/日志路径</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#网络绑定监听"><span class="nav-number">1.4.</span> <span class="nav-text">网络绑定监听</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最小主节点数"><span class="nav-number">1.5.</span> <span class="nav-text">最小主节点数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#集群恢复"><span class="nav-number">1.6.</span> <span class="nav-text">集群恢复</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#集群节点发现"><span class="nav-number">1.7.</span> <span class="nav-text">集群节点发现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#推迟分片分配"><span class="nav-number">1.8.</span> <span class="nav-text">推迟分片分配</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#禁止内存交换"><span class="nav-number">1.9.</span> <span class="nav-text">禁止内存交换</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他配置"><span class="nav-number">2.</span> <span class="nav-text">其他配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Elasticsearch-JVM内存"><span class="nav-number">2.1.</span> <span class="nav-text">Elasticsearch JVM内存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文件描述符和MMap内存映射"><span class="nav-number">2.2.</span> <span class="nav-text">文件描述符和MMap内存映射</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GC配置和线程池"><span class="nav-number">2.3.</span> <span class="nav-text">GC配置和线程池</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">3.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar-1.jpg"
+      alt="LazyCeCe">
+  <p class="site-author-name" itemprop="name">LazyCeCe</p>
+  <div class="site-description" itemprop="description">Another way to laugh !</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">105</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">68</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/lazycece" title="GitHub &rarr; https://github.com/lazycece" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:lazycece@qq.com" title="E-Mail &rarr; mailto:lazycece@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://blog.csdn.net/qq_28851503" title="CSDN &rarr; https://blog.csdn.net/qq_28851503" rel="noopener" target="_blank"><i class="fa fa-fw fa-vk"></i>CSDN</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://leetcode-cn.com/u/lazycece" title="LeetCode &rarr; https://leetcode-cn.com/u/lazycece" rel="noopener" target="_blank"><i class="fa fa-fw fa-vk"></i>LeetCode</a>
+      </span>
+    
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LazyCeCe</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script><script src="/js/bookmark.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

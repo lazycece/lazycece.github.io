@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":true,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="rabbitmq自带内建集群，其旨在rabbitmq的高可用，允许消费者和生产者在rabbitmq节点崩溃的情况下继续运行，以及通过添加更多节点的方式来线性扩展消息的吞吐量。但是即便是将消息、队列、交换器设置成可持久化，当集群中的一个节点挂掉后，该节点上队列中的消息也会消失，因为在默认情况下rabbitmq是不会将队列的内容复制到整个集群中（除非进行特别的设置：镜像队列）。">
+<meta name="keywords" content="rabbitmq">
+<meta property="og:type" content="article">
+<meta property="og:title" content="rabbitmq集群简介">
+<meta property="og:url" content="https://lazycece.github.io/2019/04/13/rabbitmq集群简介/index.html">
+<meta property="og:site_name" content="W  pit">
+<meta property="og:description" content="rabbitmq自带内建集群，其旨在rabbitmq的高可用，允许消费者和生产者在rabbitmq节点崩溃的情况下继续运行，以及通过添加更多节点的方式来线性扩展消息的吞吐量。但是即便是将消息、队列、交换器设置成可持久化，当集群中的一个节点挂掉后，该节点上队列中的消息也会消失，因为在默认情况下rabbitmq是不会将队列的内容复制到整个集群中（除非进行特别的设置：镜像队列）。">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://lazycece.github.io/images/article/rabbitmq-cluster.png">
+<meta property="og:image" content="https://lazycece.github.io/images/article/rabbitmq-cluster-mirror-queue.png">
+<meta property="og:updated_time" content="2021-01-31T14:11:26.620Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="rabbitmq集群简介">
+<meta name="twitter:description" content="rabbitmq自带内建集群，其旨在rabbitmq的高可用，允许消费者和生产者在rabbitmq节点崩溃的情况下继续运行，以及通过添加更多节点的方式来线性扩展消息的吞吐量。但是即便是将消息、队列、交换器设置成可持久化，当集群中的一个节点挂掉后，该节点上队列中的消息也会消失，因为在默认情况下rabbitmq是不会将队列的内容复制到整个集群中（除非进行特别的设置：镜像队列）。">
+<meta name="twitter:image" content="https://lazycece.github.io/images/article/rabbitmq-cluster.png">
+  <link rel="canonical" href="https://lazycece.github.io/2019/04/13/rabbitmq集群简介/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>rabbitmq集群简介 | W  pit</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">W  pit</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">A thousand miles begins with a single step .</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a class="book-mark-link book-mark-link-fixed" href="#"></a>
+
+  <a href="https://github.com/lazycece" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2019/04/13/rabbitmq集群简介/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="LazyCeCe">
+      <meta itemprop="description" content="Another way to laugh !">
+      <meta itemprop="image" content="/images/avatar-1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="W  pit">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">rabbitmq集群简介
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2019-04-13 15:55:04" itemprop="dateCreated datePublished" datetime="2019-04-13T15:55:04+08:00">2019-04-13</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-01-31 22:11:26" itemprop="dateModified" datetime="2021-01-31T22:11:26+08:00">2021-01-31</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/rabbitmq/" itemprop="url" rel="index"><span itemprop="name">rabbitmq</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>rabbitmq自带内建集群，其旨在rabbitmq的高可用，允许消费者和生产者在rabbitmq节点崩溃的情况下继续运行，以及通过添加更多节点的方式来线性扩展消息的吞吐量。但是即便是将消息、队列、交换器设置成可持久化，当集群中的一个节点挂掉后，该节点上队列中的消息也会消失，因为在默认情况下rabbitmq是不会将队列的内容复制到整个集群中（<em>除非进行特别的设置：镜像队列</em>）。</p>
+<a id="more"></a>
+
+<p>这里不会对rabbitmq集群做深入探讨，是对集群的关键信息做出总结，想了解详细的集群方面的指引可查看<a href="https://www.rabbitmq.com/clustering.html" target="_blank" rel="noopener">官方文档</a>。</p>
+<h4 id="集群中的元数据"><a href="#集群中的元数据" class="headerlink" title="集群中的元数据"></a>集群中的元数据</h4><p>集群模式下包括如下元数据：</p>
+<ul>
+<li>队列元数据：队列名及其属性（是否持久化、可删除等）  </li>
+<li>交换器元数据：交换器名称、类型及其属性（可持久等）</li>
+<li>绑定元数据：路由绑定表</li>
+<li>vhost元数据：为内部信息（队列、绑定、交换器）提供命名空间和安全属性</li>
+<li>集群节点的位置，及节点与上述元数据的关系。</li>
+</ul>
+<h4 id="集群中的队列"><a href="#集群中的队列" class="headerlink" title="集群中的队列"></a>集群中的队列</h4><p>在集群中，队列的所有信息（元数据、状态、内容）是有队列的创建节点持有，而其他节点只是拥有队列的元数据和指向队列所有者节点的指针。这样的设计是考虑到两个因数：</p>
+<ul>
+<li>存储空间：状态和内容的拷贝是很占空间的，造成大容量数据冗余，浪费存储；</li>
+<li>性能：集群内数据的复制会影响性能，如果冗余拷贝的是可持久化的消息，其还会与硬盘有IO，那么性能将倍受影响；</li>
+</ul>
+<p>而这样的设计又会导致一个情况，即当一个队列的持有这挂掉之后，该节点上的队列和关联的绑定信息就在集群中蒸发，队列的消费者将丢失订阅，生产者生产的消息将消失。如果消失的队列是持久化的队列，那么便在恢复后可以恢复数据信息，在重新进入集群之前，另外的节点重新声明创建队列是不可行的，会被告知“404 NOT FOUND”。</p>
+<h4 id="集群中的交换器"><a href="#集群中的交换器" class="headerlink" title="集群中的交换器"></a>集群中的交换器</h4><p>交换器实际上是一个虚构的概念，并不是想队列那样实际存在，其为一个名称和队列绑定的查询表，当消息被发布到交换器的时候，消息是在信道中根据路由键去和绑定列表进行比较来路由消息到相关队列。由于交换器是指一个查询表，并不占空间，所以在集群中的每一个节点上都会有一份交换器的信息。</p>
+<p>集群中的队列和交换器的数据情况如下图所示：</p>
+<p><img src="/images/article/rabbitmq-cluster.png" alt="rabbitmq集群数据"></p>
+<h4 id="集群节点（内存节点-磁盘节点）"><a href="#集群节点（内存节点-磁盘节点）" class="headerlink" title="集群节点（内存节点/磁盘节点）"></a>集群节点（内存节点/磁盘节点）</h4><p>每个rabbitmq节点，在集群中有且仅可能为内存节点和磁盘节点（单节点默认为磁盘节点），其中内存节点是将所持有的信息（队列、交换器、绑定、用户、权限和vhost等的元数据）存储在内存中，而磁盘节点是将其存储在磁盘上。</p>
+<p>磁盘节点好理解，因为需要持久化元数据信息；而内存节点呢？当然是为了减少整个集群的磁盘IO，因为每个节点上的元数据其实是一样的，那么只要有一个是磁盘节点，就不会出现元数据丢失情况，这样即提高性能又可保障数据信息。</p>
+<p>所以一个rabbitmq集群，至少有一个磁盘节点，而如果仅有一个磁盘节点的情况下会出现一个情况：仅有的磁盘节点挂掉后虽然集群可正常运行，但集群便无法创建队列、交换器、绑定，以及添加用户、更改权限和几点的增删操作了。所以，为了集群的高可用，应该至少设置两个磁盘节点，虽然两个磁盘节点都挂掉会出现同样的情况，但至少比一个更可靠。而在内存节点的创建时，需要告知磁盘节点，以便其从磁盘节点复制集群的元数据信息。</p>
+<h4 id="集群节点升级"><a href="#集群节点升级" class="headerlink" title="集群节点升级"></a>集群节点升级</h4><p>集群节点升级，即升级rabbitmq的版本，这里建议过程如下：</p>
+<ol>
+<li>备份集群配置；</li>
+<li>关闭所有生产者，等待集群现有队列中的消息被消费完毕；</li>
+<li>关闭所有节点；</li>
+<li>选择一个磁盘节点优先升级（持久化集群数据）；</li>
+<li>其他其他磁盘节点；</li>
+<li>启动内存节点；</li>
+</ol>
+<h4 id="镜像队列"><a href="#镜像队列" class="headerlink" title="镜像队列"></a>镜像队列</h4><p>前面说道的集群中某节点挂掉后，该节点所持有的队列的状态和消息内容将消失的情况，并非无解决版本，rabbitmq在后续版本中提出了镜像队列的概念：主从冗余。镜像队列的住拷贝亦只会存在一个节点上，及为主队列（master），其他节点上该队列的拷贝均为从队列（slave），一旦主队列所在的节点挂掉，最老的从队列将被选举为新的主队列。镜像队列的声明简单，比创建普通队列多了一些参数，如 <em>x-ha-policy</em> 。</p>
+<blockquote>
+<p>有关镜像队列详细说明可见<a href="https://www.rabbitmq.com/ha.html" target="_blank" rel="noopener">官方文档</a></p>
+</blockquote>
+<p>镜像队列的路由和普通队列差异不打，只是当信到将消息路由到一个队列后，还会将消息投递到该队列的所有slave队列。我们可以把镜像队列的消息路由想象成交换器的fanout模式，如下图所示:</p>
+<p><img src="/images/article/rabbitmq-cluster-mirror-queue.png" alt="镜像队列路由"></p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/rabbitmq/" rel="tag"># rabbitmq</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/04/06/springboot中rabbitmq的集成与使用/" rel="next" title="springboot中rabbitmq的集成与使用">
+                  <i class="fa fa-chevron-left"></i> springboot中rabbitmq的集成与使用
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/04/20/rabbitmq高可用集群部署/" rel="prev" title="rabbitmq高可用集群部署">
+                  rabbitmq高可用集群部署 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#集群中的元数据"><span class="nav-number">1.</span> <span class="nav-text">集群中的元数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#集群中的队列"><span class="nav-number">2.</span> <span class="nav-text">集群中的队列</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#集群中的交换器"><span class="nav-number">3.</span> <span class="nav-text">集群中的交换器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#集群节点（内存节点-磁盘节点）"><span class="nav-number">4.</span> <span class="nav-text">集群节点（内存节点/磁盘节点）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#集群节点升级"><span class="nav-number">5.</span> <span class="nav-text">集群节点升级</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#镜像队列"><span class="nav-number">6.</span> <span class="nav-text">镜像队列</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar-1.jpg"
+      alt="LazyCeCe">
+  <p class="site-author-name" itemprop="name">LazyCeCe</p>
+  <div class="site-description" itemprop="description">Another way to laugh !</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">105</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">68</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/lazycece" title="GitHub &rarr; https://github.com/lazycece" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:lazycece@qq.com" title="E-Mail &rarr; mailto:lazycece@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://blog.csdn.net/qq_28851503" title="CSDN &rarr; https://blog.csdn.net/qq_28851503" rel="noopener" target="_blank"><i class="fa fa-fw fa-vk"></i>CSDN</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://leetcode-cn.com/u/lazycece" title="LeetCode &rarr; https://leetcode-cn.com/u/lazycece" rel="noopener" target="_blank"><i class="fa fa-fw fa-vk"></i>LeetCode</a>
+      </span>
+    
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LazyCeCe</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script><script src="/js/bookmark.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
