@@ -65,10 +65,10 @@
 <meta property="og:locale" content="en">
 <meta property="og:image" content="https://lazycece.github.io/images/article/svg-image-1.png">
 <meta property="og:image" content="https://lazycece.github.io/images/article/svg-image-5.png">
-<meta property="og:image" content="https://lazycece.github.io/images/article/svg-image-1.png">
-<meta property="og:image" content="https://lazycece.github.io/images/article/svg-image-1.png">
-<meta property="og:image" content="https://lazycece.github.io/images/article/svg-image-1.png">
-<meta property="og:updated_time" content="2021-10-23T18:32:08.884Z">
+<meta property="og:image" content="https://lazycece.github.io/images/article/svg-image-2.png">
+<meta property="og:image" content="https://lazycece.github.io/images/article/svg-image-3.png">
+<meta property="og:image" content="https://lazycece.github.io/images/article/svg-image-4.png">
+<meta property="og:updated_time" content="2021-10-23T18:34:46.663Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="通过SVG文件制图">
 <meta name="twitter:description" content="SVG 介绍 以下信息摘自 维基百科  可缩放矢量图形（英语：Scalable Vector Graphics，缩写：SVG）是一种基于可扩展标记语言（XML），用于描述二维矢量图形的图形格式。SVG由W3C制定，是一个开放标准。 SVG允许3种图形对象类型：矢量图形、栅格图像以及文本。图形对象（包括PNG、JPEG这些栅格图像）能够被编组、设计、转换及集成进先前的渲染对象中。文本可以在任何适用于">
@@ -258,7 +258,7 @@
                 
               
 
-              <time title="Created: 2021-10-24 00:39:09 / Modified: 02:32:08" itemprop="dateCreated datePublished" datetime="2021-10-24T00:39:09+08:00">2021-10-24</time>
+              <time title="Created: 2021-10-24 00:39:09 / Modified: 02:34:46" itemprop="dateCreated datePublished" datetime="2021-10-24T00:39:09+08:00">2021-10-24</time>
             </span>
           
             
@@ -327,11 +327,11 @@
 <h4 id="对齐方式"><a href="#对齐方式" class="headerlink" title="对齐方式"></a>对齐方式</h4><p>对齐方式在实际文字效果中分为水平对齐和垂直对齐，而文本的对齐方式使用较多的是水平对齐，这里着重阐述一下水平对齐的实现方案。</p>
 <p>就SVG的自身特性来讲，是没有水平对齐（左/中/右对齐）的效果的。SVG是一种矢量图，其支持的对齐方式为 start、middle、end三种，如下所示，为了体现效果在图形上画了一个矩形框。</p>
 <ul>
-<li><p>原始文件效果（无设置，默认参照点为起始坐标点）<br><img src="/images/article/svg-image-1.png" alt="svg-image-2.png"></p>
+<li><p>原始文件效果（无设置，默认参照点为起始坐标点）<br><img src="/images/article/svg-image-2.png" alt="svg-image-2.png"></p>
 </li>
-<li><p>SVG的start/middle/end效果<br><img src="/images/article/svg-image-1.png" alt="svg-image-3.png"></p>
+<li><p>SVG的start/middle/end效果<br><img src="/images/article/svg-image-3.png" alt="svg-image-3.png"></p>
 </li>
-<li><p>期望效果：左/中/右对齐<br><img src="/images/article/svg-image-1.png" alt="svg-image-4.png"></p>
+<li><p>期望效果：左/中/右对齐<br><img src="/images/article/svg-image-4.png" alt="svg-image-4.png"></p>
 </li>
 </ul>
 <p>所以如果想要实现效果，需要重新计算文本的坐标，即文本该放置在指定区域的什么位置。假设区域的长度（即矩形横向宽）为length，SVG源文件的改动设定如下：</p>
