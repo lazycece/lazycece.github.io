@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":true,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="战略设计战略设计是将“混沌”解构成“清晰”的过程，在该过程从开始到结束的历程之中，我们会划分出领域、界定通用语言范围、确定出系统限界上下文以及上下文之间的映射方式。">
+<meta name="keywords" content="DDD,架构">
+<meta property="og:type" content="article">
+<meta property="og:title" content="领域驱动设计理论实践">
+<meta property="og:url" content="https://lazycece.github.io/2023/04/16/领域驱动设计理论实践/index.html">
+<meta property="og:site_name" content="W  pit">
+<meta property="og:description" content="战略设计战略设计是将“混沌”解构成“清晰”的过程，在该过程从开始到结束的历程之中，我们会划分出领域、界定通用语言范围、确定出系统限界上下文以及上下文之间的映射方式。">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://lazycece.github.io/images/article/ddd-design.png">
+<meta property="og:image" content="https://lazycece.github.io/images/article/ddd-domain.png">
+<meta property="og:updated_time" content="2023-04-17T16:00:55.759Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="领域驱动设计理论实践">
+<meta name="twitter:description" content="战略设计战略设计是将“混沌”解构成“清晰”的过程，在该过程从开始到结束的历程之中，我们会划分出领域、界定通用语言范围、确定出系统限界上下文以及上下文之间的映射方式。">
+<meta name="twitter:image" content="https://lazycece.github.io/images/article/ddd-design.png">
+  <link rel="canonical" href="https://lazycece.github.io/2023/04/16/领域驱动设计理论实践/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>领域驱动设计理论实践 | W  pit</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">W  pit</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">A thousand miles begins with a single step .</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a class="book-mark-link book-mark-link-fixed" href="#"></a>
+
+  <a href="https://github.com/lazycece" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2023/04/16/领域驱动设计理论实践/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="LazyCeCe">
+      <meta itemprop="description" content="Another way to laugh !">
+      <meta itemprop="image" content="/images/avatar-1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="W  pit">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">领域驱动设计理论实践
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2023-04-16 21:52:49" itemprop="dateCreated datePublished" datetime="2023-04-16T21:52:49+08:00">2023-04-16</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-04-18 00:00:55" itemprop="dateModified" datetime="2023-04-18T00:00:55+08:00">2023-04-18</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/架构/" itemprop="url" rel="index"><span itemprop="name">架构</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="战略设计"><a href="#战略设计" class="headerlink" title="战略设计"></a>战略设计</h2><p>战略设计是将“混沌”解构成“清晰”的过程，在该过程从开始到结束的历程之中，我们会划分出领域、界定通用语言范围、确定出系统限界上下文以及上下文之间的映射方式。</p>
+<a id="more"></a>
+
+<p><img src="/images/article/ddd-design.png" alt="ddd-design"></p>
+<h3 id="领域划分"><a href="#领域划分" class="headerlink" title="领域划分"></a>领域划分</h3><p>战略设计在领域驱动设计中起着关键作用，因为其决定了前进的方向是否正确；而领域划分又是在战略设计中最关键的一点，它决定了系统最终架构的合理性。</p>
+<p>领域划分要做的事情是识别出核心域和子域。核心域是系统的内核，是系统建设的重点方向，是资源倾斜的重点；子域又分支撑子域和通用子域，可以考量是否做成基座能力。</p>
+<h3 id="限界上下文"><a href="#限界上下文" class="headerlink" title="限界上下文"></a>限界上下文</h3><p>限界上下文的确定过程，是系统划分的过程。当领域划分完成后，存在多个领域，哪儿些域可以独立成一个系统？哪儿些域可以在共同建设在同一系统中？就是需要在这一步进行确定的。</p>
+<p>就如何去确定限界上下文而言，我们应该从多个方面考量：</p>
+<ul>
+<li>领域划分的合理性</li>
+<li>限界系统建设成本</li>
+<li>限界系统维护成本</li>
+</ul>
+<h3 id="通用语言"><a href="#通用语言" class="headerlink" title="通用语言"></a>通用语言</h3><p>通常在一个系统内有自己独立的通用语言，但是更希望将其形成全域的通用语言，形成共识，这样沟通起来才会形成概念上的统一。实际落地过程中，我们应该将相关术语进行详细阐述并统一维护，沉淀为领域资产。</p>
+<h3 id="上下文映射"><a href="#上下文映射" class="headerlink" title="上下文映射"></a>上下文映射</h3><p>上下文映射是限界系统之间的交互方式，在战略设计阶段，应该从架构合理性的角度进行考量。</p>
+<h3 id="战略设计案例"><a href="#战略设计案例" class="headerlink" title="战略设计案例"></a>战略设计案例</h3><p>这里以一个简易的交易系统来进行战略分析，涉及场景如下：</p>
+<ul>
+<li>用户购买商品</li>
+<li>平台进行配送</li>
+<li>用户签收商品</li>
+</ul>
+<p>此时可以做出如下战略设计：<br><img src="/images/article/ddd-domain.png" alt="ddd-domain"></p>
+<p>从场景分析作为切入点，划分出商品域、交易域、用户域和配送通用域，并形成对应的限界上下文系统；同时，考虑到域之间的连接问题，可以将商品域和交易合并为一个更大一点的交易域。</p>
+<h2 id="战术设计"><a href="#战术设计" class="headerlink" title="战术设计"></a>战术设计</h2><h3 id="实体"><a href="#实体" class="headerlink" title="实体"></a>实体</h3><p>何为实体？不是由属性来定义，而是通过一连串的连续事件和标识定义的一种对象。</p>
+<p>实体对象拥有唯一标识符，且标识符在历经各种状态变更后仍能保持一致，而对象的其他属性相对于标识而言显得并不是那么得重要，这些属性只是该实体在某种时刻或某种状态下的一种内容修饰，用来丰富实体自身。</p>
+<p>对实体来说，标识符是非常重要的概念，就像身份证之于人一样，是实体自身的身份认证，无论实体数据流转到哪儿个系统，标识符始终不会发生改变。例如实际场景中就订单实体来说，标识符这是订单ID，订单的生命周期无论发生怎样的变化，此ID在订单的整个轨迹生涯中以及在不同上下文中的流转，始终唯一。</p>
+<p>所以，就领域实体的建模而言，标识符是必须存在的，且不应该同数据库的标识ID混淆，因为数据库只是实体的持久化方式，对于实体的持久化，既可以选择关系型、文档型、索引型数据库，亦可以选择内存存储，数据存储介质的ID在对于领域实体而言被称为派生标识。</p>
+<p>以订单实体来说，建模样例简略如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OrderInfo</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String orderId;</span><br><span class="line">    <span class="keyword">private</span> String userId;</span><br><span class="line">    <span class="keyword">private</span> String addressId;</span><br><span class="line">    <span class="keyword">private</span> BigDecimal amount;</span><br><span class="line">    <span class="keyword">private</span> OrderStatus orderStatus;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/* 其他字段信息省略*/</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getId</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.orderId;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对于连续性事件，订单的状态则是订单实体连续性事件的体现，经历多个状态的变迁，实体的标识并不会发生变化，变化的知识实体用有的内容和处于某个阶段的状态。</p>
+<h3 id="值对象"><a href="#值对象" class="headerlink" title="值对象"></a>值对象</h3><p>何为值对象？一种描述了某种特征或属性，但没有概念标识的对象。</p>
+<p>值对象是对实体属性的一种组合，进行概念化统一。它将多个相关属性组合为一个概念整体，可以保证属性归类的清晰和概念的完整性，避免属性零碎的散落在实体中。</p>
+<p>值对象在代码中有两类形态存在：</p>
+<ul>
+<li>如果值对象是单一属性，则直接定义为实体类的属性。比如一个‘Integer’属性，一个枚举属性，都可以称之为值对象，索引从值对象的角度来看对于实体的基本类型属性而言，要定义为包装类型对象。</li>
+<li>如果是多个散落属性的组合概念，则会设计为一个类。比如金额，可以有金额大小和单位两个属性，从本质上来将其和‘Integer’一样，只不过‘Integer’已经被封装成了对象，而对于这里的‘金额’而言需要我们自己封装。</li>
+</ul>
+<p>对于订单而言，金额值对象‘Amount’和用户id值对象‘addressId’如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OrderInfo</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String orderId;</span><br><span class="line">    <span class="keyword">private</span> String userId;</span><br><span class="line">    <span class="keyword">private</span> String addressId;</span><br><span class="line">    <span class="keyword">private</span> Amount amount;</span><br><span class="line">    <span class="keyword">private</span> OrderStatus orderStatus;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/* 其他字段信息省略*/</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getId</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.orderId;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Amount</span> </span>&#123;</span><br><span class="line">    	<span class="keyword">private</span> BigDecimal amount;</span><br><span class="line">    	<span class="keyword">private</span> String unit;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>就值对象的定义而言，我们应该根据值对象的属性和特征进行业务语义的归类，语义内聚，避免属性无规则平铺且语义泛化的值对象存在；当然从领域建模角度，我们应尽量用值对象来承载业务，减少实体的数量，这样可以降低业务模型的复杂度。</p>
+<p>就数据库存储而言，属性组合的值对象持久化可以是实体的某个属性，以序列化形式（如JSON）的存在，当然亦可以根据具体的业务评估来决策将其定义为仿真实体（非真实实体），用专门的表来存储。</p>
+<p>实体和值对象是领域中最基础核心的对象，基于这些基础领域对象，可以衍生出多样化的业务领域逻辑。</p>
+<h3 id="聚合"><a href="#聚合" class="headerlink" title="聚合"></a>聚合</h3><p>何为聚合？聚合就是一组相关对象的集合，我们把聚合作为数据修改的单元，外部对象只能引用聚合中的一个成员，我们把它称为根。</p>
+<p>从持久化的角度而言，在聚合的边界之内应用一致性规则，即保证聚合边界内的事务一致性；从查询的角度而言，可以查询出整个聚合，也可以查询出部分实体，整个需要根据实际业务情况和性能情况的角度来考量。</p>
+<p>订单的聚合简略如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OrderInfo</span> <span class="keyword">extends</span> <span class="title">Aggregate</span>&lt;<span class="title">String</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String orderId;</span><br><span class="line">    <span class="keyword">private</span> String userId;</span><br><span class="line">    <span class="keyword">private</span> String addressId;</span><br><span class="line">    <span class="keyword">private</span> BigDecimal amount;</span><br><span class="line">    <span class="keyword">private</span> OrderStatus orderStatus;</span><br><span class="line">    <span class="keyword">private</span> List&lt;OrderDetail&gt; orderDetailList;</span><br><span class="line">    <span class="keyword">private</span> OrderExtentInfo orderExtentInfo;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>此时的聚合根为订单，聚合的相关对象包含：订单实体、子订单实体、订单扩展实体。</p>
+<h3 id="工厂"><a href="#工厂" class="headerlink" title="工厂"></a>工厂</h3><p>工厂是一种针对对象和聚合复杂创建逻辑的封装抽象，但不承担领域模型中的职责；其同设计模型中的工厂一样，是生产目标对象的一种方式。</p>
+<p>在实际落地应用中，通常存在两种工厂概念的应用：</p>
+<ul>
+<li>实体、聚合、值对象等内部属性为参数进行构建对象，明确标识对象创建需要的参数；</li>
+<li>复杂对象生产，如静态编译、动态组合（运行依赖）等；</li>
+</ul>
+<p>第一种方式以简单的查询条件为例，如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OrderQueryCondition</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String userId;</span><br><span class="line">    <span class="keyword">private</span> String orderId;</span><br><span class="line">    <span class="keyword">private</span> OrderStatus orderStatus;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@DomainFactory</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> OrderQueryCondition <span class="title">build</span><span class="params">(String userId, String orderId, OrderStatus orderStatus)</span> </span>&#123;</span><br><span class="line">        OrderQueryCondition condition = <span class="keyword">new</span> OrderQueryCondition();</span><br><span class="line">        condition.setUserId(userId);</span><br><span class="line">        condition.setOrderId(orderId);</span><br><span class="line">        condition.setOrderStatus(orderStatus);</span><br><span class="line">        <span class="keyword">return</span> condition;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>第二种方式以领域事件为例，如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@DomainFactory</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OrderEventModelFactory</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> OrderEventModel <span class="title">build</span><span class="params">(OrderEventAction action, OrderInfo orderInfo)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        OrderEventModel event = <span class="keyword">new</span> OrderEventModel();</span><br><span class="line">        event.setAction(action);</span><br><span class="line">        event.setUserId(orderInfo.getUserId());</span><br><span class="line">        event.setOrderId(orderInfo.getOrderId());</span><br><span class="line">        event.setAddressId(orderInfo.getAddressId());</span><br><span class="line">        event.setAmount(orderInfo.getAmount());</span><br><span class="line">        event.setOrderStatus(orderInfo.getOrderStatus());</span><br><span class="line">        <span class="keyword">return</span> event;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="资源库"><a href="#资源库" class="headerlink" title="资源库"></a>资源库</h3><p>资源库通常是针对聚合设计，对聚合的存储和查询行为进行有效管理，可以是关系型数据库、索引、文档型数据库、内存数据库以及集合存储等。</p>
+<p>在实际应用中，也就是我们通常见到的仓库（repository），遵循不同的实践方式存在不同的形式：</p>
+<ul>
+<li>从聚合的角度，资源库同聚合进行一对一映射，即一个聚合一个资源库；</li>
+<li>从实体的角度，资源库同实体进行一对一映射，即一个实体一个资源库；</li>
+</ul>
+<p>聚合的角度资源库定义案例如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">OrderInfoRepository</span> </span>&#123;</span><br><span class="line">    <span class="function">String <span class="title">save</span><span class="params">(OrderInfo orderInfo)</span></span>;</span><br><span class="line">    <span class="function">OrderInfo <span class="title">queryByOrderId</span><span class="params">(String userId, String orderId)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>实体的角度资源库定义案例如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">OrderInfoRepository</span> </span>&#123;</span><br><span class="line">    <span class="function">String <span class="title">save</span><span class="params">(OrderInfo orderInfo)</span></span>;</span><br><span class="line">    <span class="function">OrderInfo <span class="title">queryByOrderId</span><span class="params">(String userId, String orderId)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">OrderDetailRepository</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">batchInsert</span><span class="params">(List&lt;OrderDetail&gt; orderDetailList)</span></span>;</span><br><span class="line">    <span class="function">List&lt;OrderDetail&gt; <span class="title">queryByOrderId</span><span class="params">(String orderId)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="领域服务"><a href="#领域服务" class="headerlink" title="领域服务"></a>领域服务</h3><p>何为领域服务？当领域中的某个操作过程或者转换过程不是实体或者值对象的职责时，便可以将该操作放在一个单独的接口中，即封装一个领域服务。</p>
+<p>领域服务可以存在于如下三种方式：</p>
+<ul>
+<li>显著的业务用例执行过程</li>
+<li>多个领域对象的业务编排</li>
+<li>可复用的应用层逻辑下层</li>
+</ul>
+<p>什么是显著的业务用例？从交易系统的用例分析而言，如创建订单、取消订单、支付订单等等就是显著的业务用例，它们的执行过程包含业务规则校验和核心逻辑处理。</p>
+<p>那么在实践中如何合理的使用应用服务和领域服务，并将领域服务做厚，将应用服务做薄？这里建议遵循一个原则：<strong>应用服务只做跨聚合跨应用的编排，核心规则下层领域</strong>。</p>
+<h3 id="领域事件"><a href="#领域事件" class="headerlink" title="领域事件"></a>领域事件</h3><p>何为领域事件？是将领域中聚合所发生的活动行为建模成一系列离散的事件行为，通常体现在聚合的状态变更。</p>
+<p>在实际实际中可以分为应用内事件和应用外事件，应用内事件以监听器模式处理，应用外事件以消息模式处理。</p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/DDD/" rel="tag"># DDD</a>
+            
+              <a href="/tags/架构/" rel="tag"># 架构</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2021/10/24/通过SVG文件制图/" rel="next" title="通过SVG文件制图">
+                  <i class="fa fa-chevron-left"></i> 通过SVG文件制图
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#战略设计"><span class="nav-number">1.</span> <span class="nav-text">战略设计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#领域划分"><span class="nav-number">1.1.</span> <span class="nav-text">领域划分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#限界上下文"><span class="nav-number">1.2.</span> <span class="nav-text">限界上下文</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#通用语言"><span class="nav-number">1.3.</span> <span class="nav-text">通用语言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#上下文映射"><span class="nav-number">1.4.</span> <span class="nav-text">上下文映射</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#战略设计案例"><span class="nav-number">1.5.</span> <span class="nav-text">战略设计案例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#战术设计"><span class="nav-number">2.</span> <span class="nav-text">战术设计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#实体"><span class="nav-number">2.1.</span> <span class="nav-text">实体</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#值对象"><span class="nav-number">2.2.</span> <span class="nav-text">值对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#聚合"><span class="nav-number">2.3.</span> <span class="nav-text">聚合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#工厂"><span class="nav-number">2.4.</span> <span class="nav-text">工厂</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#资源库"><span class="nav-number">2.5.</span> <span class="nav-text">资源库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#领域服务"><span class="nav-number">2.6.</span> <span class="nav-text">领域服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#领域事件"><span class="nav-number">2.7.</span> <span class="nav-text">领域事件</span></a></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar-1.jpg"
+      alt="LazyCeCe">
+  <p class="site-author-name" itemprop="name">LazyCeCe</p>
+  <div class="site-description" itemprop="description">Another way to laugh !</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">106</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/lazycece" title="GitHub &rarr; https://github.com/lazycece" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:lazycece@qq.com" title="E-Mail &rarr; mailto:lazycece@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://blog.csdn.net/qq_28851503" title="CSDN &rarr; https://blog.csdn.net/qq_28851503" rel="noopener" target="_blank"><i class="fa fa-fw fa-vk"></i>CSDN</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://leetcode-cn.com/u/lazycece" title="LeetCode &rarr; https://leetcode-cn.com/u/lazycece" rel="noopener" target="_blank"><i class="fa fa-fw fa-vk"></i>LeetCode</a>
+      </span>
+    
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2023</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LazyCeCe</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script><script src="/js/bookmark.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
