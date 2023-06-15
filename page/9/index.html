@@ -222,6 +222,100 @@
   
   
   <div class="post-block home">
+    <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2019/02/08/【链表】单向链表的反转/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="LazyCeCe">
+      <meta itemprop="description" content="Another way to laugh !">
+      <meta itemprop="image" content="/images/avatar-2.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="W  pit">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+            
+            <a href="/2019/02/08/【链表】单向链表的反转/" class="post-title-link" itemprop="url">【链表】单向链表的反转</a>
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2019-02-08 18:10:18" itemprop="dateCreated datePublished" datetime="2019-02-08T18:10:18+08:00">2019-02-08</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-01-31 22:11:26" itemprop="dateModified" datetime="2021-01-31T22:11:26+08:00">2021-01-31</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/算法/" itemprop="url" rel="index"><span itemprop="name">算法</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>三指针法遍历，一次遍历则完成反转：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ListNode* <span class="title">ReverseList</span><span class="params">(ListNode* pHead)</span> </span>&#123;</span><br><span class="line">     <span class="comment">//no node</span></span><br><span class="line">     <span class="keyword">if</span>(pHead==<span class="literal">nullptr</span>) <span class="keyword">return</span> pHead;</span><br><span class="line">     ListNode* pre=<span class="literal">nullptr</span>,*mid=pHead,*last=<span class="literal">nullptr</span>;</span><br><span class="line">     <span class="comment">//more node/single node</span></span><br><span class="line">     <span class="keyword">while</span>(mid-&gt;next!=<span class="literal">nullptr</span>)&#123;</span><br><span class="line">         <span class="comment">//confirm the location</span></span><br><span class="line">         last=mid-&gt;next;</span><br><span class="line">         mid-&gt;next=pre; pre=mid;mid=last; </span><br><span class="line">     &#125;</span><br><span class="line">     mid-&gt;next=pre;</span><br><span class="line">     pHead=mid;</span><br><span class="line">     <span class="keyword">return</span> pHead;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-eof"></div>
+        
+      </footer>
+  </div>
+  
+  
+  
+  </article>
+
+    
+        <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block home">
     <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2019/02/08/【树】判断数A为数B的子结构/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1155,121 +1249,6 @@
   </article>
 
     
-        <article itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block home">
-    <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2019/02/01/SOAP之spring与cxf集成/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="LazyCeCe">
-      <meta itemprop="description" content="Another way to laugh !">
-      <meta itemprop="image" content="/images/avatar-2.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="W  pit">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-            
-            <a href="/2019/02/01/SOAP之spring与cxf集成/" class="post-title-link" itemprop="url">SOAP之spring与cxf集成</a>
-          
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              
-                
-              
-
-              <time title="Created: 2019-02-01 10:30:30" itemprop="dateCreated datePublished" datetime="2019-02-01T10:30:30+08:00">2019-02-01</time>
-            </span>
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-01-31 22:11:26" itemprop="dateModified" datetime="2021-01-31T22:11:26+08:00">2021-01-31</time>
-              </span>
-            
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/webservice/" itemprop="url" rel="index"><span itemprop="name">webservice</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="初识SOAP"><a href="#初识SOAP" class="headerlink" title="初识SOAP"></a>初识SOAP</h2><p>SOAP 是基于 XML 的简易协议，可使应用程序在 HTTP 之上进行信息交换。或者更简单地说：SOAP 是用于访问网络服务的协议。</p>
-<ul>
-<li>SOAP 指简易对象访问协议</li>
-<li>SOAP 是一种通信协议</li>
-<li>SOAP 用于应用程序之间的通信</li>
-<li>SOAP 是一种用于发送消息的格式</li>
-<li>SOAP 被设计用来通过因特网进行通信</li>
-<li>SOAP 独立于平台</li>
-<li>SOAP 独立于语言</li>
-<li>SOAP 基于 XML</li>
-<li>SOAP 很简单并可扩展</li>
-<li>SOAP 允许您绕过防火墙</li>
-<li>SOAP 将被作为 W3C 标准来发展</li>
-</ul>
-          <!--noindex-->
-          
-            <div class="post-button">
-              <a class="btn" href="/2019/02/01/SOAP之spring与cxf集成/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-          <div class="post-eof"></div>
-        
-      </footer>
-  </div>
-  
-  
-  
-  </article>
-
-    
   </div>
 
   
@@ -1323,7 +1302,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">106</span>
+          <span class="site-state-item-count">107</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
