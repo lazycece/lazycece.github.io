@@ -222,6 +222,109 @@
   
   
   <div class="post-block home">
+    <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2019/02/01/js使用ajax向服务的请求案例/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="蝉">
+      <meta itemprop="description" content="Another way to laugh !">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="W  pit">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+            
+            <a href="/2019/02/01/js使用ajax向服务的请求案例/" class="post-title-link" itemprop="url">js使用ajax向服务的请求案例</a>
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2019-02-01 16:33:46" itemprop="dateCreated datePublished" datetime="2019-02-01T16:33:46+08:00">2019-02-01</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-01-31 22:11:26" itemprop="dateModified" datetime="2021-01-31T22:11:26+08:00">2021-01-31</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/前端技术/" itemprop="url" rel="index"><span itemprop="name">前端技术</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>一个简单的ajax请求案例，后端springmvc接收请求：</p>
+<h4 id="请求端-js-ajax"><a href="#请求端-js-ajax" class="headerlink" title="请求端(js,ajax)"></a>请求端(js,ajax)</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//ajax执行请求</span></span><br><span class="line">	<span class="keyword">var</span> data=&#123;<span class="attr">number</span>:username,<span class="attr">password</span>:mdPwd&#125;;</span><br><span class="line">	$.ajax(&#123;</span><br><span class="line">		url:<span class="string">"/userLogin"</span>,</span><br><span class="line">		type:<span class="string">"POST"</span>,</span><br><span class="line">		<span class="keyword">async</span>:<span class="literal">false</span>,</span><br><span class="line">		data: data,</span><br><span class="line">		dataType: <span class="string">"json"</span>,</span><br><span class="line">		success:<span class="function"><span class="keyword">function</span> (<span class="params">message</span>)</span>&#123;</span><br><span class="line">			<span class="keyword">if</span>(message.status==<span class="number">1</span>)&#123;</span><br><span class="line">				<span class="built_in">window</span>.location.href=<span class="string">"/"</span>; </span><br><span class="line">			&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">				alert(message[<span class="string">"error"</span>]);</span><br><span class="line">			&#125;	</span><br><span class="line">		&#125;,</span><br><span class="line">		error:<span class="function"><span class="keyword">function</span>(<span class="params">XMLHttpRequest, textStatus, errorThrown</span>)</span>&#123;</span><br><span class="line">			alert(<span class="string">"statusText:"</span>+XMLHttpRequest.statusText+<span class="string">"\nstatus: "</span>+XMLHttpRequest.status+<span class="string">";\nreadyState: "</span>+XMLHttpRequest.readyState+</span><br><span class="line">					<span class="string">";\ntextStatus: "</span>+textStatus);</span><br><span class="line">			<span class="keyword">this</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;);</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+          
+            <div class="post-button">
+              <a class="btn" href="/2019/02/01/js使用ajax向服务的请求案例/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-eof"></div>
+        
+      </footer>
+  </div>
+  
+  
+  
+  </article>
+
+    
+        <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block home">
     <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2019/02/01/eclipse使用插件Rinzo在XML文件中自动提示java类/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1179,112 +1282,6 @@
   </article>
 
     
-        <article itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block home">
-    <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2019/01/30/idea开启run-dashboard/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="蝉">
-      <meta itemprop="description" content="Another way to laugh !">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="W  pit">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-            
-            <a href="/2019/01/30/idea开启run-dashboard/" class="post-title-link" itemprop="url">idea开启rundashboard</a>
-          
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              
-                
-              
-
-              <time title="Created: 2019-01-30 21:22:03" itemprop="dateCreated datePublished" datetime="2019-01-30T21:22:03+08:00">2019-01-30</time>
-            </span>
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-01-31 22:11:26" itemprop="dateModified" datetime="2021-01-31T22:11:26+08:00">2021-01-31</time>
-              </span>
-            
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/springboot/" itemprop="url" rel="index"><span itemprop="name">springboot</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>在idea上开发springboot项目的时候，有时找不到 run dashboard，按照下面的方式即可解决：</p>
-<ol>
-<li>在.idea-&gt;workspace.xml文件中找run dashboard到组件配置：</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;component name=&quot;RunDashboard&quot;&gt;</span><br><span class="line">    &lt;option name=&quot;ruleStates&quot;&gt;</span><br><span class="line">      &lt;list&gt;</span><br><span class="line">        &lt;RuleState&gt;</span><br><span class="line">          &lt;option name=&quot;name&quot; value=&quot;ConfigurationTypeDashboardGroupingRule&quot; /&gt;</span><br><span class="line">        &lt;/RuleState&gt;</span><br><span class="line">        &lt;RuleState&gt;</span><br><span class="line">          &lt;option name=&quot;name&quot; value=&quot;StatusDashboardGroupingRule&quot; /&gt;</span><br><span class="line">        &lt;/RuleState&gt;</span><br><span class="line">      &lt;/list&gt;</span><br><span class="line">    &lt;/option&gt;</span><br><span class="line">    &lt;option name=&quot;contentProportion&quot; value=&quot;0.1975213&quot; /&gt;</span><br><span class="line">&lt;/component&gt;</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-          
-            <div class="post-button">
-              <a class="btn" href="/2019/01/30/idea开启run-dashboard/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-          <div class="post-eof"></div>
-        
-      </footer>
-  </div>
-  
-  
-  
-  </article>
-
-    
   </div>
 
   
@@ -1338,7 +1335,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">108</span>
+          <span class="site-state-item-count">109</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1432,7 +1429,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2023</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2025</span>
   <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>
