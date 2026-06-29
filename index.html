@@ -222,6 +222,213 @@
   
   
   <div class="post-block home">
+    <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2026/06/29/SpringAI — Tool-Search-Tool（工具搜索工具）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="蝉">
+      <meta itemprop="description" content="Another way to laugh !">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="W  pit">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+            
+            <a href="/2026/06/29/SpringAI — Tool-Search-Tool（工具搜索工具）/" class="post-title-link" itemprop="url">SpringAI — Tool Search Tool（工具搜索工具）</a>
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2026-06-29 19:45:53 / Modified: 20:00:28" itemprop="dateCreated datePublished" datetime="2026-06-29T19:45:53+08:00">2026-06-29</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/springai/" itemprop="url" rel="index"><span itemprop="name">springai</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>随着 AI Agent 连接的服务增多（Slack、GitHub、Jira、MCP 服务器等），工具库迅速膨胀。一个典型的多服务器设置很容易拥有 <strong>50+ 工具</strong>，在对话开始之前就消耗 <strong>55,000+ Token</strong>。当模型面对 30+ 名称相似的工具时，工具选择准确性也会下降。</p>
+<p><strong>工具搜索工具模式</strong>通过按需工具发现解决这个问题：</p>
+<blockquote>
+<p>Spring AI 在2.0版本提供了该机制，可用于实现Tool的渐进加载，更好的为agent服务</p>
+</blockquote>
+<ol>
+<li>模型初始只收到一个搜索工具 — 最小化 Token 使用</li>
+<li>当需要某种能力时，模型用自然语言查询调用搜索工具</li>
+<li>匹配的工具定义被动态展开到上下文中</li>
+<li>模型随后可以正常调用被发现的工具</li>
+</ol>
+<p>这实现了显著的 Token 节省，同时保持对大型工具目录的访问。</p>
+          <!--noindex-->
+          
+            <div class="post-button">
+              <a class="btn" href="/2026/06/29/SpringAI — Tool-Search-Tool（工具搜索工具）/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-eof"></div>
+        
+      </footer>
+  </div>
+  
+  
+  
+  </article>
+
+    
+        <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block home">
+    <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2026/06/29/SpringAI — Tool Calling（工具调用）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="蝉">
+      <meta itemprop="description" content="Another way to laugh !">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="W  pit">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+            
+            <a href="/2026/06/29/SpringAI — Tool Calling（工具调用）/" class="post-title-link" itemprop="url">SpringAI — Tool Calling（工具调用）</a>
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2026-06-29 19:19:28 / Modified: 19:39:11" itemprop="dateCreated datePublished" datetime="2026-06-29T19:19:28+08:00">2026-06-29</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/springai/" itemprop="url" rel="index"><span itemprop="name">springai</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="工具调用概述"><a href="#工具调用概述" class="headerlink" title="工具调用概述"></a>工具调用概述</h2><p><strong>工具调用</strong>（Tool Calling，也称为 <strong>函数调用 Function Calling</strong>）是 AI 应用中的一种常见模式，允许模型与一组 API 或”工具”交互，从而扩展模型的能力。</p>
+<p>工具主要用于以下场景：</p>
+<ul>
+<li>信息检索（Information Retrieval）：此类工具用于从外部源（如数据库、Web 服务、文件系统或搜索引擎）检索信息，目的是增强模型的知识，使其能回答原本无法回答的问题，比如适用于 <strong>检索增强生成（RAG）</strong> 场景。工具的使用例子有“获取某地的当前天气”、“检索最新新闻文章”、“查询数据库中的特定记录”等等 </li>
+<li>执行操作（Taking Action）：此类工具可在软件系统中执行操作，如发送邮件、在数据库中创建记录、提交表单或触发工作流，旨在自动化原需人工干预或显式编程的任务。比如“为聊天机器人用户预订航班”、“填写网页表单”、“在代码生成场景中依据自动化测试实现 Java 类（TDD）”</li>
+</ul>
+<blockquote>
+<p>虽然通常称”工具调用”是模型的能力，但实际上<strong>由客户端应用程序提供工具调用逻辑</strong>。模型只能<strong>请求调用工具并提供输入参数</strong>，应用程序负责执行工具并返回结果。模型<strong>永远不会直接接触</strong>被注册为工具的 API。</p>
+</blockquote>
+          <!--noindex-->
+          
+            <div class="post-button">
+              <a class="btn" href="/2026/06/29/SpringAI — Tool Calling（工具调用）/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-eof"></div>
+        
+      </footer>
+  </div>
+  
+  
+  
+  </article>
+
+    
+        <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block home">
     <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2025/05/10/OSSRH项目废弃后如何发布开源项目/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1039,219 +1246,11 @@
   </article>
 
     
-        <article itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block home">
-    <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2020/06/07/如何实现一个好的单例模式？/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="蝉">
-      <meta itemprop="description" content="Another way to laugh !">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="W  pit">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-            
-            <a href="/2020/06/07/如何实现一个好的单例模式？/" class="post-title-link" itemprop="url">如何实现一个好的单例模式？</a>
-          
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              
-                
-              
-
-              <time title="Created: 2020-06-07 17:23:47" itemprop="dateCreated datePublished" datetime="2020-06-07T17:23:47+08:00">2020-06-07</time>
-            </span>
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-01-31 22:11:26" itemprop="dateModified" datetime="2021-01-31T22:11:26+08:00">2021-01-31</time>
-              </span>
-            
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/设计模式/" itemprop="url" rel="index"><span itemprop="name">设计模式</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>单例模式在开发中会经常用到，那么如何实现一个优雅的单例就显的尤为重要.在实现的时候，我们需要根据具体情况考量如下信息：</p>
-<ul>
-<li>是否需要线程安全？</li>
-<li>是否需要懒加载？</li>
-</ul>
-          <!--noindex-->
-          
-            <div class="post-button">
-              <a class="btn" href="/2020/06/07/如何实现一个好的单例模式？/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-          <div class="post-eof"></div>
-        
-      </footer>
-  </div>
-  
-  
-  
-  </article>
-
-    
-        <article itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block home">
-    <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2020/06/07/git常用命令总结/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="蝉">
-      <meta itemprop="description" content="Another way to laugh !">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="W  pit">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-            
-            <a href="/2020/06/07/git常用命令总结/" class="post-title-link" itemprop="url">git常用命令总结</a>
-          
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              
-                
-              
-
-              <time title="Created: 2020-06-07 17:05:57" itemprop="dateCreated datePublished" datetime="2020-06-07T17:05:57+08:00">2020-06-07</time>
-            </span>
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-01-31 22:11:26" itemprop="dateModified" datetime="2021-01-31T22:11:26+08:00">2021-01-31</time>
-              </span>
-            
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/git/" itemprop="url" rel="index"><span itemprop="name">git</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="init-config"><a href="#init-config" class="headerlink" title="init config"></a>init config</h2>  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ git config  --global user.name lazycece</span><br><span class="line">$ git config  --global user.email lazycece@gmail.com</span><br><span class="line">$ git config  --global color.ui auto </span><br><span class="line">$ git config  --global color.status auto </span><br><span class="line">$ git config  --global color.branch auto </span><br><span class="line">$ git config  --global color.diff auto</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-          
-            <div class="post-button">
-              <a class="btn" href="/2020/06/07/git常用命令总结/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-          <div class="post-eof"></div>
-        
-      </footer>
-  </div>
-  
-  
-  
-  </article>
-
-    
   </div>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
@@ -1300,7 +1299,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">109</span>
+          <span class="site-state-item-count">111</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1313,7 +1312,7 @@
             <a href="/categories/">
           
         
-        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-count">30</span>
         <span class="site-state-item-name">categories</span>
         </a>
       </div>
@@ -1326,7 +1325,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">72</span>
+        <span class="site-state-item-count">73</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
@@ -1394,7 +1393,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2025</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2026</span>
   <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>

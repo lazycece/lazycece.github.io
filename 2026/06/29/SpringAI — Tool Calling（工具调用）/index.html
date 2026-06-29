@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":true,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="工具调用概述工具调用（Tool Calling，也称为 函数调用 Function Calling）是 AI 应用中的一种常见模式，允许模型与一组 API 或”工具”交互，从而扩展模型的能力。 工具主要用于以下场景：  信息检索（Information Retrieval）：此类工具用于从外部源（如数据库、Web 服务、文件系统或搜索引擎）检索信息，目的是增强模型的知识，使其能回答原本无法回答的问">
+<meta name="keywords" content="springai">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringAI — Tool Calling（工具调用）">
+<meta property="og:url" content="https://lazycece.github.io/2026/06/29/SpringAI — Tool Calling（工具调用）/index.html">
+<meta property="og:site_name" content="W  pit">
+<meta property="og:description" content="工具调用概述工具调用（Tool Calling，也称为 函数调用 Function Calling）是 AI 应用中的一种常见模式，允许模型与一组 API 或”工具”交互，从而扩展模型的能力。 工具主要用于以下场景：  信息检索（Information Retrieval）：此类工具用于从外部源（如数据库、Web 服务、文件系统或搜索引擎）检索信息，目的是增强模型的知识，使其能回答原本无法回答的问">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://lazycece.github.io/images/article/springai-toolcalling-invoke.png">
+<meta property="og:image" content="https://lazycece.github.io/images/article/springai-toolcalling-invoke-life.png">
+<meta property="og:updated_time" content="2026-06-29T11:39:11.023Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SpringAI — Tool Calling（工具调用）">
+<meta name="twitter:description" content="工具调用概述工具调用（Tool Calling，也称为 函数调用 Function Calling）是 AI 应用中的一种常见模式，允许模型与一组 API 或”工具”交互，从而扩展模型的能力。 工具主要用于以下场景：  信息检索（Information Retrieval）：此类工具用于从外部源（如数据库、Web 服务、文件系统或搜索引擎）检索信息，目的是增强模型的知识，使其能回答原本无法回答的问">
+<meta name="twitter:image" content="https://lazycece.github.io/images/article/springai-toolcalling-invoke.png">
+  <link rel="canonical" href="https://lazycece.github.io/2026/06/29/SpringAI — Tool Calling（工具调用）/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>SpringAI — Tool Calling（工具调用） | W  pit</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">W  pit</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">A thousand miles begins with a single step .</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a class="book-mark-link book-mark-link-fixed" href="#"></a>
+
+  <a href="https://github.com/lazycece" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2026/06/29/SpringAI — Tool Calling（工具调用）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="蝉">
+      <meta itemprop="description" content="Another way to laugh !">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="W  pit">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">SpringAI — Tool Calling（工具调用）
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2026-06-29 19:19:28 / Modified: 19:39:11" itemprop="dateCreated datePublished" datetime="2026-06-29T19:19:28+08:00">2026-06-29</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/springai/" itemprop="url" rel="index"><span itemprop="name">springai</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="工具调用概述"><a href="#工具调用概述" class="headerlink" title="工具调用概述"></a>工具调用概述</h2><p><strong>工具调用</strong>（Tool Calling，也称为 <strong>函数调用 Function Calling</strong>）是 AI 应用中的一种常见模式，允许模型与一组 API 或”工具”交互，从而扩展模型的能力。</p>
+<p>工具主要用于以下场景：</p>
+<ul>
+<li>信息检索（Information Retrieval）：此类工具用于从外部源（如数据库、Web 服务、文件系统或搜索引擎）检索信息，目的是增强模型的知识，使其能回答原本无法回答的问题，比如适用于 <strong>检索增强生成（RAG）</strong> 场景。工具的使用例子有“获取某地的当前天气”、“检索最新新闻文章”、“查询数据库中的特定记录”等等 </li>
+<li>执行操作（Taking Action）：此类工具可在软件系统中执行操作，如发送邮件、在数据库中创建记录、提交表单或触发工作流，旨在自动化原需人工干预或显式编程的任务。比如“为聊天机器人用户预订航班”、“填写网页表单”、“在代码生成场景中依据自动化测试实现 Java 类（TDD）”</li>
+</ul>
+<blockquote>
+<p>虽然通常称”工具调用”是模型的能力，但实际上<strong>由客户端应用程序提供工具调用逻辑</strong>。模型只能<strong>请求调用工具并提供输入参数</strong>，应用程序负责执行工具并返回结果。模型<strong>永远不会直接接触</strong>被注册为工具的 API。</p>
+</blockquote>
+<a id="more"></a>
+
+<hr>
+<h2 id="工具调用示例"><a href="#工具调用示例" class="headerlink" title="工具调用示例"></a>工具调用示例</h2><p>场景：闹钟设置（如果经常用siri来预定闹钟，那么对这个场景就不会陌生）</p>
+<p>涉及到两个简单工具：一个用于信息检索，一个用于执行操作。</p>
+<ul>
+<li><strong>信息检索工具：</strong> 获取用户时区的当前日期和时间</li>
+<li><strong>操作工具：</strong> 在指定时间设置闹钟</li>
+</ul>
+<h3 id="定义-Tool"><a href="#定义-Tool" class="headerlink" title="定义 @Tool"></a>定义 @Tool</h3><p>定义 <code>DateTimeTools</code> 类并实现两个工具，用 <code>@Tool</code> 注解标记方法并给出详细描述：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DateTimeTools</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Tool</span>(name = <span class="string">"getCurrentDateTime"</span>,</span><br><span class="line">            description = <span class="string">"获取用户时区的当前日期和时间"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getCurrentDateTime</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"[getCurrentDateTime]"</span>);</span><br><span class="line">        <span class="keyword">return</span> ZonedDateTime.now(LocaleContextHolder.getTimeZone().toZoneId()).toString();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Tool</span>(name = <span class="string">"setAlarm"</span>,</span><br><span class="line">            description = <span class="string">"在指定 ISO-8601 时间设置闹钟。例如：2026-06-29T15:30:00"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setAlarm</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">            @ToolParam(description = <span class="string">"ISO-8601 格式的闹钟时间"</span>)</span> String time) </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"[setAlarm]"</span>);</span><br><span class="line">        System.out.println(<span class="string">"⏰ 闹钟已设置为："</span> + time);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="注册并调用"><a href="#注册并调用" class="headerlink" title="注册并调用"></a>注册并调用</h3><p>通过 <code>tools()</code> 方法进行工具实例注册，<code>ChatClient</code> 内部会自动处理工具调用循环：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">String answer = chatClient.prompt()</span><br><span class="line">        .user(<span class="string">"请在 10 分钟后设置一个闹钟提醒我开会"</span>)</span><br><span class="line">        .tools(<span class="keyword">new</span> DateTimeTools())</span><br><span class="line">        .call()</span><br><span class="line">        .content();</span><br><span class="line">System.out.println(answer);</span><br></pre></td></tr></table></figure>
+
+<h3 id="执行结果"><a href="#执行结果" class="headerlink" title="执行结果"></a>执行结果</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[getCurrentDateTime]</span><br><span class="line">[setAlarm]</span><br><span class="line">⏰ 闹钟已设置为：2026-06-29T17:41:00</span><br><span class="line">闹钟已设置成功！⏰ </span><br><span class="line"></span><br><span class="line">- **当前时间**：2026年6月29日 17:31</span><br><span class="line">- **闹钟时间**：2026年6月29日 **17:41**</span><br><span class="line"></span><br><span class="line">届时闹钟会提醒您开会，请放心～</span><br></pre></td></tr></table></figure>
+
+<h2 id="工具核心概念"><a href="#工具核心概念" class="headerlink" title="工具核心概念"></a>工具核心概念</h2><p>Spring AI 通过一系列灵活的抽象层支持工具调用，使得能够以一致的方式定义、解析和执行工具。工具触发的整个过程如下：<br><img src="/images/article/springai-toolcalling-invoke.png" alt="tool-calling-invoke"></p>
+<ol>
+<li>应用将<strong>工具定义</strong>（名称 + 描述 + 入参 JSON Schema）随聊天请求发给模型</li>
+<li>模型决定调用工具时，返回<strong>工具名称 + 入参</strong></li>
+<li>应用按工具名称来识别并根据提供的输入参数<strong>执行工具</strong></li>
+<li>应用程序会处理工具调用的结果</li>
+<li>应用将<strong>工具执行结果</strong>返回给模型</li>
+<li>模型使用工具调用结果作为附加上下文生成最终回复</li>
+</ol>
+<p>整个过程中对工具调用的派发执行是由<code>ToolCallingManager（DefaultToolCallingManager）</code>来协调完成的，其中<strong>工具</strong>是工具调用的构建块，由 <code>ToolCallback</code> 接口建模；Spring AI 内置支持从<strong>方法（@Tool 注解）</strong>和<strong>函数（Function/Supplier 等）</strong>生成 <code>ToolCallback</code>；</p>
+<hr>
+<h2 id="基于方法的工具定义-—-Tool-注解（声明式）"><a href="#基于方法的工具定义-—-Tool-注解（声明式）" class="headerlink" title="基于方法的工具定义 — @Tool 注解（声明式）"></a>基于方法的工具定义 — @Tool 注解（声明式）</h2><h3 id="Tool-注解属性"><a href="#Tool-注解属性" class="headerlink" title="@Tool 注解属性"></a>@Tool 注解属性</h3><table>
+<thead>
+<tr>
+<th>属性</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>name</code></td>
+<td>工具名称，默认取方法名。<strong>同一请求中所有工具名称必须唯一</strong></td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>工具描述，<strong>强烈建议详细填写</strong>，影响模型是否及何时调用</td>
+</tr>
+<tr>
+<td><code>returnDirect</code></td>
+<td><code>true</code> = 结果直接返回调用方，不回传模型</td>
+</tr>
+<tr>
+<td><code>resultConverter</code></td>
+<td>自定义 <code>ToolCallResultConverter</code></td>
+</tr>
+</tbody></table>
+<p><strong>方法要求：</strong></p>
+<ul>
+<li>方法可以是实例方法或静态方法，任意访问权限（public、protected、package-private 或 private）</li>
+<li>包含方法的类可以是顶层类或嵌套类，任意访问权限</li>
+<li>参数数量任意（包括无参），支持大多数类型：基本类型、POJO、Enum、List、数组、Map 等</li>
+<li>返回值可以是大多数类型，包括 <code>void</code></li>
+<li>如果方法有返回值，返回类型必须是可序列化类型</li>
+</ul>
+<h3 id="ToolParam-注解属性"><a href="#ToolParam-注解属性" class="headerlink" title="@ToolParam 注解属性"></a>@ToolParam 注解属性</h3><table>
+<thead>
+<tr>
+<th>属性</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>description</code></td>
+<td>参数描述，帮助模型理解如何使用该参数（格式、允许值等）</td>
+</tr>
+<tr>
+<td><code>required</code></td>
+<td>是否必填，默认 <code>true</code></td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>如果参数标注了 <code>@Nullable</code>，除非使用 <code>@ToolParam(required = true)</code> 显式标记，否则视为可选。</p>
+</blockquote>
+<p>除了 <code>@ToolParam</code>，还可以使用 Swagger 的 <code>@Schema</code> 或 Jackson 的 <code>@JsonProperty</code>/<code>@JsonClassDescription</code>。</p>
+<p><strong>示例：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Tool</span>(description = <span class="string">"根据城市名查询当前天气"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">getWeather</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    @ToolParam(description = <span class="string">"城市名称，如 'Beijing'"</span>, required = <span class="keyword">true</span>)</span></span></span><br><span class="line"><span class="function">    String city) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> weatherService.getCurrentWeather(city);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="注册方式"><a href="#注册方式" class="headerlink" title="注册方式"></a>注册方式</h3><p><strong>单次请求注册：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">chatClient.prompt()</span><br><span class="line">    .user(<span class="string">"..."</span>)</span><br><span class="line">    .tools(<span class="keyword">new</span> DateTimeTools())</span><br><span class="line">    .call();</span><br></pre></td></tr></table></figure>
+
+<p><strong>默认工具（Builder 级别）：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ChatClient chatClient = ChatClient.builder(model)</span><br><span class="line">    .defaultTools(<span class="keyword">new</span> DateTimeTools())</span><br><span class="line">    .build();</span><br></pre></td></tr></table></figure>
+
+<p><strong>通过 ChatModel 选项注册：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">ChatModel model = ...;</span><br><span class="line"></span><br><span class="line">Prompt prompt = <span class="keyword">new</span> Prompt(</span><br><span class="line">    List.of(<span class="keyword">new</span> UserMessage(<span class="string">"..."</span>)),</span><br><span class="line">    ToolCallingChatOptions.builder()</span><br><span class="line">        .toolCallbacks(ToolCallbacks.from(<span class="keyword">new</span> DateTimeTools()))</span><br><span class="line">        .build()</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">model.call(prompt);</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>如果同时提供了默认工具和运行时工具，<strong>运行时工具将完全覆盖默认工具</strong>。</p>
+</blockquote>
+<p><strong>编程式生成 ToolCallback：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 使用 ToolCallbacks 工具类</span></span><br><span class="line">ToolCallback[] callbacks = ToolCallbacks.from(<span class="keyword">new</span> DateTimeTools());</span><br></pre></td></tr></table></figure>
+
+<p><code>tools()</code> 方法也直接接受 <code>ToolCallback</code>、<code>ToolCallbackProvider</code> 实例，以及 <code>@Tool</code> 注解的 POJO 实例和这些类型的集合。</p>
+<hr>
+<h2 id="基于方法的工具定义-—-编程式（MethodToolCallback）"><a href="#基于方法的工具定义-—-编程式（MethodToolCallback）" class="headerlink" title="基于方法的工具定义 — 编程式（MethodToolCallback）"></a>基于方法的工具定义 — 编程式（MethodToolCallback）</h2><p>使用 <code>MethodToolCallback.Builder</code> 以编程方式构建工具：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">MethodToolCallback callback = MethodToolCallback.builder()</span><br><span class="line">    .toolDefinition(ToolDefinition.builder()</span><br><span class="line">        .name(<span class="string">"getCurrentDateTime"</span>)</span><br><span class="line">        .description(<span class="string">"获取用户时区的当前日期时间"</span>)</span><br><span class="line">        .inputSchema(<span class="string">"&#123;\"type\":\"object\",\"properties\":&#123;&#125;&#125;"</span>)</span><br><span class="line">        .build())</span><br><span class="line">    .toolMethod(DateTimeTools.class.getMethod("getCurrentDateTime"))</span><br><span class="line">    .toolObject(<span class="keyword">new</span> DateTimeTools())</span><br><span class="line">    .build();</span><br></pre></td></tr></table></figure>
+
+<p><strong>Builder 可配置项：</strong></p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>toolDefinition</code></td>
+<td><code>ToolDefinition</code> 实例，定义工具名称、描述和输入 Schema（<strong>必填</strong>）</td>
+</tr>
+<tr>
+<td><code>toolMetadata</code></td>
+<td><code>ToolMetadata</code> 实例，定义额外设置（如 returnDirect、resultConverter）</td>
+</tr>
+<tr>
+<td><code>toolMethod</code></td>
+<td>代表工具方法的 <code>Method</code> 对象（<strong>必填</strong>）</td>
+</tr>
+<tr>
+<td><code>toolObject</code></td>
+<td>包含工具方法的对象实例（静态方法可省略）</td>
+</tr>
+<tr>
+<td><code>toolCallResultConverter</code></td>
+<td>自定义结果转换器</td>
+</tr>
+</tbody></table>
+<p><strong>注册方式同声明式：</strong></p>
+<ul>
+<li><code>.tools(callback)</code> — 单次请求</li>
+<li><code>.defaultTools(callback)</code> — 默认工具</li>
+<li><code>ToolCallingChatOptions.toolCallbacks(callback)</code> — ChatModel 选项</li>
+</ul>
+<blockquote>
+<p>❌ <strong>不支持</strong>作为工具方法参数/返回值的类型：<code>Optional</code>、异步类型（<code>CompletableFuture</code>、<code>Future</code>）、响应式类型（<code>Flow</code>、<code>Mono</code>、<code>Flux</code>）、函数式类型（<code>Function</code>、<code>Supplier</code>、<code>Consumer</code>）。函数式类型请使用函数式工具规范方式。</p>
+</blockquote>
+<hr>
+<h2 id="基于函数的工具定义-—-FunctionToolCallback"><a href="#基于函数的工具定义-—-FunctionToolCallback" class="headerlink" title="基于函数的工具定义 — FunctionToolCallback"></a>基于函数的工具定义 — FunctionToolCallback</h2><p>支持 <code>Function</code>、<code>Supplier</code>、<code>Consumer</code>、<code>BiFunction</code> 等函数式类型。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">FunctionToolCallback.from(</span><br><span class="line">    <span class="string">"getWeather"</span>,           <span class="comment">// 工具名称</span></span><br><span class="line">    weatherService::get,    <span class="comment">// 函数对象</span></span><br><span class="line">    WeatherRequest<span class="class">.<span class="keyword">class</span>,   // 输入类型</span></span><br><span class="line"><span class="class">    <span class="title">ToolMetadata</span>.<span class="title">builder</span>().<span class="title">build</span>()</span></span><br><span class="line"><span class="class">)</span>;</span><br></pre></td></tr></table></figure>
+
+<p><strong>Builder 可配置项：</strong></p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>name</code></td>
+<td>工具名称（<strong>必填</strong>）</td>
+</tr>
+<tr>
+<td><code>toolFunction</code></td>
+<td>函数对象 <code>Function</code>/<code>Supplier</code>/<code>Consumer</code>/<code>BiFunction</code>（<strong>必填</strong>）</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>工具描述</td>
+</tr>
+<tr>
+<td><code>inputType</code></td>
+<td>函数输入类型（<strong>必填</strong>）</td>
+</tr>
+<tr>
+<td><code>inputSchema</code></td>
+<td>输入参数的 JSON Schema</td>
+</tr>
+<tr>
+<td><code>toolMetadata</code></td>
+<td>额外设置（returnDirect、resultConverter）</td>
+</tr>
+<tr>
+<td><code>toolCallResultConverter</code></td>
+<td>自定义结果转换器</td>
+</tr>
+</tbody></table>
+<p><strong>函数要求：</strong></p>
+<ul>
+<li>函数输入和输出可以是 <code>Void</code> 或 POJO</li>
+<li>输入和输出 POJO 必须是可序列化的</li>
+<li>函数及输入输出类型必须是 public</li>
+</ul>
+<blockquote>
+<p>❌ <strong>不支持</strong>作为函数入参/出参的类型：原始类型、集合类型（<code>List</code>、<code>Map</code>、<code>Array</code>、<code>Set</code>）、异步类型、响应式类型。原始类型和集合请使用基于方法的工具规范方式。</p>
+</blockquote>
+<hr>
+<h2 id="工具规范"><a href="#工具规范" class="headerlink" title="工具规范"></a>工具规范</h2><h3 id="ToolCallback-接口"><a href="#ToolCallback-接口" class="headerlink" title="ToolCallback 接口"></a>ToolCallback 接口</h3><p><code>ToolCallback</code> 是 Spring AI 中工具的核心建模接口，包含工具的定义和执行逻辑：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ToolCallback</span> </span>&#123;</span><br><span class="line">    <span class="function">ToolDefinition <span class="title">getToolDefinition</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function">ToolCallResult <span class="title">invoke</span><span class="params">(ToolCall toolCall)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Spring AI 提供两个内置实现：</p>
+<ul>
+<li><strong><code>MethodToolCallback</code></strong> — 基于方法的工具</li>
+<li><strong><code>FunctionToolCallback</code></strong> — 基于函数的工具 </li>
+</ul>
+<h3 id="ToolDefinition-接口"><a href="#ToolDefinition-接口" class="headerlink" title="ToolDefinition 接口"></a>ToolDefinition 接口</h3><p>提供 AI 模型了解工具可用性所需的信息：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ToolDefinition</span> </span>&#123;</span><br><span class="line">    <span class="function">String <span class="title">name</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function">String <span class="title">description</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function">String <span class="title">inputSchema</span><span class="params">()</span></span>;  <span class="comment">// JSON Schema</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用 <code>ToolDefinition.Builder</code> 构建：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ToolDefinition toolDef = ToolDefinition.builder()</span><br><span class="line">    .name(<span class="string">"myTool"</span>)</span><br><span class="line">    .description(<span class="string">"工具描述"</span>)</span><br><span class="line">    .inputSchema(jsonSchema)</span><br><span class="line">    .build();</span><br></pre></td></tr></table></figure>
+
+<h3 id="JSON-Schema-生成"><a href="#JSON-Schema-生成" class="headerlink" title="JSON Schema 生成"></a>JSON Schema 生成</h3><p>Spring AI 通过 <code>JsonSchemaGenerator</code> 类内置支持为工具输入类型生成 JSON Schema，作为 <code>ToolDefinition</code> 的一部分提供给模型。</p>
+<p><strong>参数描述:</strong> 可通过以下注解为输入参数提供描述（按优先级排序）：</p>
+<table>
+<thead>
+<tr>
+<th>注解</th>
+<th>来源</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>@ToolParam(description = &quot;...&quot;)</code></td>
+<td>Spring AI</td>
+</tr>
+<tr>
+<td><code>@JsonClassDescription(description = &quot;...&quot;)</code></td>
+<td>Jackson</td>
+</tr>
+<tr>
+<td><code>@JsonPropertyDescription(description = &quot;...&quot;)</code></td>
+<td>Jackson</td>
+</tr>
+<tr>
+<td><code>@Schema(description = &quot;...&quot;)</code></td>
+<td>Swagger</td>
+</tr>
+</tbody></table>
+<p>此方法对方法和函数均适用，且支持嵌套类型的递归使用。</p>
+<p><strong>必填/可选控制:</strong>默认每个输入参数都是必填的。可通过以下注解将参数标记为可选（按优先级排序）：</p>
+<table>
+<thead>
+<tr>
+<th>注解</th>
+<th>来源</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>@ToolParam(required = false)</code></td>
+<td>Spring AI</td>
+</tr>
+<tr>
+<td><code>@JsonProperty(required = false)</code></td>
+<td>Jackson</td>
+</tr>
+<tr>
+<td><code>@Schema(required = false)</code></td>
+<td>Swagger</td>
+</tr>
+<tr>
+<td><code>@Nullable</code></td>
+<td>Spring Framework</td>
+</tr>
+</tbody></table>
+<h3 id="工具结果转换（ToolCallResultConverter）"><a href="#工具结果转换（ToolCallResultConverter）" class="headerlink" title="工具结果转换（ToolCallResultConverter）"></a>工具结果转换（ToolCallResultConverter）</h3><p>工具调用的结果通过 <code>ToolCallResultConverter</code> 序列化为字符串后回传给 AI 模型。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ToolCallResultConverter</span> </span>&#123;</span><br><span class="line">    <span class="function">String <span class="title">convert</span><span class="params">(Object result)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>默认使用 Jackson 序列化（<code>DefaultToolCallResultConverter</code>）</li>
+<li>可实现自定义转换器</li>
+</ul>
+<p><strong>配置方式：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 声明式：@Tool 注解</span></span><br><span class="line"><span class="meta">@Tool</span>(description = <span class="string">"..."</span>, resultConverter = MyConverter<span class="class">.<span class="keyword">class</span>)</span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class">// 编程式：<span class="title">Builder</span></span></span><br><span class="line"><span class="class"><span class="title">MethodToolCallback</span>.<span class="title">builder</span>()</span></span><br><span class="line"><span class="class">    .<span class="title">toolCallResultConverter</span>(<span class="title">new</span> <span class="title">MyConverter</span>())</span></span><br><span class="line"><span class="class">    .<span class="title">build</span>()</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="工具上下文（ToolContext）"><a href="#工具上下文（ToolContext）" class="headerlink" title="工具上下文（ToolContext）"></a>工具上下文（ToolContext）</h3><p>Spring AI 支持通过 <code>ToolContext</code> API 向工具传递额外的上下文信息。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ChatClient</span></span><br><span class="line">chatClient.prompt()</span><br><span class="line">    .toolContext(Map.of(<span class="string">"userId"</span>, <span class="string">"12345"</span>, <span class="string">"sessionId"</span>, <span class="string">"abc"</span>))</span><br><span class="line">    .user(<span class="string">"..."</span>)</span><br><span class="line">    .call();</span><br><span class="line"></span><br><span class="line"><span class="comment">// ChatModel</span></span><br><span class="line">ChatModel.call(Prompt.withOptions(</span><br><span class="line">    ToolCallingChatOptions.builder()</span><br><span class="line">        .toolContext(Map.of(<span class="string">"userId"</span>, <span class="string">"12345"</span>))</span><br><span class="line">        .build()</span><br><span class="line">));</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>如果默认选项和运行时选项都设置了 <code>toolContext</code>，结果是两者的合并，<strong>运行时选项优先</strong>。</p>
+</blockquote>
+<h3 id="Return-Direct（直接返回）"><a href="#Return-Direct（直接返回）" class="headerlink" title="Return Direct（直接返回）"></a>Return Direct（直接返回）</h3><p>默认情况下，工具调用的结果会回传给模型继续对话。但有时你希望结果<strong>直接返回给调用方</strong>，而不是发回模型。</p>
+<p><strong>典型场景：</strong></p>
+<ul>
+<li>RAG 工具的结果直接展示给用户，避免模型不必要的后处理</li>
+<li>某些工具应该终止 Agent 的推理循环</li>
+</ul>
+<p>每个 <code>ToolCallback</code> 实现都可以定义是否将结果直接返回调用方。</p>
+<p><strong>配置方式：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 声明式：@Tool 注解</span></span><br><span class="line"><span class="meta">@Tool</span>(description = <span class="string">"..."</span>, returnDirect = <span class="keyword">true</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 编程式：ToolMetadata</span></span><br><span class="line">ToolMetadata metadata = ToolMetadata.builder()</span><br><span class="line">    .returnDirect(<span class="keyword">true</span>)</span><br><span class="line">    .build();</span><br></pre></td></tr></table></figure>
+
+<p><code>ToolCallingManager</code> 负责管理与工具关联的 <code>returnDirect</code> 属性。如果设为 <code>true</code>，工具调用结果直接返回调用方；否则结果回传给模型。</p>
+<hr>
+<h2 id="工具执行生命周期"><a href="#工具执行生命周期" class="headerlink" title="工具执行生命周期"></a>工具执行生命周期</h2><p><code>ToolCallingManager</code> 负责管理工具执行生命周期。如果使用 Spring AI Spring Boot Starters，<code>DefaultToolCallingManager</code> 是自动配置的默认实现。</p>
+<p>Spring AI 支持三种工具执行生命周期管理模式：</p>
+<table>
+<thead>
+<tr>
+<th>模式</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>框架托管</strong>（推荐）</td>
+<td>通过 <code>ChatClient</code> 自动处理工具调用循环</td>
+</tr>
+<tr>
+<td><strong>Advisor 可控</strong></td>
+<td>自定义工具调用循环</td>
+</tr>
+<tr>
+<td><strong>用户手动控制</strong></td>
+<td>完全手动控制</td>
+</tr>
+</tbody></table>
+<h3 id="框架托管（推荐-—-ChatClient）"><a href="#框架托管（推荐-—-ChatClient）" class="headerlink" title="框架托管（推荐 — ChatClient）"></a>框架托管（推荐 — ChatClient）</h3><p>使用 <code>ChatClient</code> 时，Spring AI 通过 <code>ToolCallingAdvisor</code> 自动处理整个工具调用生命周期，该 Advisor 始终自动注册在 Advisor 链中（除非显式禁用）。</p>
+<p><strong>执行流程：</strong><br><img src="/images/article/springai-toolcalling-invoke-life.png" alt="tool-calling-invoke-life"></p>
+<p><strong>全局禁用自动注册：</strong></p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring.ai.chat.client.tool-calling-advisor.enabled:</span> <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>单条请求禁用：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">chatClient.prompt()</span><br><span class="line">    .advisors(a -&gt; a.param(AdvisorParams.TOOL_CALLING_ADVISOR_AUTO_REGISTER, <span class="keyword">false</span>))</span><br><span class="line">    .user(<span class="string">"..."</span>)</span><br><span class="line">    .call();</span><br></pre></td></tr></table></figure>
+
+<h3 id="Advisor-可控（自定义循环）"><a href="#Advisor-可控（自定义循环）" class="headerlink" title="Advisor 可控（自定义循环）"></a>Advisor 可控（自定义循环）</h3><p><code>ToolCallingAdvisor</code> 将工具调用循环作为 <strong>Advisor 链</strong>的一部分实现，并暴露多个扩展点：</p>
+<table>
+<thead>
+<tr>
+<th>配置项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>toolCallingManager</code></td>
+<td>使用的 <code>ToolCallingManager</code> 实例</td>
+</tr>
+<tr>
+<td><code>advisorOrder</code></td>
+<td>Advisor 在链中的执行顺序</td>
+</tr>
+<tr>
+<td><code>conversationHistoryEnabled</code></td>
+<td>是否在工具调用迭代期间内部维护对话历史（默认 <code>true</code>）</td>
+</tr>
+<tr>
+<td><code>toolExecutionEligibilityChecker</code></td>
+<td>决定模型响应是否应触发下一轮工具调用的 <code>Function</code></td>
+</tr>
+</tbody></table>
+<p><strong>对话历史管理：</strong></p>
+<ul>
+<li>默认（<code>conversationHistoryEnabled = true</code>）：<code>ToolCallingAdvisor</code> 在工具调用迭代期间内部维护完整对话历史</li>
+<li>默认排序：<code>DEFAULT_CHAT_MEMORY_PRECEDENCE_ORDER</code> 为 <code>HIGHEST_PRECEDENCE + 200</code>，低于 <code>ToolCallingAdvisor.DEFAULT_ORDER</code>（<code>HIGHEST_PRECEDENCE + 300</code>）</li>
+<li>使用 <code>.disableInternalConversationHistory()</code> 时需将 Memory Advisor 放在循环内部</li>
+</ul>
+<p><strong>Return Direct 支持：</strong></p>
+<p><code>ToolCallingAdvisor</code> 支持”直接返回”特性。当工具执行的 <code>returnDirect = true</code> 时，Advisor 跳出工具调用循环并直接将工具结果返回。</p>
+<h3 id="用户手动控制"><a href="#用户手动控制" class="headerlink" title="用户手动控制"></a>用户手动控制</h3><p>适用于需要自行控制工具执行生命周期的场景，例如向 UI 流式传输中间进度、添加自定义可观测性或在迭代间应用条件逻辑。</p>
+<p><strong>ChatClient 方式：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 禁用自动注册的 ToolCallingAdvisor</span></span><br><span class="line">ChatClient.CallResponseSpec response = chatClient.prompt()</span><br><span class="line">    .advisors(a -&gt; a.param(AdvisorParams.TOOL_CALLING_ADVISOR_AUTO_REGISTER, <span class="keyword">false</span>))</span><br><span class="line">    .user(<span class="string">"..."</span>)</span><br><span class="line">    .call();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 手动驱动工具调用循环</span></span><br><span class="line">ChatResponse chatResponse = response.chatResponse();</span><br><span class="line"><span class="keyword">while</span> (chatResponse.hasToolCalls()) &#123;</span><br><span class="line">    <span class="comment">// 使用 ToolCallingManager 执行工具调用</span></span><br><span class="line">    ToolExecutionResult result = toolCallingManager.execute(chatResponse);</span><br><span class="line">    <span class="comment">// 将结果发回模型</span></span><br><span class="line">    chatResponse = chatClient.call(result.toPrompt());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>流式 API 方式：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Flux&lt;ChatResponse&gt; stream = chatClient.prompt()</span><br><span class="line">    .advisors(a -&gt; a.param(AdvisorParams.TOOL_CALLING_ADVISOR_AUTO_REGISTER, <span class="keyword">false</span>))</span><br><span class="line">    .user(<span class="string">"..."</span>)</span><br><span class="line">    .stream();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 聚合流中的 chunk，然后检查工具调用</span></span><br><span class="line">MessageAggregator aggregator = <span class="keyword">new</span> MessageAggregator();</span><br><span class="line">stream.subscribe(aggregator::add);</span><br><span class="line"></span><br><span class="line">ChatResponse aggregated = aggregator.getChatResponse();</span><br><span class="line"><span class="comment">// 处理工具调用...</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>ChatModel 方式：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 直接调用 ChatModel，不使用 ToolCallingAdvisor</span></span><br><span class="line">ChatModel model = ...;</span><br><span class="line">ChatResponse response = model.call(prompt);</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> (response.hasToolCalls()) &#123;</span><br><span class="line">    ToolExecutionResult result = toolCallingManager.execute(response);</span><br><span class="line">    response = model.call(result.toPrompt());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="工具执行异常处理"><a href="#工具执行异常处理" class="headerlink" title="工具执行异常处理"></a>工具执行异常处理</h3><p>工具执行失败时，异常以 <code>ToolExecutionException</code> 传播，可被捕获以处理错误。</p>
+<p><code>ToolExecutionExceptionProcessor</code> 用于处理 <code>ToolExecutionException</code>，有两种结果：</p>
+<ul>
+<li>产生一条错误消息回传给 AI 模型</li>
+<li>抛出异常由调用方处理</li>
+</ul>
+<p><strong>默认行为（DefaultToolExecutionExceptionProcessor）：</strong></p>
+<ul>
+<li><code>RuntimeException</code> 的错误消息回传给模型</li>
+<li>受检异常和 Error（如 <code>IOException</code>、<code>OutOfMemoryError</code>）始终抛出</li>
+</ul>
+<p><strong>配置：</strong></p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring.ai.tools.throw-exception-on-error:</span> <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>值</th>
+<th>行为</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>true</code></td>
+<td>工具调用错误作为异常抛出，由调用方处理</td>
+</tr>
+<tr>
+<td><code>false</code>（默认）</td>
+<td>错误转换为消息并回传给 AI 模型，由其处理和响应</td>
+</tr>
+</tbody></table>
+<p>也可在构造函数中设置 <code>alwaysThrow</code> 属性。</p>
+<hr>
+<h2 id="动态工具解析（ToolCallbackResolver）"><a href="#动态工具解析（ToolCallbackResolver）" class="headerlink" title="动态工具解析（ToolCallbackResolver）"></a>动态工具解析（ToolCallbackResolver）</h2><p>Spring AI 支持在运行时通过 <code>ToolCallbackResolver</code> 接口动态解析工具。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 按名称注册工具</span></span><br><span class="line">chatClient.prompt()</span><br><span class="line">    .tools(<span class="string">"getWeather"</span>, <span class="string">"setAlarm"</span>)</span><br><span class="line">    .user(<span class="string">"..."</span>)</span><br><span class="line">    .call();</span><br></pre></td></tr></table></figure>
+
+<p><code>ToolCallbackResolver</code> 实现负责将工具名称解析为对应的 <code>ToolCallback</code> 实例。</p>
+<ul>
+<li>默认使用 <code>StaticToolCallbackResolver</code>，从静态 <code>ToolCallback</code> 列表中解析</li>
+<li>Spring Boot 自动配置下，所有 <code>ToolCallback</code> 类型的 Bean 自动注册到解析器</li>
+<li>可提供自定义 <code>ToolCallbackResolver</code> Bean 覆盖默认逻辑</li>
+</ul>
+<hr>
+<h2 id="工具入参-Schema-增强"><a href="#工具入参-Schema-增强" class="headerlink" title="工具入参 Schema 增强"></a>工具入参 Schema 增强</h2><p>Spring AI 提供工具输入 Schema 动态增强功能，支持在不修改底层工具实现的情况下捕获额外信息（如推理过程、元数据等）。</p>
+<p><strong>常见用例：</strong></p>
+<ul>
+<li><strong>内部思考/推理：</strong> 在执行工具前捕获模型的逐步推理</li>
+<li><strong>记忆增强：</strong> 提取洞察存储到长期记忆</li>
+<li><strong>分析与追踪：</strong> 收集元数据、用户意图或使用模式</li>
+<li><strong>多 Agent 协调：</strong> 传递 Agent 标识符或协调信号</li>
+</ul>
+<p><strong>使用示例：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1. 定义增强参数作为 Java Record</span></span><br><span class="line"><span class="function">record <span class="title">AgentThinking</span><span class="params">(String reasoning, String agentId)</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 2. 包装工具</span></span><br><span class="line">AugmentedToolCallbackProvider augmented =</span><br><span class="line">    AugmentedToolCallbackProvider.wrap(toolCallbacks, AgentThinking<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 3. 与 ChatClient 一起使用</span></span><br><span class="line">chatClient.prompt()</span><br><span class="line">    .tools(augmented)</span><br><span class="line">    .user(<span class="string">"..."</span>)</span><br><span class="line">    .call();</span><br></pre></td></tr></table></figure>
+
+<p>LLM 会看到带有额外字段的增强 Schema，而原始工具只接收其预期的参数。</p>
+<p><strong>核心类：</strong></p>
+<table>
+<thead>
+<tr>
+<th>类</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>AugmentedToolCallbackProvider</code></td>
+<td>包装工具对象或 Provider，用指定 Record 类型增强所有工具</td>
+</tr>
+<tr>
+<td><code>AugmentedToolCallback</code></td>
+<td>包装单个 <code>ToolCallback</code> 实例</td>
+</tr>
+<tr>
+<td><code>AugmentedArgumentEvent</code></td>
+<td>包含 <code>toolDefinition()</code>、<code>rawInput()</code> 和 <code>arguments()</code> 供消费者使用</td>
+</tr>
+<tr>
+<td><code>ToolInputSchemaAugmenter</code></td>
+<td>Schema 操作的底层工具类</td>
+</tr>
+</tbody></table>
+<p><code>removeExtraArgumentsAfterProcessing</code> 选项控制是否将增强参数传递给原始工具：</p>
+<ul>
+<li><code>true</code>（默认）— 调用工具前移除增强参数</li>
+<li><code>false</code> — 在输入中保留增强参数（如果工具可以忽略额外字段）</li>
+</ul>
+<hr>
+<h2 id="可观测性与日志"><a href="#可观测性与日志" class="headerlink" title="可观测性与日志"></a>可观测性与日志</h2><ul>
+<li>工具调用生成 <code>spring.ai.tool</code> 观测 Span（耗时 + 链路追踪信息传播）</li>
+<li>可选导出工具入参和结果为 Span Attribute（默认关闭，出于敏感性考虑）</li>
+<li>开启 DEBUG 日志：</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">logging.level.org.springframework.ai:</span> <span class="string">DEBUG</span></span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/springai/" rel="tag"># springai</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2025/05/10/OSSRH项目废弃后如何发布开源项目/" rel="next" title="OSSRH项目废弃后如何发布开源项目">
+                  <i class="fa fa-chevron-left"></i> OSSRH项目废弃后如何发布开源项目
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2026/06/29/SpringAI — Tool-Search-Tool（工具搜索工具）/" rel="prev" title="SpringAI — Tool Search Tool（工具搜索工具）">
+                  SpringAI — Tool Search Tool（工具搜索工具） <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#工具调用概述"><span class="nav-number">1.</span> <span class="nav-text">工具调用概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#工具调用示例"><span class="nav-number">2.</span> <span class="nav-text">工具调用示例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#定义-Tool"><span class="nav-number">2.1.</span> <span class="nav-text">定义 @Tool</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注册并调用"><span class="nav-number">2.2.</span> <span class="nav-text">注册并调用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#执行结果"><span class="nav-number">2.3.</span> <span class="nav-text">执行结果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#工具核心概念"><span class="nav-number">3.</span> <span class="nav-text">工具核心概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于方法的工具定义-—-Tool-注解（声明式）"><span class="nav-number">4.</span> <span class="nav-text">基于方法的工具定义 — @Tool 注解（声明式）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Tool-注解属性"><span class="nav-number">4.1.</span> <span class="nav-text">@Tool 注解属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ToolParam-注解属性"><span class="nav-number">4.2.</span> <span class="nav-text">@ToolParam 注解属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注册方式"><span class="nav-number">4.3.</span> <span class="nav-text">注册方式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于方法的工具定义-—-编程式（MethodToolCallback）"><span class="nav-number">5.</span> <span class="nav-text">基于方法的工具定义 — 编程式（MethodToolCallback）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于函数的工具定义-—-FunctionToolCallback"><span class="nav-number">6.</span> <span class="nav-text">基于函数的工具定义 — FunctionToolCallback</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#工具规范"><span class="nav-number">7.</span> <span class="nav-text">工具规范</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ToolCallback-接口"><span class="nav-number">7.1.</span> <span class="nav-text">ToolCallback 接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ToolDefinition-接口"><span class="nav-number">7.2.</span> <span class="nav-text">ToolDefinition 接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JSON-Schema-生成"><span class="nav-number">7.3.</span> <span class="nav-text">JSON Schema 生成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#工具结果转换（ToolCallResultConverter）"><span class="nav-number">7.4.</span> <span class="nav-text">工具结果转换（ToolCallResultConverter）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#工具上下文（ToolContext）"><span class="nav-number">7.5.</span> <span class="nav-text">工具上下文（ToolContext）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Return-Direct（直接返回）"><span class="nav-number">7.6.</span> <span class="nav-text">Return Direct（直接返回）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#工具执行生命周期"><span class="nav-number">8.</span> <span class="nav-text">工具执行生命周期</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#框架托管（推荐-—-ChatClient）"><span class="nav-number">8.1.</span> <span class="nav-text">框架托管（推荐 — ChatClient）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Advisor-可控（自定义循环）"><span class="nav-number">8.2.</span> <span class="nav-text">Advisor 可控（自定义循环）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用户手动控制"><span class="nav-number">8.3.</span> <span class="nav-text">用户手动控制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#工具执行异常处理"><span class="nav-number">8.4.</span> <span class="nav-text">工具执行异常处理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动态工具解析（ToolCallbackResolver）"><span class="nav-number">9.</span> <span class="nav-text">动态工具解析（ToolCallbackResolver）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#工具入参-Schema-增强"><span class="nav-number">10.</span> <span class="nav-text">工具入参 Schema 增强</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#可观测性与日志"><span class="nav-number">11.</span> <span class="nav-text">可观测性与日志</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar.jpg"
+      alt="蝉">
+  <p class="site-author-name" itemprop="name">蝉</p>
+  <div class="site-description" itemprop="description">Another way to laugh !</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">73</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/lazycece" title="GitHub &rarr; https://github.com/lazycece" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:lazycece@qq.com" title="E-Mail &rarr; mailto:lazycece@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://blog.csdn.net/qq_28851503" title="CSDN &rarr; https://blog.csdn.net/qq_28851503" rel="noopener" target="_blank"><i class="fa fa-fw fa-vk"></i>CSDN</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://leetcode-cn.com/u/lazycece" title="LeetCode &rarr; https://leetcode-cn.com/u/lazycece" rel="noopener" target="_blank"><i class="fa fa-fw fa-vk"></i>LeetCode</a>
+      </span>
+    
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2026</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">蝉</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script><script src="/js/bookmark.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
