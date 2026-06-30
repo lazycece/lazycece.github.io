@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":true,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="概述检索增强生成（RAG: Retrieval Augmented Generation）是一种用于克服大型语言模型在长文本内容、事实准确性和上下文感知方面局限性的技术。 Spring AI 通过提供模块化架构来支持 RAG，允许你自行构建自定义 RAG 流程，或使用 Advisor API 提供的开箱即用 RAG 流程。">
+<meta name="keywords" content="springai">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringAI — RAG（检索增强生成）">
+<meta property="og:url" content="https://lazycece.github.io/2026/07/01/SpringAI — RAG（检索增强生成）/index.html">
+<meta property="og:site_name" content="W  pit">
+<meta property="og:description" content="概述检索增强生成（RAG: Retrieval Augmented Generation）是一种用于克服大型语言模型在长文本内容、事实准确性和上下文感知方面局限性的技术。 Spring AI 通过提供模块化架构来支持 RAG，允许你自行构建自定义 RAG 流程，或使用 Advisor API 提供的开箱即用 RAG 流程。">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2026-06-30T17:36:59.215Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SpringAI — RAG（检索增强生成）">
+<meta name="twitter:description" content="概述检索增强生成（RAG: Retrieval Augmented Generation）是一种用于克服大型语言模型在长文本内容、事实准确性和上下文感知方面局限性的技术。 Spring AI 通过提供模块化架构来支持 RAG，允许你自行构建自定义 RAG 流程，或使用 Advisor API 提供的开箱即用 RAG 流程。">
+  <link rel="canonical" href="https://lazycece.github.io/2026/07/01/SpringAI — RAG（检索增强生成）/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>SpringAI — RAG（检索增强生成） | W  pit</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">W  pit</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">A thousand miles begins with a single step .</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a class="book-mark-link book-mark-link-fixed" href="#"></a>
+
+  <a href="https://github.com/lazycece" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2026/07/01/SpringAI — RAG（检索增强生成）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="蝉">
+      <meta itemprop="description" content="Another way to laugh !">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="W  pit">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">SpringAI — RAG（检索增强生成）
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2026-07-01 00:12:29 / Modified: 01:36:59" itemprop="dateCreated datePublished" datetime="2026-07-01T00:12:29+08:00">2026-07-01</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/springai/" itemprop="url" rel="index"><span itemprop="name">springai</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>检索增强生成（RAG: Retrieval Augmented Generation）是一种用于克服大型语言模型在长文本内容、事实准确性和上下文感知方面局限性的技术。</p>
+<p>Spring AI 通过提供模块化架构来支持 RAG，允许你自行构建自定义 RAG 流程，或使用 Advisor API 提供的开箱即用 RAG 流程。</p>
+<a id="more"></a>
+
+
+<h2 id="使用-QuestionAnswerAdvisor"><a href="#使用-QuestionAnswerAdvisor" class="headerlink" title="使用 QuestionAnswerAdvisor"></a>使用 QuestionAnswerAdvisor</h2><h3 id="依赖配置"><a href="#依赖配置" class="headerlink" title="依赖配置"></a>依赖配置</h3><p>要使用 <code>QuestionAnswerAdvisor</code> 或 <code>VectorStoreChatMemoryAdvisor</code>，需要在项目中添加 <code>spring-ai-vector-store-advisor</code> 依赖：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.ai<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-ai-vector-store-advisor<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;spring-ai.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="基本用法"><a href="#基本用法" class="headerlink" title="基本用法"></a>基本用法</h3><p>向量数据库存储了 AI 模型未知的数据，当用户问题发送给 AI 模型时，<code>QuestionAnswerAdvisor</code> 会查询向量数据库中与用户问题相关的文档。向量数据库的响应会附加到用户文本后面，为 AI 模型生成响应提供上下文。</p>
+<p>假设你已经将数据加载到 <code>VectorStore</code> 中，你可以通过向 <code>ChatClient</code> 提供 <code>QuestionAnswerAdvisor</code> 实例来执行检索增强生成（RAG）：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ChatClient chatClient = ChatClient.builder(chatModel)</span><br><span class="line">    .defaultAdvisors(<span class="keyword">new</span> QuestionAnswerAdvisor(vectorStore))</span><br><span class="line">    .build();</span><br></pre></td></tr></table></figure>
+
+<h3 id="搜索过滤"><a href="#搜索过滤" class="headerlink" title="搜索过滤"></a>搜索过滤</h3><p><code>QuestionAnswerAdvisor</code> 会将对向量数据库中的所有文档执行相似性搜索。为了限制搜索的文档类型，<code>SearchRequest</code> 接受一个类似 SQL 的过滤表达式，该表达式可在所有 <code>VectorStore</code> 之间移植。</p>
+<p>这个过滤表达式可以在创建 <code>QuestionAnswerAdvisor</code> 时配置，因此将始终应用于所有 <code>ChatClient</code> 请求，也可以在运行时按请求提供。</p>
+<p>以下是创建 <code>QuestionAnswerAdvisor</code> 的示例，其中阈值（threshold）为 <code>0.8</code>，返回前 <code>6</code> 个结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">QuestionAnswerAdvisor advisor = <span class="keyword">new</span> QuestionAnswerAdvisor(vectorStore,</span><br><span class="line">    SearchRequest.builder()</span><br><span class="line">        .similarityThreshold(<span class="number">0.8</span>)</span><br><span class="line">        .topK(<span class="number">6</span>)</span><br><span class="line">        .build());</span><br></pre></td></tr></table></figure>
+
+<h3 id="运行时动态过滤"><a href="#运行时动态过滤" class="headerlink" title="运行时动态过滤"></a>运行时动态过滤</h3><p>使用 <code>FILTER_EXPRESSION</code> advisor 上下文参数在运行时更新 <code>SearchRequest</code> 过滤表达式：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">chatClient.prompt()</span><br><span class="line">    .user(<span class="string">"请介绍一下 Spring AI"</span>)</span><br><span class="line">    .advisors(advisor -&gt; advisor</span><br><span class="line">        .param(QuestionAnswerAdvisor.FILTER_EXPRESSION, <span class="string">"metadata.key = 'someValue'"</span>))</span><br><span class="line">    .call()</span><br><span class="line">    .content();</span><br></pre></td></tr></table></figure>
+
+<p><code>FILTER_EXPRESSION</code> 参数允许你根据提供的表达式动态过滤搜索结果。</p>
+<h3 id="自定义提示词模板"><a href="#自定义提示词模板" class="headerlink" title="自定义提示词模板"></a>自定义提示词模板</h3><p><code>QuestionAnswerAdvisor</code> 使用默认模板将检索到的文档与用户问题结合起来。你可以通过 <code>.promptTemplate()</code> 构建器方法提供自己的 <code>PromptTemplate</code> 对象来自定义此行为：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">QuestionAnswerAdvisor advisor = <span class="keyword">new</span> QuestionAnswerAdvisor(vectorStore,</span><br><span class="line">    SearchRequest.builder().build(),</span><br><span class="line">    PromptTemplate.builder()</span><br><span class="line">        .template(<span class="string">"Context: &#123;question_answer_context&#125;\n\nQuestion: &#123;query&#125;\n\nAnswer:"</span>)</span><br><span class="line">        .build());</span><br></pre></td></tr></table></figure>
+
+<p>自定义 <code>PromptTemplate</code> 可以使用任何 <code>TemplateRenderer</code> 实现（默认使用基于 StringTemplate 引擎的 <code>StPromptTemplate</code>）。重要的是模板必须包含以下两个占位符：</p>
+<ul>
+<li><code>query</code> — 接收用户问题</li>
+<li><code>question_answer_context</code> — 接收检索到的上下文</li>
+</ul>
+<hr>
+<h2 id="使用-RetrievalAugmentationAdvisor"><a href="#使用-RetrievalAugmentationAdvisor" class="headerlink" title="使用 RetrievalAugmentationAdvisor"></a>使用 RetrievalAugmentationAdvisor</h2><p>Spring AI 包含一个 <strong>RAG 模块库</strong>，你可以使用它来构建自己的 RAG 流程。<code>RetrievalAugmentationAdvisor</code> 是一个基于模块化架构为最常见 RAG 流程提供开箱即用实现的 Advisor。</p>
+<h3 id="依赖配置-1"><a href="#依赖配置-1" class="headerlink" title="依赖配置"></a>依赖配置</h3><p>要使用 <code>RetrievalAugmentationAdvisor</code>，你需要在项目中添加 <code>spring-ai-rag</code> 依赖：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.ai<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-ai-rag<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;spring-ai.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="基本用法-1"><a href="#基本用法-1" class="headerlink" title="基本用法"></a>基本用法</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">RetrievalAugmentationAdvisor advisor = RetrievalAugmentationAdvisor.builder()</span><br><span class="line">    .documentRetriever(VectorStoreDocumentRetriever.builder()</span><br><span class="line">        .vectorStore(vectorStore)</span><br><span class="line">        .build())</span><br><span class="line">    .build();</span><br><span class="line"></span><br><span class="line">ChatClient chatClient = ChatClient.builder(chatModel)</span><br><span class="line">    .defaultAdvisors(advisor)</span><br><span class="line">    .build();</span><br></pre></td></tr></table></figure>
+
+<p>默认情况下，<code>RetrievalAugmentationAdvisor</code> 不允许检索到的上下文为空。当发生这种情况时，它会指示模型不要回答用户查询。你可以按如下方式允许空上下文：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">RetrievalAugmentationAdvisor advisor = RetrievalAugmentationAdvisor.builder()</span><br><span class="line">    .documentRetriever(VectorStoreDocumentRetriever.builder()</span><br><span class="line">        .vectorStore(vectorStore)</span><br><span class="line">        .build())</span><br><span class="line">    .queryAugmenter(ContextualQueryAugmenter.builder()</span><br><span class="line">        .allowEmptyContext(<span class="keyword">true</span>)</span><br><span class="line">        .build())</span><br><span class="line">    .build();</span><br></pre></td></tr></table></figure>
+
+<h3 id="过滤表达式"><a href="#过滤表达式" class="headerlink" title="过滤表达式"></a>过滤表达式</h3><p><code>VectorStoreDocumentRetriever</code> 接受 <code>FilterExpression</code> 以根据元数据过滤搜索结果。你可以在实例化 <code>VectorStoreDocumentRetriever</code> 时提供一个，也可以在运行时按请求使用 <code>FILTER_EXPRESSION</code> advisor 上下文参数提供：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">chatClient.prompt()</span><br><span class="line">    .user(<span class="string">"请介绍一下 Spring AI"</span>)</span><br><span class="line">    .advisors(advisor -&gt; advisor</span><br><span class="line">        .param(RetrievalAugmentationAdvisor.FILTER_EXPRESSION,</span><br><span class="line">               <span class="string">"metadata.category = 'technology'"</span>))</span><br><span class="line">    .call()</span><br><span class="line">    .content();</span><br></pre></td></tr></table></figure>
+
+<h3 id="文档后处理"><a href="#文档后处理" class="headerlink" title="文档后处理"></a>文档后处理</h3><p>你还可以使用 <code>DocumentPostProcessor</code> API 在将检索到的文档传递给模型之前对其进行后处理。例如，你可以使用此类接口根据文档与查询的相关性执行重新排序、删除不相关或冗余的文档，或压缩每个文档的内容以减少噪声和冗余。</p>
+<hr>
+<h2 id="模块化-RAG-架构"><a href="#模块化-RAG-架构" class="headerlink" title="模块化 RAG 架构"></a>模块化 RAG 架构</h2><p>Spring AI 实现了模块化 RAG 架构，灵感来自论文 <a href="https://arxiv.org/abs/2407.21059" target="_blank" rel="noopener"><strong>“Modular RAG: Transforming RAG Systems into LEGO-like Reconfigurable Frameworks”</strong></a> 中详细阐述的模块化概念。</p>
+<h3 id="架构概览"><a href="#架构概览" class="headerlink" title="架构概览"></a>架构概览</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────────────────────────────┐</span><br><span class="line">│                    Pre-Retrieval                        │</span><br><span class="line">│  查询转换 / 查询扩展（Compression / Rewrite / Translation / Multi-Query） │</span><br><span class="line">├─────────────────────────────────────────────────────────┤</span><br><span class="line">│                    Retrieval                            │</span><br><span class="line">│  文档检索（VectorStoreDocumentRetriever） / 文档合并（DocumentJoiner）  │</span><br><span class="line">├─────────────────────────────────────────────────────────┤</span><br><span class="line">│                    Post-Retrieval                       │</span><br><span class="line">│  文档后处理（DocumentPostProcessor）                       │</span><br><span class="line">├─────────────────────────────────────────────────────────┤</span><br><span class="line">│                    Generation                           │</span><br><span class="line">│  查询增强 + 生成响应（ContextualQueryAugmenter）            │</span><br><span class="line">└─────────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<h3 id="Pre-Retrieval-模块（检索前）"><a href="#Pre-Retrieval-模块（检索前）" class="headerlink" title="Pre-Retrieval 模块（检索前）"></a>Pre-Retrieval 模块（检索前）</h3><p>Pre-Retrieval 模块负责处理用户查询，以获得最佳的检索结果。</p>
+<h4 id="查询转换（Query-Transformation）"><a href="#查询转换（Query-Transformation）" class="headerlink" title="查询转换（Query Transformation）"></a>查询转换（Query Transformation）</h4><p>用于转换输入查询以使其更有效地执行检索任务的组件，解决格式不佳的查询、歧义术语、复杂词汇或不支持的语言等挑战。</p>
+<blockquote>
+<p>使用 QueryTransformer 时，建议将 ChatClient.Builder 的温度配置得较低（例如 0.0），以确保结果更具确定性和准确性，从而提高检索质量。大多数聊天模型的默认温度通常过高，不利于查询转换，导致检索效率降低</p>
+</blockquote>
+<h5 id="CompressionQueryTransformer（压缩查询转换器）"><a href="#CompressionQueryTransformer（压缩查询转换器）" class="headerlink" title="CompressionQueryTransformer（压缩查询转换器）"></a>CompressionQueryTransformer（压缩查询转换器）</h5><p><code>CompressionQueryTransformer</code> 使用大型语言模型将对话历史和后续查询压缩为一个独立的查询，捕捉对话的精髓。</p>
+<p>当对话历史较长且后续查询与对话上下文相关时，此转换器非常有用。</p>
+<p>该组件使用的提示词可以通过构建器中的 <code>promptTemplate()</code> 方法进行自定义。</p>
+<h5 id="RewriteQueryTransformer（重写查询转换器）"><a href="#RewriteQueryTransformer（重写查询转换器）" class="headerlink" title="RewriteQueryTransformer（重写查询转换器）"></a>RewriteQueryTransformer（重写查询转换器）</h5><p><code>RewriteQueryTransformer</code> 使用大型语言模型重写用户查询，以便在对目标系统（如向量存储或 Web 搜索引擎）进行查询时提供更好的结果。</p>
+<p>当用户查询冗长、模糊或包含可能影响搜索结果质量的不相关信息时，此转换器非常有用。</p>
+<p>该组件使用的提示词可以通过构建器中的 <code>promptTemplate()</code> 方法进行自定义。</p>
+<h5 id="TranslationQueryTransformer（翻译查询转换器）"><a href="#TranslationQueryTransformer（翻译查询转换器）" class="headerlink" title="TranslationQueryTransformer（翻译查询转换器）"></a>TranslationQueryTransformer（翻译查询转换器）</h5><p><code>TranslationQueryTransformer</code> 使用大型语言模型将查询翻译为嵌入模型支持的目标语言（用于生成文档嵌入）。如果查询已经是目标语言，则原样返回。如果查询的语言未知，也将原样返回。</p>
+<p>当嵌入模型在特定语言上训练而用户查询使用不同语言时，此转换器非常有用。</p>
+<p>该组件使用的提示词可以通过构建器中的 <code>promptTemplate()</code> 方法进行自定义。</p>
+<h4 id="查询扩展（Query-Expansion）"><a href="#查询扩展（Query-Expansion）" class="headerlink" title="查询扩展（Query Expansion）"></a>查询扩展（Query Expansion）</h4><p>用于将输入查询扩展为查询列表的组件，通过提供替代查询表述或将复杂问题分解为更简单的子查询来解决格式不佳的查询等挑战。</p>
+<h5 id="MultiQueryExpander（多查询扩展器）"><a href="#MultiQueryExpander（多查询扩展器）" class="headerlink" title="MultiQueryExpander（多查询扩展器）"></a>MultiQueryExpander（多查询扩展器）</h5><p><code>MultiQueryExpander</code> 使用大型语言模型将查询扩展为多个语义多样的变体，以捕获不同的视角，有助于检索额外的上下文信息并增加找到相关结果的机会。</p>
+<p>默认情况下，<code>MultiQueryExpander</code> 在扩展查询列表中包含原始查询。你可以通过构建器中的 <code>includeOriginal</code> 方法禁用此行为。</p>
+<p>该组件使用的提示词可以通过构建器中的 <code>promptTemplate()</code> 方法进行自定义。</p>
+<h3 id="Retrieval-模块（检索）"><a href="#Retrieval-模块（检索）" class="headerlink" title="Retrieval 模块（检索）"></a>Retrieval 模块（检索）</h3><p>Retrieval 模块负责查询向量存储等数据系统并检索最相关的文档。</p>
+<h4 id="DocumentRetriever（文档检索器）"><a href="#DocumentRetriever（文档检索器）" class="headerlink" title="DocumentRetriever（文档检索器）"></a>DocumentRetriever（文档检索器）</h4><p>负责从底层数据源（如搜索引擎、向量存储、数据库或知识图谱）检索 <code>Document</code> 的组件。</p>
+<h5 id="VectorStoreDocumentRetriever（向量存储文档检索器）"><a href="#VectorStoreDocumentRetriever（向量存储文档检索器）" class="headerlink" title="VectorStoreDocumentRetriever（向量存储文档检索器）"></a>VectorStoreDocumentRetriever（向量存储文档检索器）</h5><p><code>VectorStoreDocumentRetriever</code> 从向量存储中检索与输入查询语义相似的文档。它支持基于元数据、相似度阈值和 top-k 结果的过滤。</p>
+<p>过滤表达式可以是静态的或动态的。对于动态过滤表达式，你可以传递一个 <code>Supplier</code>。</p>
+<p>你也可以通过 <code>Query</code> API 使用 <code>FILTER_EXPRESSION</code> 参数提供请求特定的过滤表达式。如果同时提供了请求特定和检索器特定的过滤表达式，<strong>请求特定的过滤表达式优先</strong>。</p>
+<h4 id="DocumentJoiner（文档合并器）"><a href="#DocumentJoiner（文档合并器）" class="headerlink" title="DocumentJoiner（文档合并器）"></a>DocumentJoiner（文档合并器）</h4><p>用于将基于多个查询和多个数据源检索到的文档合并为单个文档集合的组件。作为合并过程的一部分，它还可以处理重复文档和互逆排名策略。</p>
+<h5 id="ConcatenationDocumentJoiner（拼接文档合并器）"><a href="#ConcatenationDocumentJoiner（拼接文档合并器）" class="headerlink" title="ConcatenationDocumentJoiner（拼接文档合并器）"></a>ConcatenationDocumentJoiner（拼接文档合并器）</h5><p><code>ConcatenationDocumentJoiner</code> 通过拼接将基于多个查询和多个数据源检索到的文档合并为单个文档集合。如果存在重复文档，则保留第一次出现的文档。每个文档的分数保持原样。</p>
+<h3 id="Post-Retrieval-模块（检索后）"><a href="#Post-Retrieval-模块（检索后）" class="headerlink" title="Post-Retrieval 模块（检索后）"></a>Post-Retrieval 模块（检索后）</h3><p>Post-Retrieval 模块负责处理检索到的文档，以获得最佳的生成结果。</p>
+<h4 id="DocumentPostProcessor（文档后处理器）"><a href="#DocumentPostProcessor（文档后处理器）" class="headerlink" title="DocumentPostProcessor（文档后处理器）"></a>DocumentPostProcessor（文档后处理器）</h4><p>用于基于查询对检索到的文档进行后处理的组件，解决中间丢失（lost-in-the-middle）、模型上下文长度限制以及需要减少检索信息中的噪声和冗余等挑战。</p>
+<p>例如，它可以根据文档与查询的相关性对文档进行排序、删除不相关或冗余的文档，或压缩每个文档的内容以减少噪声和冗余。</p>
+<h3 id="Generation-模块（生成）"><a href="#Generation-模块（生成）" class="headerlink" title="Generation 模块（生成）"></a>Generation 模块（生成）</h3><p>Generation 模块负责基于用户查询和检索到的文档生成最终响应。</p>
+<h4 id="QueryAugmenter（查询增强器）"><a href="#QueryAugmenter（查询增强器）" class="headerlink" title="QueryAugmenter（查询增强器）"></a>QueryAugmenter（查询增强器）</h4><p>用于使用额外数据增强输入查询的组件，有助于为大型语言模型提供回答用户查询所需的上下文。</p>
+<h5 id="ContextualQueryAugmenter（上下文查询增强器）"><a href="#ContextualQueryAugmenter（上下文查询增强器）" class="headerlink" title="ContextualQueryAugmenter（上下文查询增强器）"></a>ContextualQueryAugmenter（上下文查询增强器）</h5><p><code>ContextualQueryAugmenter</code> 使用所提供文档内容的上下文数据来增强用户查询。</p>
+<p>默认情况下，<code>ContextualQueryAugmenter</code> 不允许检索到的上下文为空。当发生这种情况时，它会指示模型不要回答用户查询。</p>
+<p>你可以启用 <code>allowEmptyContext</code> 选项，允许模型在检索到的上下文为空时仍然生成响应：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ContextualQueryAugmenter augmenter = ContextualQueryAugmenter.builder()</span><br><span class="line">    .allowEmptyContext(<span class="keyword">true</span>)</span><br><span class="line">    .build();</span><br></pre></td></tr></table></figure>
+
+<h3 id="完整示例：构建自定义-RAG-流程"><a href="#完整示例：构建自定义-RAG-流程" class="headerlink" title="完整示例：构建自定义 RAG 流程"></a>完整示例：构建自定义 RAG 流程</h3><p>以下是一个使用模块化 RAG 组件构建完整 RAG 流程的示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">RetrievalAugmentationAdvisor advisor = RetrievalAugmentationAdvisor.builder()</span><br><span class="line">    <span class="comment">// Pre-Retrieval: 压缩查询</span></span><br><span class="line">    .queryTransformer(CompressionQueryTransformer.builder()</span><br><span class="line">        .chatModel(chatModel)</span><br><span class="line">        .build())</span><br><span class="line">    <span class="comment">// Retrieval: 从向量存储检索</span></span><br><span class="line">    .documentRetriever(VectorStoreDocumentRetriever.builder()</span><br><span class="line">        .vectorStore(vectorStore)</span><br><span class="line">        .similarityThreshold(<span class="number">0.7</span>)</span><br><span class="line">        .topK(<span class="number">5</span>)</span><br><span class="line">        .build())</span><br><span class="line">    <span class="comment">// Post-Retrieval: 文档后处理</span></span><br><span class="line">    .documentPostProcessor((query, documents) -&gt; &#123;</span><br><span class="line">        <span class="comment">// 自定义后处理逻辑</span></span><br><span class="line">        <span class="keyword">return</span> documents;</span><br><span class="line">    &#125;)</span><br><span class="line">    <span class="comment">// Generation: 上下文增强</span></span><br><span class="line">    .queryAugmenter(ContextualQueryAugmenter.builder()</span><br><span class="line">        .allowEmptyContext(<span class="keyword">false</span>)</span><br><span class="line">        .build())</span><br><span class="line">    .build();</span><br><span class="line"></span><br><span class="line">ChatClient chatClient = ChatClient.builder(chatModel)</span><br><span class="line">    .defaultAdvisors(advisor)</span><br><span class="line">    .build();</span><br><span class="line"></span><br><span class="line">String response = chatClient.prompt()</span><br><span class="line">    .user(<span class="string">"Spring AI 支持哪些 RAG 功能？"</span>)</span><br><span class="line">    .call()</span><br><span class="line">    .content();</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/springai/" rel="tag"># springai</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2026/06/30/SpringAI — Observability（可观测性）/" rel="next" title="SpringAI — Observability（可观测性）">
+                  <i class="fa fa-chevron-left"></i> SpringAI — Observability（可观测性）
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用-QuestionAnswerAdvisor"><span class="nav-number">2.</span> <span class="nav-text">使用 QuestionAnswerAdvisor</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#依赖配置"><span class="nav-number">2.1.</span> <span class="nav-text">依赖配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基本用法"><span class="nav-number">2.2.</span> <span class="nav-text">基本用法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#搜索过滤"><span class="nav-number">2.3.</span> <span class="nav-text">搜索过滤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运行时动态过滤"><span class="nav-number">2.4.</span> <span class="nav-text">运行时动态过滤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义提示词模板"><span class="nav-number">2.5.</span> <span class="nav-text">自定义提示词模板</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用-RetrievalAugmentationAdvisor"><span class="nav-number">3.</span> <span class="nav-text">使用 RetrievalAugmentationAdvisor</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#依赖配置-1"><span class="nav-number">3.1.</span> <span class="nav-text">依赖配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基本用法-1"><span class="nav-number">3.2.</span> <span class="nav-text">基本用法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#过滤表达式"><span class="nav-number">3.3.</span> <span class="nav-text">过滤表达式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文档后处理"><span class="nav-number">3.4.</span> <span class="nav-text">文档后处理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模块化-RAG-架构"><span class="nav-number">4.</span> <span class="nav-text">模块化 RAG 架构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#架构概览"><span class="nav-number">4.1.</span> <span class="nav-text">架构概览</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Pre-Retrieval-模块（检索前）"><span class="nav-number">4.2.</span> <span class="nav-text">Pre-Retrieval 模块（检索前）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#查询转换（Query-Transformation）"><span class="nav-number">4.2.1.</span> <span class="nav-text">查询转换（Query Transformation）</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#CompressionQueryTransformer（压缩查询转换器）"><span class="nav-number">4.2.1.1.</span> <span class="nav-text">CompressionQueryTransformer（压缩查询转换器）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#RewriteQueryTransformer（重写查询转换器）"><span class="nav-number">4.2.1.2.</span> <span class="nav-text">RewriteQueryTransformer（重写查询转换器）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#TranslationQueryTransformer（翻译查询转换器）"><span class="nav-number">4.2.1.3.</span> <span class="nav-text">TranslationQueryTransformer（翻译查询转换器）</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查询扩展（Query-Expansion）"><span class="nav-number">4.2.2.</span> <span class="nav-text">查询扩展（Query Expansion）</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#MultiQueryExpander（多查询扩展器）"><span class="nav-number">4.2.2.1.</span> <span class="nav-text">MultiQueryExpander（多查询扩展器）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Retrieval-模块（检索）"><span class="nav-number">4.3.</span> <span class="nav-text">Retrieval 模块（检索）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#DocumentRetriever（文档检索器）"><span class="nav-number">4.3.1.</span> <span class="nav-text">DocumentRetriever（文档检索器）</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#VectorStoreDocumentRetriever（向量存储文档检索器）"><span class="nav-number">4.3.1.1.</span> <span class="nav-text">VectorStoreDocumentRetriever（向量存储文档检索器）</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#DocumentJoiner（文档合并器）"><span class="nav-number">4.3.2.</span> <span class="nav-text">DocumentJoiner（文档合并器）</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#ConcatenationDocumentJoiner（拼接文档合并器）"><span class="nav-number">4.3.2.1.</span> <span class="nav-text">ConcatenationDocumentJoiner（拼接文档合并器）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Post-Retrieval-模块（检索后）"><span class="nav-number">4.4.</span> <span class="nav-text">Post-Retrieval 模块（检索后）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#DocumentPostProcessor（文档后处理器）"><span class="nav-number">4.4.1.</span> <span class="nav-text">DocumentPostProcessor（文档后处理器）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Generation-模块（生成）"><span class="nav-number">4.5.</span> <span class="nav-text">Generation 模块（生成）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#QueryAugmenter（查询增强器）"><span class="nav-number">4.5.1.</span> <span class="nav-text">QueryAugmenter（查询增强器）</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#ContextualQueryAugmenter（上下文查询增强器）"><span class="nav-number">4.5.1.1.</span> <span class="nav-text">ContextualQueryAugmenter（上下文查询增强器）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#完整示例：构建自定义-RAG-流程"><span class="nav-number">4.6.</span> <span class="nav-text">完整示例：构建自定义 RAG 流程</span></a></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar.jpg"
+      alt="蝉">
+  <p class="site-author-name" itemprop="name">蝉</p>
+  <div class="site-description" itemprop="description">Another way to laugh !</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">116</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">73</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/lazycece" title="GitHub &rarr; https://github.com/lazycece" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:lazycece@qq.com" title="E-Mail &rarr; mailto:lazycece@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://blog.csdn.net/qq_28851503" title="CSDN &rarr; https://blog.csdn.net/qq_28851503" rel="noopener" target="_blank"><i class="fa fa-fw fa-vk"></i>CSDN</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://leetcode-cn.com/u/lazycece" title="LeetCode &rarr; https://leetcode-cn.com/u/lazycece" rel="noopener" target="_blank"><i class="fa fa-fw fa-vk"></i>LeetCode</a>
+      </span>
+    
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2026</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">蝉</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script><script src="/js/bookmark.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
