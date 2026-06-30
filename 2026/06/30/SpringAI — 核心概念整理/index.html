@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":true,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="翻译自官方文档：https://docs.spring.io/spring-ai/reference/concepts.html  AI 模型（AI Models）AI 模型是旨在处理和生成信息的算法，通常模仿人类的认知功能。通过学习大规模数据集中的模式和洞察，这些模型可以进行预测、生成文本、图像或其他输出，从而增强各行各业的各种应用。 AI 模型有许多不同的类型，每种都适用于特定的用例。虽然">
+<meta name="keywords" content="springai">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring AI 核心概念整理">
+<meta property="og:url" content="https://lazycece.github.io/2026/06/30/SpringAI — 核心概念整理/index.html">
+<meta property="og:site_name" content="W  pit">
+<meta property="og:description" content="翻译自官方文档：https://docs.spring.io/spring-ai/reference/concepts.html  AI 模型（AI Models）AI 模型是旨在处理和生成信息的算法，通常模仿人类的认知功能。通过学习大规模数据集中的模式和洞察，这些模型可以进行预测、生成文本、图像或其他输出，从而增强各行各业的各种应用。 AI 模型有许多不同的类型，每种都适用于特定的用例。虽然">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2026-06-30T14:08:12.266Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spring AI 核心概念整理">
+<meta name="twitter:description" content="翻译自官方文档：https://docs.spring.io/spring-ai/reference/concepts.html  AI 模型（AI Models）AI 模型是旨在处理和生成信息的算法，通常模仿人类的认知功能。通过学习大规模数据集中的模式和洞察，这些模型可以进行预测、生成文本、图像或其他输出，从而增强各行各业的各种应用。 AI 模型有许多不同的类型，每种都适用于特定的用例。虽然">
+  <link rel="canonical" href="https://lazycece.github.io/2026/06/30/SpringAI — 核心概念整理/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Spring AI 核心概念整理 | W  pit</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">W  pit</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">A thousand miles begins with a single step .</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a class="book-mark-link book-mark-link-fixed" href="#"></a>
+
+  <a href="https://github.com/lazycece" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2026/06/30/SpringAI — 核心概念整理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="蝉">
+      <meta itemprop="description" content="Another way to laugh !">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="W  pit">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">Spring AI 核心概念整理
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2026-06-30 22:05:47 / Modified: 22:08:12" itemprop="dateCreated datePublished" datetime="2026-06-30T22:05:47+08:00">2026-06-30</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/springai/" itemprop="url" rel="index"><span itemprop="name">springai</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>翻译自官方文档：<a href="https://docs.spring.io/spring-ai/reference/concepts.html" target="_blank" rel="noopener">https://docs.spring.io/spring-ai/reference/concepts.html</a></p>
+</blockquote>
+<h2 id="AI-模型（AI-Models）"><a href="#AI-模型（AI-Models）" class="headerlink" title="AI 模型（AI Models）"></a>AI 模型（AI Models）</h2><p>AI 模型是旨在处理和生成信息的算法，通常模仿人类的认知功能。通过学习大规模数据集中的模式和洞察，这些模型可以进行预测、生成文本、图像或其他输出，从而增强各行各业的各种应用。</p>
+<p>AI 模型有许多不同的类型，每种都适用于特定的用例。虽然 ChatGPT 及其生成式 AI 能力通过文本输入和输出吸引了大量用户，但许多模型和公司提供了多样化的输入和输出形式。在 ChatGPT 之前，许多人就对 Midjourney 和 Stable Diffusion 等文本生成图像模型着迷。</p>
+<p>下表根据输入和输出类型对几种模型进行了分类：</p>
+<table>
+<thead>
+<tr>
+<th>输入</th>
+<th>输出</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>文本</td>
+<td>文本</td>
+<td>ChatGPT</td>
+</tr>
+<tr>
+<td>文本</td>
+<td>图像</td>
+<td>Midjourney、Stable Diffusion</td>
+</tr>
+<tr>
+<td>文本</td>
+<td>音频</td>
+<td>ElevenLabs</td>
+</tr>
+<tr>
+<td>图像</td>
+<td>文本</td>
+<td>OCR、图像描述</td>
+</tr>
+<tr>
+<td>文本</td>
+<td>嵌入（数字）</td>
+<td>Embedding 模型</td>
+</tr>
+</tbody></table>
+<p>Spring AI 目前支持处理<strong>语言、图像和音频</strong>作为输入和输出的模型。上表中最后一行（接受文本作为输入并输出数字）通常被称为<strong>文本嵌入（Embedding）</strong>，代表了 AI 模型内部使用的数据结构。Spring AI 支持嵌入功能，以实现更高级的用例。</p>
+<p>GPT 等模型的独特之处在于其<strong>预训练</strong>特性——正如 GPT 中的 “P” 所表示的那样：<strong>Chat Generative Pre-trained Transformer</strong>（对话生成式预训练 Transformer）。这种预训练特性使 AI 转变为一种通用的开发者工具，无需深厚的机器学习或模型训练背景即可使用。</p>
+<a id="more"></a>
+
+<hr>
+<h2 id="提示词（Prompts）"><a href="#提示词（Prompts）" class="headerlink" title="提示词（Prompts）"></a>提示词（Prompts）</h2><p>提示词（Prompt）是引导 AI 模型产生特定输出的基于语言的输入的基础。对于熟悉 ChatGPT 的用户来说，提示词可能看起来只是发送到 API 的对话框中输入的文本。然而，它远不止于此。在许多 AI 模型中，提示词的文本不仅仅是一个简单的字符串。</p>
+<p>ChatGPT 的 API 在提示词中包含多个文本输入，每个文本输入都被分配了一个<strong>角色（Role）</strong>。例如：</p>
+<ul>
+<li><strong>system 角色</strong>：告诉模型如何行为，并设置交互的上下文。</li>
+<li><strong>user 角色</strong>：通常是来自用户的输入。</li>
+</ul>
+<h3 id="提示词工程（Prompt-Engineering）"><a href="#提示词工程（Prompt-Engineering）" class="headerlink" title="提示词工程（Prompt Engineering）"></a>提示词工程（Prompt Engineering）</h3><p>制作有效的提示词既是一门艺术，也是一门科学。ChatGPT 是为人类对话而设计的，这与使用 SQL 来”提问”截然不同。你必须像与另一个人交谈一样与 AI 模型沟通。</p>
+<p>这种交互方式的重要性催生了<strong>“提示词工程（Prompt Engineering）”</strong>这一独立学科。有一系列新兴技术可以提高提示词的有效性。投入时间精心制作提示词可以显著改善最终输出。</p>
+<p>分享提示词已成为一种社区实践，并且学术界也在积极研究这一课题。作为一个反直觉的例子（例如与 SQL 形成对比），<a href="https://arxiv.org/abs/2305.18343" target="_blank" rel="noopener">最近的一篇研究论文</a>发现，最有效的提示词之一以这样的短语开头：<strong>“深呼吸，一步一步来解决这个问题。”</strong> 这应该能让你明白语言为何如此重要。我们尚未完全理解如何最有效地使用这项技术的前几代版本（如 ChatGPT 3.5），更不用说正在开发的新版本了。</p>
+<h3 id="提示词模板（Prompt-Templates）"><a href="#提示词模板（Prompt-Templates）" class="headerlink" title="提示词模板（Prompt Templates）"></a>提示词模板（Prompt Templates）</h3><p>创建有效的提示词涉及建立请求的上下文，并将请求的部分内容替换为用户特定的输入值。</p>
+<p>这个过程使用传统的基于文本的模板引擎来创建和管理提示词。Spring AI 为此使用了开源库 <strong>StringTemplate</strong>。</p>
+<p>例如，考虑以下简单的提示词模板：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Tell me about &#123;topic&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在 Spring AI 中，提示词模板可以类比为 Spring MVC 架构中的 <strong>“View”</strong>。一个模型对象（通常是 <code>java.util.Map</code>）被用来填充模板中的占位符。<strong>“渲染”后</strong>的字符串成为提供给 AI 模型的提示词内容。</p>
+<p>发送到模型的提示词的具体数据格式存在相当大的差异。最初只是简单的字符串，提示词已经演变为包含多个消息，其中每个消息中的字符串代表模型的不同角色。</p>
+<hr>
+<h2 id="嵌入（Embeddings）"><a href="#嵌入（Embeddings）" class="headerlink" title="嵌入（Embeddings）"></a>嵌入（Embeddings）</h2><p>嵌入是文本、图像或视频的<strong>数值表示</strong>，用于捕获输入之间的关系。</p>
+<p>嵌入通过将文本、图像和视频转换为浮点数数组（称为<strong>向量</strong>）来工作。这些向量旨在捕获文本、图像和视频的含义。嵌入数组的长度称为向量的<strong>维度</strong>。</p>
+<p>通过计算两段文本向量表示之间的<strong>数值距离</strong>，应用程序可以确定用于生成嵌入向量的对象之间的相似性。</p>
+<p>作为一名探索 AI 的 Java 开发者，没有必要理解这些向量表示背后的复杂数学理论或具体实现。基本了解它们在 AI 系统中的角色和功能就足够了，尤其是当你将 AI 功能集成到应用程序中时。</p>
+<h3 id="嵌入的实际应用"><a href="#嵌入的实际应用" class="headerlink" title="嵌入的实际应用"></a>嵌入的实际应用</h3><p>嵌入在<strong>检索增强生成（RAG）</strong>模式等实际应用中尤为重要。它们使数据能够表示为<strong>语义空间</strong>中的点，这类似于欧几里得几何的二维空间，但维度更高。这意味着就像欧几里得几何中平面上的点可以根据其坐标有远有近一样，在语义空间中，点的接近程度反映了含义的相似性。关于相似主题的句子在这个多维空间中位置更近，就像图表上彼此靠近的点一样。这种邻近性有助于<strong>文本分类、语义搜索甚至产品推荐</strong>等任务，因为它允许 AI 根据其在这个扩展语义”景观”中的”位置”来辨别和分组相关概念。</p>
+<p>你可以将这种语义空间想象为一个<strong>向量</strong>。</p>
+<hr>
+<h2 id="Token"><a href="#Token" class="headerlink" title="Token"></a>Token</h2><p>Token 是 AI 模型工作的<strong>基本构建块</strong>。在输入时，模型将单词转换为 Token；在输出时，模型将 Token 转换回单词。</p>
+<p>在英语中，一个 Token 大致对应 <strong>0.75 个单词</strong>。作为参考，莎士比亚的全部作品总计约 90 万单词，转换为大约 <strong>120 万 Token</strong>。</p>
+<h3 id="Token-金钱"><a href="#Token-金钱" class="headerlink" title="Token = 金钱"></a>Token = 金钱</h3><p>也许更重要的是：<strong>Token 就是金钱</strong>。在使用托管 AI 模型的场景中，你的费用取决于使用的 Token 数量。<strong>输入和输出都计入总 Token 数</strong>。</p>
+<p>此外，模型还受到 <strong>Token 限制</strong>，这限制了单次 API 调用中处理的文本量。这个阈值通常被称为<strong>“上下文窗口”（Context Window）</strong>。模型不会处理超出此限制的任何文本。</p>
+<table>
+<thead>
+<tr>
+<th>模型</th>
+<th>Token 限制</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ChatGPT 3</td>
+<td>4K</td>
+</tr>
+<tr>
+<td>GPT-4</td>
+<td>8K / 16K / 32K</td>
+</tr>
+<tr>
+<td>Anthropic Claude</td>
+<td>100K</td>
+</tr>
+<tr>
+<td>Meta 最新研究</td>
+<td>1M</td>
+</tr>
+</tbody></table>
+<p>例如，要用 GPT-4 总结莎士比亚的全部作品，你需要设计软件工程策略来<strong>切分数据</strong>并在模型的上下文窗口限制内呈现数据。Spring AI 项目可以帮助你完成这项任务。</p>
+<hr>
+<h2 id="结构化输出（Structured-Output）"><a href="#结构化输出（Structured-Output）" class="headerlink" title="结构化输出（Structured Output）"></a>结构化输出（Structured Output）</h2><p>AI 模型的输出传统上以 <code>java.lang.String</code> 的形式返回，即使你要求以 JSON 格式回复。它可能是一个正确的 JSON 字符串，但它不是一个 JSON 数据结构——它只是一个字符串。而且，在提示词中包含”请以 JSON 格式回复”并不能 100% 保证准确性。</p>
+<p>这种复杂性催生了一个专门领域：创建提示词以产生预期输出，然后将结果简单字符串转换为可供应用程序集成使用的数据结构。</p>
+<p><strong>结构化输出转换</strong>采用精心制作的提示词，通常需要与模型进行多次交互才能实现所需的格式。</p>
+<hr>
+<h2 id="如何让-AI-模型获取未训练过的信息？"><a href="#如何让-AI-模型获取未训练过的信息？" class="headerlink" title="如何让 AI 模型获取未训练过的信息？"></a>如何让 AI 模型获取未训练过的信息？</h2><p>请注意，GPT 3.5/4.0 的数据集仅涵盖到 <strong>2021 年 9 月</strong>。因此，对于需要该日期之后知识的问题，模型会表示不知道答案。一个有趣的事实是：这个数据集大约有 <strong>650GB</strong>。</p>
+<p>有三种技术可以自定义 AI 模型以整合你的数据：</p>
+<h3 id="1-微调（Fine-Tuning）"><a href="#1-微调（Fine-Tuning）" class="headerlink" title="1. 微调（Fine Tuning）"></a>1. 微调（Fine Tuning）</h3><p>这是一种传统的机器学习技术，涉及调整模型并更改其内部权重。然而，对于机器学习专家来说，这是一个具有挑战性的过程，而且对于像 GPT 这样规模的模型来说，资源消耗极大。此外，某些模型可能不提供此选项。</p>
+<h3 id="2-提示词填充（Prompt-Stuffing）"><a href="#2-提示词填充（Prompt-Stuffing）" class="headerlink" title="2. 提示词填充（Prompt Stuffing）"></a>2. 提示词填充（Prompt Stuffing）</h3><p>一种更实用的替代方案是将你的数据<strong>嵌入</strong>到提供给模型的提示词中。考虑到模型的 Token 限制，需要采用特定技术在模型的上下文窗口内呈现相关数据。这种方法被通俗地称为<strong>“填充提示词”（Stuffing the Prompt）</strong>。Spring AI 库可以帮助你基于”填充提示词”技术（也称为<strong>检索增强生成（RAG）</strong>）实现解决方案。</p>
+<h3 id="3-工具调用（Tool-Calling）"><a href="#3-工具调用（Tool-Calling）" class="headerlink" title="3. 工具调用（Tool Calling）"></a>3. 工具调用（Tool Calling）</h3><p>这种技术允许注册<strong>工具</strong>（用户定义的服务），将大语言模型连接到外部系统的 API。Spring AI 极大地简化了你需要编写的支持工具调用的代码。</p>
+<hr>
+<h2 id="检索增强生成（RAG）"><a href="#检索增强生成（RAG）" class="headerlink" title="检索增强生成（RAG）"></a>检索增强生成（RAG）</h2><p>一种称为<strong>检索增强生成（Retrieval Augmented Generation，RAG）</strong>的技术应运而生，以解决将相关数据纳入提示词以获得准确 AI 模型响应的挑战。</p>
+<p>该方法涉及一种<strong>批处理风格</strong>的编程模型，其中作业从文档中读取非结构化数据，对其进行转换，然后写入向量数据库。从高层次来看，这是一个 <strong>ETL（提取、转换和加载）</strong> 管道。向量数据库用于 RAG 技术的<strong>检索</strong>部分。</p>
+<h3 id="文档切分"><a href="#文档切分" class="headerlink" title="文档切分"></a>文档切分</h3><p>作为将非结构化数据加载到向量数据库的一部分，<strong>最重要的转换之一是将原始文档拆分为更小的片段</strong>。将原始文档拆分为更小片段的过程有两个重要步骤：</p>
+<ol>
+<li><strong>在保留内容语义边界的同时拆分文档。</strong> 例如，对于包含段落和表格的文档，应避免在段落或表格中间拆分。对于代码，应避免在方法实现的中间拆分。</li>
+<li><strong>将文档片段进一步拆分为大小不超过 AI 模型 Token 限制一小部分的片段。</strong></li>
+</ol>
+<h3 id="RAG-的下一个阶段：处理用户输入"><a href="#RAG-的下一个阶段：处理用户输入" class="headerlink" title="RAG 的下一个阶段：处理用户输入"></a>RAG 的下一个阶段：处理用户输入</h3><p>当需要用 AI 模型回答用户的问题时，<strong>问题以及所有”相似”的文档片段</strong>都会被放入发送到 AI 模型的提示词中。这就是使用向量数据库的原因——它非常擅长<strong>查找相似内容</strong>。</p>
+<ul>
+<li><a href="https://docs.spring.io/spring-ai/reference/api/etl-pipeline.html" target="_blank" rel="noopener">ETL 管道</a>提供了关于编排从数据源提取数据并存储到结构化向量存储中的流程的更多信息，确保数据在传递给 AI 模型时处于最佳检索格式。</li>
+<li><a href="https://docs.spring.io/spring-ai/reference/api/chatclient.html#_retrieval_augmented_generation" target="_blank" rel="noopener">ChatClient - RAG</a> 解释了如何使用 <code>QuestionAnswerAdvisor</code> 在应用程序中启用 RAG 功能。</li>
+</ul>
+<hr>
+<h2 id="工具调用（Tool-Calling）"><a href="#工具调用（Tool-Calling）" class="headerlink" title="工具调用（Tool Calling）"></a>工具调用（Tool Calling）</h2><p>大语言模型（LLM）在训练后处于<strong>冻结</strong>状态，导致知识过时，并且无法访问或修改外部数据。</p>
+<p><strong>工具调用</strong>机制解决了这些缺陷。它允许你将自己的服务注册为<strong>工具</strong>，将大语言模型连接到外部系统的 API。这些系统可以为 LLM 提供<strong>实时数据</strong>并代表其执行数据处理操作。</p>
+<p>Spring AI 极大地简化了你需要编写的支持工具调用的代码。它为你处理工具调用的对话流程。你可以将工具作为 <strong><code>@Tool</code> 注解的方法</strong>提供，并在提示词选项中提供它，使其对模型可用。此外，你还可以在单个提示词中定义和引用多个工具。</p>
+<h3 id="工具调用流程"><a href="#工具调用流程" class="headerlink" title="工具调用流程"></a>工具调用流程</h3><ol>
+<li>当我们想让模型可以使用某个工具时，我们将它的定义包含在聊天请求中。每个工具定义包括一个<strong>名称、描述和输入参数的模式（Schema）</strong>。</li>
+<li>当模型决定调用工具时，它会发送一个包含工具名称和按照定义模式建模的输入参数的响应。</li>
+<li><strong>应用程序负责</strong>使用工具名称来识别并使用提供的输入参数<strong>执行工具</strong>。</li>
+<li>工具调用的结果由应用程序处理。</li>
+<li>应用程序将工具调用结果<strong>发送回模型</strong>。</li>
+<li>模型使用工具调用结果作为<strong>额外上下文</strong>生成最终响应。</li>
+</ol>
+<p>有关如何在不同 AI 模型中使用此功能的更多信息，请参考<a href="https://docs.spring.io/spring-ai/reference/api/tools.html" target="_blank" rel="noopener">工具调用文档</a>。</p>
+<hr>
+<h2 id="评估测试（Evaluation-Testing）"><a href="#评估测试（Evaluation-Testing）" class="headerlink" title="评估测试（Evaluation Testing）"></a>评估测试（Evaluation Testing）</h2><p>有效地评估 AI 系统响应用户请求的输出，对于确保最终应用程序的准确性和实用性非常重要。几种新兴技术使使用预训练模型本身来实现此目的成为可能。</p>
+<h3 id="评估过程"><a href="#评估过程" class="headerlink" title="评估过程"></a>评估过程</h3><p>评估过程涉及分析生成的响应是否与用户的意图和查询的上下文<strong>一致</strong>。使用<strong>相关性、连贯性和事实正确性</strong>等指标来衡量 AI 生成响应的质量。</p>
+<p>一种方法是将用户的请求和 AI 模型的响应同时呈现给模型，询问响应是否与提供的数据一致。</p>
+<p>此外，利用存储在向量数据库中的信息作为<strong>补充数据</strong>可以增强评估过程，有助于确定响应的相关性。</p>
+<p>Spring AI 项目提供了一个 <strong><code>Evaluator</code> API</strong>，目前提供了评估模型响应的基本策略。更多信息请参考<a href="https://docs.spring.io/spring-ai/reference/testing/evaluation.html" target="_blank" rel="noopener">评估测试文档</a>。</p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/springai/" rel="tag"># springai</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2026/06/30/SpringAI — Recursive-Advisors（顾问递归）/" rel="next" title="SpringAI — Recursive Advisors（顾问递归）">
+                  <i class="fa fa-chevron-left"></i> SpringAI — Recursive Advisors（顾问递归）
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#AI-模型（AI-Models）"><span class="nav-number">1.</span> <span class="nav-text">AI 模型（AI Models）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#提示词（Prompts）"><span class="nav-number">2.</span> <span class="nav-text">提示词（Prompts）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#提示词工程（Prompt-Engineering）"><span class="nav-number">2.1.</span> <span class="nav-text">提示词工程（Prompt Engineering）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#提示词模板（Prompt-Templates）"><span class="nav-number">2.2.</span> <span class="nav-text">提示词模板（Prompt Templates）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#嵌入（Embeddings）"><span class="nav-number">3.</span> <span class="nav-text">嵌入（Embeddings）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#嵌入的实际应用"><span class="nav-number">3.1.</span> <span class="nav-text">嵌入的实际应用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Token"><span class="nav-number">4.</span> <span class="nav-text">Token</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Token-金钱"><span class="nav-number">4.1.</span> <span class="nav-text">Token = 金钱</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结构化输出（Structured-Output）"><span class="nav-number">5.</span> <span class="nav-text">结构化输出（Structured Output）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何让-AI-模型获取未训练过的信息？"><span class="nav-number">6.</span> <span class="nav-text">如何让 AI 模型获取未训练过的信息？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-微调（Fine-Tuning）"><span class="nav-number">6.1.</span> <span class="nav-text">1. 微调（Fine Tuning）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-提示词填充（Prompt-Stuffing）"><span class="nav-number">6.2.</span> <span class="nav-text">2. 提示词填充（Prompt Stuffing）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-工具调用（Tool-Calling）"><span class="nav-number">6.3.</span> <span class="nav-text">3. 工具调用（Tool Calling）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#检索增强生成（RAG）"><span class="nav-number">7.</span> <span class="nav-text">检索增强生成（RAG）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#文档切分"><span class="nav-number">7.1.</span> <span class="nav-text">文档切分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RAG-的下一个阶段：处理用户输入"><span class="nav-number">7.2.</span> <span class="nav-text">RAG 的下一个阶段：处理用户输入</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#工具调用（Tool-Calling）"><span class="nav-number">8.</span> <span class="nav-text">工具调用（Tool Calling）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#工具调用流程"><span class="nav-number">8.1.</span> <span class="nav-text">工具调用流程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#评估测试（Evaluation-Testing）"><span class="nav-number">9.</span> <span class="nav-text">评估测试（Evaluation Testing）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#评估过程"><span class="nav-number">9.1.</span> <span class="nav-text">评估过程</span></a></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar.jpg"
+      alt="蝉">
+  <p class="site-author-name" itemprop="name">蝉</p>
+  <div class="site-description" itemprop="description">Another way to laugh !</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">114</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">73</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/lazycece" title="GitHub &rarr; https://github.com/lazycece" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:lazycece@qq.com" title="E-Mail &rarr; mailto:lazycece@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://blog.csdn.net/qq_28851503" title="CSDN &rarr; https://blog.csdn.net/qq_28851503" rel="noopener" target="_blank"><i class="fa fa-fw fa-vk"></i>CSDN</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://leetcode-cn.com/u/lazycece" title="LeetCode &rarr; https://leetcode-cn.com/u/lazycece" rel="noopener" target="_blank"><i class="fa fa-fw fa-vk"></i>LeetCode</a>
+      </span>
+    
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2026</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">蝉</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script><script src="/js/bookmark.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
