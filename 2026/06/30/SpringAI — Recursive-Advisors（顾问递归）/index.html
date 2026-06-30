@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":true,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="概述递归 Advisor（Recursive Advisors） 是一种特殊类型的 Advisor，可以多次循环遍历下游 Advisor 链。这种模式在需要重复调用大语言模型（LLM）直到满足特定条件时非常有用，例如：  循环执行工具调用，直到无需再调用任何工具 验证结构化输出，并在验证失败时重试 通过修改请求来实现评估（Evaluation）逻辑 通过修改请求来实现重试逻辑">
+<meta name="keywords" content="springai">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringAI — Recursive Advisors（顾问递归）">
+<meta property="og:url" content="https://lazycece.github.io/2026/06/30/SpringAI — Recursive-Advisors（顾问递归）/index.html">
+<meta property="og:site_name" content="W  pit">
+<meta property="og:description" content="概述递归 Advisor（Recursive Advisors） 是一种特殊类型的 Advisor，可以多次循环遍历下游 Advisor 链。这种模式在需要重复调用大语言模型（LLM）直到满足特定条件时非常有用，例如：  循环执行工具调用，直到无需再调用任何工具 验证结构化输出，并在验证失败时重试 通过修改请求来实现评估（Evaluation）逻辑 通过修改请求来实现重试逻辑">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2026-06-30T08:18:59.819Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SpringAI — Recursive Advisors（顾问递归）">
+<meta name="twitter:description" content="概述递归 Advisor（Recursive Advisors） 是一种特殊类型的 Advisor，可以多次循环遍历下游 Advisor 链。这种模式在需要重复调用大语言模型（LLM）直到满足特定条件时非常有用，例如：  循环执行工具调用，直到无需再调用任何工具 验证结构化输出，并在验证失败时重试 通过修改请求来实现评估（Evaluation）逻辑 通过修改请求来实现重试逻辑">
+  <link rel="canonical" href="https://lazycece.github.io/2026/06/30/SpringAI — Recursive-Advisors（顾问递归）/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>SpringAI — Recursive Advisors（顾问递归） | W  pit</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">W  pit</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">A thousand miles begins with a single step .</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a class="book-mark-link book-mark-link-fixed" href="#"></a>
+
+  <a href="https://github.com/lazycece" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2026/06/30/SpringAI — Recursive-Advisors（顾问递归）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="蝉">
+      <meta itemprop="description" content="Another way to laugh !">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="W  pit">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">SpringAI — Recursive Advisors（顾问递归）
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2026-06-30 16:11:18 / Modified: 16:18:59" itemprop="dateCreated datePublished" datetime="2026-06-30T16:11:18+08:00">2026-06-30</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/springai/" itemprop="url" rel="index"><span itemprop="name">springai</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p><strong>递归 Advisor（Recursive Advisors）</strong> 是一种特殊类型的 Advisor，可以<strong>多次循环遍历下游 Advisor 链</strong>。这种模式在需要重复调用大语言模型（LLM）直到满足特定条件时非常有用，例如：</p>
+<ul>
+<li>循环执行工具调用，直到无需再调用任何工具</li>
+<li>验证结构化输出，并在验证失败时重试</li>
+<li>通过修改请求来实现评估（Evaluation）逻辑</li>
+<li>通过修改请求来实现重试逻辑</li>
+</ul>
+<a id="more"></a>
+
+<h2 id="核心机制"><a href="#核心机制" class="headerlink" title="核心机制"></a>核心机制</h2><p><code>CallAdvisorChain.copy(CallAdvisor after)</code> 方法是实现递归 Advisor 模式的<strong>关键工具</strong>。它创建一个新的 Advisor 链，该链仅包含原始链中指定 Advisor <strong>之后</strong>的 Advisor，并允许递归 Advisor 根据需要调用此子链。</p>
+<p>这种方法确保了：</p>
+<ul>
+<li>递归 Advisor 可以循环遍历链中剩余的 Advisor</li>
+<li>链中的其他 Advisor 可以观察和拦截每次迭代</li>
+<li>Advisor 链保持正确的执行顺序和可观测性</li>
+<li>递归 Advisor 不会重新执行它之前的 Advisor</li>
+</ul>
+<hr>
+<h2 id="内置的递归-Advisor"><a href="#内置的递归-Advisor" class="headerlink" title="内置的递归 Advisor"></a>内置的递归 Advisor</h2><p>Spring AI 提供了两个演示此模式的内置递归 Advisor：</p>
+<h3 id="1-ToolCallingAdvisor（工具调用-Advisor）"><a href="#1-ToolCallingAdvisor（工具调用-Advisor）" class="headerlink" title="1. ToolCallingAdvisor（工具调用 Advisor）"></a>1. ToolCallingAdvisor（工具调用 Advisor）</h3><p><code>ToolCallingAdvisor</code> 将工具调用循环作为 Advisor 链的一部分来实现，而不是依赖模型内部的工具执行。这使得链中的其他 Advisor 能够拦截和观察工具调用的过程。</p>
+<h4 id="核心特性"><a href="#核心特性" class="headerlink" title="核心特性"></a>核心特性</h4><ul>
+<li>循环遍历 Advisor 链，直到 <code>ToolExecutionEligibilityChecker</code> 报告没有更多工具调用需要执行</li>
+<li>支持 <strong>“return direct”</strong> 功能 —— 当工具执行设置了 <code>returnDirect=true</code> 时，它会中断工具调用循环，并直接将工具执行结果返回给客户端应用程序，而不是将其发送回 LLM</li>
+<li>使用 <code>callAdvisorChain.copy(this)</code> 创建用于递归调用的子链</li>
+<li>通过 <code>conversationHistoryEnabled</code> 支持可配置的对话历史管理</li>
+<li>支持可插拔的 <code>ToolExecutionEligibilityChecker</code>，以自定义循环迭代的条件</li>
+</ul>
+<h4 id="使用示例"><a href="#使用示例" class="headerlink" title="使用示例"></a>使用示例</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 示例：将 ToolCallingAdvisor 注册到 ChatClient</span></span><br><span class="line">ChatClient chatClient = ChatClient.builder(chatModel)</span><br><span class="line">    .defaultAdvisors(<span class="keyword">new</span> ToolCallingAdvisor())</span><br><span class="line">    .build();</span><br></pre></td></tr></table></figure>
+
+<h4 id="对话历史管理"><a href="#对话历史管理" class="headerlink" title="对话历史管理"></a>对话历史管理</h4><p><code>ToolCallingAdvisor</code> 包含一个 <code>conversationHistoryEnabled</code> 配置选项，用于控制工具调用迭代期间对话历史的管理方式。</p>
+<p><strong>默认行为（<code>conversationHistoryEnabled = true</code>）</strong></p>
+<p>Advisor 在工具调用迭代期间会在内部维护完整的对话历史。这意味着工具调用循环中的每次后续 LLM 调用都会包含所有之前的消息（用户消息、助手回复、工具回复）。</p>
+<p>默认情况下，记忆 Advisor（<code>DEFAULT_CHAT_MEMORY_PRECEDENCE_ORDER = HIGHEST_PRECEDENCE + 200</code>）被放置在工具调用循环的<strong>外部</strong>。<code>ToolCallingAdvisor</code>（位于 <code>HIGHEST_PRECEDENCE + 300</code>）在迭代期间内部管理对话历史。记忆 Advisor 在循环前加载一次历史，并在循环结束后仅持久化最终的用户/助手交互。这是<strong>推荐的配置</strong>，因为大多数 <code>ChatMemoryRepository</code> 实现不支持工具调用消息类型。</p>
+<p><strong>将记忆 Advisor 放入循环内部</strong></p>
+<p>仅当需要将记忆 Advisor 放置在工具调用循环<strong>内部</strong>时（order 高于 <code>ToolCallingAdvisor.DEFAULT_ORDER</code>），才使用 <code>.disableInternalConversationHistory()</code> 方法。此时，记忆 Advisor 会在每次迭代时处理历史记录。请注意，只有 <code>InMemoryChatMemoryRepository</code> 支持持久化工具调用消息；其他存储库应使用上述默认的外部循环设置。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 禁用内部对话历史，将记忆管理交给循环内的记忆 Advisor</span></span><br><span class="line">ToolCallingAdvisor advisor = <span class="keyword">new</span> ToolCallingAdvisor();</span><br><span class="line">advisor.disableInternalConversationHistory();</span><br></pre></td></tr></table></figure>
+
+<h4 id="手动控制工具调用循环"><a href="#手动控制工具调用循环" class="headerlink" title="手动控制工具调用循环"></a>手动控制工具调用循环</h4><p>默认情况下，<code>ToolCallingAdvisor</code> 是自动注册的，并在内部管理整个工具调用循环 —— 调用者仅接收最终的 LLM 答案。</p>
+<p>当你需要完全控制循环时（例如，向 UI 流式传输中间进度、添加自定义可观测性、或在迭代之间应用条件逻辑），你可以选择退出自动注册，并手动驱动循环。</p>
+<p><strong>按调用禁用自动注册：</strong></p>
+<p>使用 <code>AdvisorParams.toolCallingAdvisorAutoRegister(false)</code> 在每次调用时禁用自动注册：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 手动驱动工具调用循环</span></span><br><span class="line">chatClient.prompt(<span class="string">"Your question here"</span>)</span><br><span class="line">    .advisorParams(AdvisorParams.toolCallingAdvisorAutoRegister(<span class="keyword">false</span>))</span><br><span class="line">    .call();</span><br></pre></td></tr></table></figure>
+
+<p><strong>在循环内部放置自定义 Advisor：</strong></p>
+<p>作为手动驱动循环的替代方案，你可以通过将自定义 Advisor 的 order 值设置为大于 <code>ToolCallingAdvisor.DEFAULT_ORDER</code>（例如 <code>HIGHEST_PRECEDENCE + 400</code>），将其放置在 <code>ToolCallingAdvisor</code> 循环<strong>内部</strong>。这样的 Advisor 会在工具调用循环的<strong>每次迭代</strong>中被调用，而不仅仅是在结束时调用一次，这意味着它可以访问所有中间消息：</p>
+<ul>
+<li><strong>在流式模式下</strong> —— 它在 <code>ToolCallingAdvisor</code> 从出站流中过滤掉工具调用请求块之前，接收每次迭代中模型的原始块流（包括工具调用请求块）。</li>
+<li><strong>在调用路径中</strong> —— 每次后续请求中传递的对话历史包含上一次迭代的 <code>ToolResponseMessage</code>，因此该 Advisor 可以观察到工具调用请求及其响应。</li>
+</ul>
+<p>这种模式允许你将中间块转发到辅助通道（SSE、WebSocket、日志），而不会中断工具调用循环：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定义一个观察 Advisor，在每次工具调用迭代时执行</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ToolCallObservingAdvisor</span> <span class="keyword">implements</span> <span class="title">CallAdvisor</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getOrder</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> HIGHEST_PRECEDENCE + <span class="number">400</span>; <span class="comment">// 确保在 ToolCallingAdvisor 之后执行</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ChatClientResponse <span class="title">adviseCall</span><span class="params">(CallAdvisorChain chain, ChatClientRequest request)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 在此处观察或记录中间状态</span></span><br><span class="line">        ChatClientResponse response = chain.nextCall(request);</span><br><span class="line">        <span class="comment">// 处理响应</span></span><br><span class="line">        <span class="keyword">return</span> response;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>注册观察 Advisor 和自动注册的 ToolCallingAdvisor：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">ChatClient chatClient = ChatClient.builder(chatModel)</span><br><span class="line">    .defaultAdvisors(</span><br><span class="line">        <span class="keyword">new</span> ToolCallingAdvisor(),       <span class="comment">// order: HIGHEST_PRECEDENCE + 300</span></span><br><span class="line">        <span class="keyword">new</span> ToolCallObservingAdvisor()  <span class="comment">// order: HIGHEST_PRECEDENCE + 400</span></span><br><span class="line">    )</span><br><span class="line">    .build();</span><br></pre></td></tr></table></figure>
+
+<p>由于 <code>ToolCallObservingAdvisor</code> 的 order 为 <code>HIGHEST_PRECEDENCE + 400</code>，它被插入到自动注册的 <code>ToolCallingAdvisor</code>（order 为 <code>HIGHEST_PRECEDENCE + 300</code>）<strong>之后</strong>，因此它会参与每次工具调用迭代。<code>ToolCallingAdvisor</code> 仍然会从返回给外部链的内容中过滤掉工具调用块，因此主调用者仅接收最终答案 —— 而观察 Advisor 负责辅助通道的发射。</p>
+<p>这种方法使工具调用循环完全由框架管理，同时仍能让你完全可见地观察每个中间步骤，并且它与对话历史管理中描述的 <code>conversationHistoryEnabled</code> 和记忆 Advisor 模式自然配对。</p>
+<h4 id="Return-Direct-功能"><a href="#Return-Direct-功能" class="headerlink" title="Return Direct 功能"></a>Return Direct 功能</h4><p><strong>“return direct”</strong> 功能允许工具绕过 LLM，将其结果直接返回给客户端应用程序。这在以下情况下非常有用：</p>
+<ul>
+<li>工具的输出就是最终答案，不需要 LLM 处理</li>
+<li>希望通过避免额外的 LLM 调用来减少延迟</li>
+<li>工具结果应按原样返回，无需解释</li>
+</ul>
+<p>当工具执行设置了 <code>returnDirect=true</code> 时，<code>ToolCallingAdvisor</code> 将：</p>
+<ol>
+<li>正常执行工具调用</li>
+<li>在 <code>ToolExecutionResult</code> 中检测到 <code>returnDirect</code> 标志</li>
+<li>跳出工具调用循环</li>
+<li>将工具执行结果作为 <code>ChatResponse</code>（以工具的输出作为生成内容）直接返回给客户端应用程序</li>
+</ol>
+<hr>
+<h3 id="2-StructuredOutputValidationAdvisor（结构化输出验证-Advisor）"><a href="#2-StructuredOutputValidationAdvisor（结构化输出验证-Advisor）" class="headerlink" title="2. StructuredOutputValidationAdvisor（结构化输出验证 Advisor）"></a>2. StructuredOutputValidationAdvisor（结构化输出验证 Advisor）</h3><p><code>StructuredOutputValidationAdvisor</code> 根据 JSON Schema 验证结构化的 JSON 输出，并在验证失败时重试调用，最多重试指定次数。</p>
+<h4 id="核心特性-1"><a href="#核心特性-1" class="headerlink" title="核心特性"></a>核心特性</h4><ul>
+<li>从期望的输出类型派生 JSON Schema，或接受预先提供的 Schema 字符串</li>
+<li>根据 Schema 验证 LLM 的响应</li>
+<li>如果验证失败则重试调用，最多可配置重试次数（默认：3 次）</li>
+<li>在重试尝试时，将验证错误消息附加到 Prompt 中，以帮助 LLM 纠正其输出</li>
+<li>使用 <code>callAdvisorChain.copy(this)</code> 创建用于递归调用的子链</li>
+<li>可选地支持自定义 <code>JsonMapper</code> 进行 JSON 处理</li>
+</ul>
+<p>该 Advisor 可以通过 <code>outputType</code>（自动派生 Schema）或 <code>outputJsonSchema</code>（预先提供的 Schema 字符串）进行配置；这两个选项是<strong>互斥的</strong>。</p>
+<h4 id="使用示例-1"><a href="#使用示例-1" class="headerlink" title="使用示例"></a>使用示例</h4><p><strong>使用 <code>outputType</code>：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 根据期望的输出类型自动派生 JSON Schema</span></span><br><span class="line">StructuredOutputValidationAdvisor advisor = <span class="keyword">new</span> StructuredOutputValidationAdvisor();</span><br><span class="line">advisor.setOutputType(MyOutputClass<span class="class">.<span class="keyword">class</span>)</span>; <span class="comment">// 自动从类定义中派生 Schema</span></span><br><span class="line">advisor.setMaxRetries(<span class="number">3</span>); <span class="comment">// 设置最大重试次数</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>使用预先提供的 JSON Schema 字符串：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 提供预先定义好的 JSON Schema 字符串</span></span><br><span class="line">String jsonSchema = <span class="string">""</span><span class="string">"</span></span><br><span class="line"><span class="string">    &#123;</span></span><br><span class="line"><span class="string">        "</span>type<span class="string">": "</span>object<span class="string">",</span></span><br><span class="line"><span class="string">        "</span>properties<span class="string">": &#123;</span></span><br><span class="line"><span class="string">            "</span>name<span class="string">": &#123; "</span>type<span class="string">": "</span>string<span class="string">" &#125;,</span></span><br><span class="line"><span class="string">            "</span>age<span class="string">": &#123; "</span>type<span class="string">": "</span>integer<span class="string">" &#125;</span></span><br><span class="line"><span class="string">        &#125;,</span></span><br><span class="line"><span class="string">        "</span>required<span class="string">": ["</span>name<span class="string">", "</span>age<span class="string">"]</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">    "</span><span class="string">""</span>;</span><br><span class="line"></span><br><span class="line">StructuredOutputValidationAdvisor advisor = <span class="keyword">new</span> StructuredOutputValidationAdvisor();</span><br><span class="line">advisor.setOutputJsonSchema(jsonSchema);</span><br><span class="line">advisor.setMaxRetries(<span class="number">3</span>);</span><br></pre></td></tr></table></figure>
+
+<p><strong>在 <code>entity()</code> 调用上直接启用 Schema 验证：</strong></p>
+<p>作为配置 Advisor 的替代方案，你可以使用 <code>EntityParamSpec</code> 在 <code>entity()</code> 调用上直接启用 Schema 验证，而无需手动配置 Advisor：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 在 entity() 调用中直接启用验证</span></span><br><span class="line">chatClient.prompt(<span class="string">"Extract user information from this text: John is 25 years old"</span>)</span><br><span class="line">    .entity(<span class="keyword">new</span> EntityParamSpec(MyOutputClass<span class="class">.<span class="keyword">class</span>).<span class="title">withSchemaValidation</span>(<span class="title">true</span>))</span></span><br><span class="line"><span class="class">    .<span class="title">call</span>()</span>;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>递归 Advisor 是 Spring AI 中一个强大的扩展机制，它允许 Advisor 在链中多次循环执行。通过 <code>CallAdvisorChain.copy()</code> 方法，递归 Advisor 可以创建子链并重复调用，直到满足特定条件。<code>ToolCallingAdvisor</code> 和 <code>StructuredOutputValidationAdvisor</code> 是两个典型的内置实现，分别解决了工具调用循环和结构化输出验证重试的常见需求。</p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/springai/" rel="tag"># springai</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2026/06/30/SpringAI — Advisors（顾问）/" rel="next" title="SpringAI — Advisors（顾问模式）">
+                  <i class="fa fa-chevron-left"></i> SpringAI — Advisors（顾问模式）
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#核心机制"><span class="nav-number">2.</span> <span class="nav-text">核心机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内置的递归-Advisor"><span class="nav-number">3.</span> <span class="nav-text">内置的递归 Advisor</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-ToolCallingAdvisor（工具调用-Advisor）"><span class="nav-number">3.1.</span> <span class="nav-text">1. ToolCallingAdvisor（工具调用 Advisor）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#核心特性"><span class="nav-number">3.1.1.</span> <span class="nav-text">核心特性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用示例"><span class="nav-number">3.1.2.</span> <span class="nav-text">使用示例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#对话历史管理"><span class="nav-number">3.1.3.</span> <span class="nav-text">对话历史管理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#手动控制工具调用循环"><span class="nav-number">3.1.4.</span> <span class="nav-text">手动控制工具调用循环</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Return-Direct-功能"><span class="nav-number">3.1.5.</span> <span class="nav-text">Return Direct 功能</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-StructuredOutputValidationAdvisor（结构化输出验证-Advisor）"><span class="nav-number">3.2.</span> <span class="nav-text">2. StructuredOutputValidationAdvisor（结构化输出验证 Advisor）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#核心特性-1"><span class="nav-number">3.2.1.</span> <span class="nav-text">核心特性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用示例-1"><span class="nav-number">3.2.2.</span> <span class="nav-text">使用示例</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar.jpg"
+      alt="蝉">
+  <p class="site-author-name" itemprop="name">蝉</p>
+  <div class="site-description" itemprop="description">Another way to laugh !</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">113</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">73</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/lazycece" title="GitHub &rarr; https://github.com/lazycece" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:lazycece@qq.com" title="E-Mail &rarr; mailto:lazycece@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://blog.csdn.net/qq_28851503" title="CSDN &rarr; https://blog.csdn.net/qq_28851503" rel="noopener" target="_blank"><i class="fa fa-fw fa-vk"></i>CSDN</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://leetcode-cn.com/u/lazycece" title="LeetCode &rarr; https://leetcode-cn.com/u/lazycece" rel="noopener" target="_blank"><i class="fa fa-fw fa-vk"></i>LeetCode</a>
+      </span>
+    
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2026</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">蝉</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script><script src="/js/bookmark.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
