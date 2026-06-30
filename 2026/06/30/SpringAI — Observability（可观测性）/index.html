@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":true,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="概述Spring AI 基于 Spring 生态系统的可观测性功能，提供对 AI 相关操作的深入洞察。它为以下核心组件提供指标（Metrics）和链路追踪（Tracing）能力：  ChatClient（包括 Advisor） ChatModel EmbeddingModel ImageModel VectorStore  请参考 Spring Boot Metrics 和 Spring Boot">
+<meta name="keywords" content="springai">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringAI — Observability（可观测性）">
+<meta property="og:url" content="https://lazycece.github.io/2026/06/30/SpringAI — Observability（可观测性）/index.html">
+<meta property="og:site_name" content="W  pit">
+<meta property="og:description" content="概述Spring AI 基于 Spring 生态系统的可观测性功能，提供对 AI 相关操作的深入洞察。它为以下核心组件提供指标（Metrics）和链路追踪（Tracing）能力：  ChatClient（包括 Advisor） ChatModel EmbeddingModel ImageModel VectorStore  请参考 Spring Boot Metrics 和 Spring Boot">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2026-06-30T14:18:35.684Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SpringAI — Observability（可观测性）">
+<meta name="twitter:description" content="概述Spring AI 基于 Spring 生态系统的可观测性功能，提供对 AI 相关操作的深入洞察。它为以下核心组件提供指标（Metrics）和链路追踪（Tracing）能力：  ChatClient（包括 Advisor） ChatModel EmbeddingModel ImageModel VectorStore  请参考 Spring Boot Metrics 和 Spring Boot">
+  <link rel="canonical" href="https://lazycece.github.io/2026/06/30/SpringAI — Observability（可观测性）/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>SpringAI — Observability（可观测性） | W  pit</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">W  pit</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">A thousand miles begins with a single step .</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a class="book-mark-link book-mark-link-fixed" href="#"></a>
+
+  <a href="https://github.com/lazycece" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2026/06/30/SpringAI — Observability（可观测性）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="蝉">
+      <meta itemprop="description" content="Another way to laugh !">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="W  pit">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">SpringAI — Observability（可观测性）
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2026-06-30 22:17:16 / Modified: 22:18:35" itemprop="dateCreated datePublished" datetime="2026-06-30T22:17:16+08:00">2026-06-30</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/springai/" itemprop="url" rel="index"><span itemprop="name">springai</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>Spring AI 基于 Spring 生态系统的可观测性功能，提供对 AI 相关操作的深入洞察。它为以下核心组件提供指标（Metrics）和链路追踪（Tracing）能力：</p>
+<ul>
+<li><strong>ChatClient</strong>（包括 Advisor）</li>
+<li><strong>ChatModel</strong></li>
+<li><strong>EmbeddingModel</strong></li>
+<li><strong>ImageModel</strong></li>
+<li><strong>VectorStore</strong></li>
+</ul>
+<p>请参考 <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/actuator.html#actuator.metrics" target="_blank" rel="noopener">Spring Boot Metrics</a> 和 <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/actuator.html#actuator.tracing" target="_blank" rel="noopener">Spring Boot Tracing</a> 文档，以在应用中启用指标和追踪支持。</p>
+<a id="more"></a>
+
+<hr>
+<h2 id="ChatClient-观测（Observations）"><a href="#ChatClient-观测（Observations）" class="headerlink" title="ChatClient 观测（Observations）"></a>ChatClient 观测（Observations）</h2><p>当调用 <code>ChatClient</code> 的 <code>call()</code> 或 <code>stream()</code> 操作时，会记录 <code>spring.ai.chat.client</code> 观测数据。它们衡量执行调用所花费的时间，并传播相关的追踪信息。</p>
+<h3 id="通用属性"><a href="#通用属性" class="headerlink" title="通用属性"></a>通用属性</h3><table>
+<thead>
+<tr>
+<th>属性</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>gen_ai.operation.name</code></td>
+<td>始终为 <code>framework</code>。</td>
+</tr>
+<tr>
+<td><code>gen_ai.system</code></td>
+<td>始终为 <code>spring_ai</code>。</td>
+</tr>
+<tr>
+<td><code>spring.ai.chat.client.stream</code></td>
+<td>聊天模型响应是否为流 —— <code>true</code> 或 <code>false</code>。</td>
+</tr>
+<tr>
+<td><code>spring.ai.kind</code></td>
+<td>Spring AI 中框架 API 的类型：<code>chat_client</code>。</td>
+</tr>
+</tbody></table>
+<h3 id="附加属性"><a href="#附加属性" class="headerlink" title="附加属性"></a>附加属性</h3><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>spring.ai.chat.client.advisors</code></td>
+<td>已配置的聊天客户端 Advisor 列表。</td>
+</tr>
+<tr>
+<td><code>spring.ai.chat.client.conversation.id</code></td>
+<td>使用聊天记忆时的对话标识符。</td>
+</tr>
+<tr>
+<td><code>spring.ai.chat.client.tool.names</code></td>
+<td>传递给聊天客户端的工具名称。</td>
+</tr>
+</tbody></table>
+<h3 id="日志配置"><a href="#日志配置" class="headerlink" title="日志配置"></a>日志配置</h3><p><code>ChatClient</code> 的 Prompt 和 Completion 数据通常体积较大，且可能包含敏感信息。出于这些原因，<strong>默认不会导出</strong>。</p>
+<p>Spring AI 支持记录 Prompt 和 Completion 数据，以帮助调试和排查问题。</p>
+<table>
+<thead>
+<tr>
+<th>配置项</th>
+<th>描述</th>
+<th>默认值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>spring.ai.chat.client.observations.log-prompt</code></td>
+<td>是否记录聊天客户端 Prompt 内容。</td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>spring.ai.chat.client.observations.log-completion</code></td>
+<td>是否记录聊天客户端 Completion 内容。</td>
+<td><code>false</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="Advisor-观测"><a href="#Advisor-观测" class="headerlink" title="Advisor 观测"></a>Advisor 观测</h2><p>当 Advisor 被执行时，会记录 <code>spring.ai.advisor</code> 观测数据。它们衡量在 Advisor 中花费的时间（包括内部 Advisor 的时间），并传播相关的追踪信息。</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>gen_ai.operation.name</code></td>
+<td>始终为 <code>framework</code>。</td>
+</tr>
+<tr>
+<td><code>gen_ai.system</code></td>
+<td>始终为 <code>spring_ai</code>。</td>
+</tr>
+<tr>
+<td><code>spring.ai.advisor.name</code></td>
+<td>Advisor 的名称。</td>
+</tr>
+<tr>
+<td><code>spring.ai.kind</code></td>
+<td>Spring AI 中框架 API 的类型：<code>advisor</code>。</td>
+</tr>
+<tr>
+<td><code>spring.ai.advisor.order</code></td>
+<td>Advisor 在链中的顺序。</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="ChatModel-观测"><a href="#ChatModel-观测" class="headerlink" title="ChatModel 观测"></a>ChatModel 观测</h2><p>OpenAI 和 Anthropic 的聊天模型<strong>都会</strong>发出 HTTP 层的观测数据（聊天模型层 + HTTP 层），流式调用有一个特定限制：</p>
+<ul>
+<li><strong>同步调用</strong>：<code>okhttp.requests</code> Span 正确地嵌套在 <code>gen_ai.client.operation</code> Span 之下。</li>
+<li><strong>流式调用</strong>：HTTP Span 会被记录，但<strong>不会</strong>作为聊天模型 Span 的子 Span —— SDK 的异步流式路径在调用 Spring AI 的 HTTP 客户端之前跳转到 <code>ForkJoinPool.commonPool()</code>，在该边界处丢弃了调用线程的观测上下文。</li>
+</ul>
+<p>详情请参见 <a href="https://docs.spring.io/spring-ai/reference/api/chat/openai-chat.html" target="_blank" rel="noopener">OpenAI 聊天文档</a> 和 <a href="https://docs.spring.io/spring-ai/reference/api/chat/anthropic-chat.html" target="_blank" rel="noopener">Anthropic 聊天文档</a>。</p>
+<h3 id="gen-ai-client-operation-观测"><a href="#gen-ai-client-operation-观测" class="headerlink" title="gen_ai.client.operation 观测"></a>gen_ai.client.operation 观测</h3><p>调用 <code>ChatModel</code> 的 <code>call</code> 或 <code>stream</code> 方法时记录。衡量方法执行完成所花费的时间，并传播相关的追踪信息。</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>gen_ai.operation.name</code></td>
+<td>正在执行的操作名称。</td>
+</tr>
+<tr>
+<td><code>gen_ai.system</code></td>
+<td>客户端插桩识别的模型提供商。</td>
+</tr>
+<tr>
+<td><code>gen_ai.request.model</code></td>
+<td>请求所指向的模型名称。</td>
+</tr>
+<tr>
+<td><code>gen_ai.response.model</code></td>
+<td>生成响应的模型名称。</td>
+</tr>
+<tr>
+<td><code>gen_ai.request.frequency_penalty</code></td>
+<td>模型请求的频率惩罚设置。</td>
+</tr>
+<tr>
+<td><code>gen_ai.request.max_tokens</code></td>
+<td>模型为一次请求生成的最大 Token 数。</td>
+</tr>
+<tr>
+<td><code>gen_ai.request.presence_penalty</code></td>
+<td>模型请求的存在惩罚设置。</td>
+</tr>
+<tr>
+<td><code>gen_ai.request.stop_sequences</code></td>
+<td>模型用于停止生成更多 Token 的序列列表。</td>
+</tr>
+<tr>
+<td><code>gen_ai.request.stream</code></td>
+<td>请求是否以流式模式发出。仅在为 <code>true</code> 时存在。</td>
+</tr>
+<tr>
+<td><code>gen_ai.request.temperature</code></td>
+<td>模型请求的温度设置。</td>
+</tr>
+<tr>
+<td><code>gen_ai.request.top_k</code></td>
+<td>模型请求的 top_k 采样设置。</td>
+</tr>
+<tr>
+<td><code>gen_ai.request.top_p</code></td>
+<td>模型请求的 top_p 采样设置。</td>
+</tr>
+<tr>
+<td><code>gen_ai.response.finish_reasons</code></td>
+<td>模型停止生成 Token 的原因，对应每个收到的生成结果。</td>
+</tr>
+<tr>
+<td><code>gen_ai.response.id</code></td>
+<td>AI 响应的唯一标识符。</td>
+</tr>
+<tr>
+<td><code>gen_ai.usage.cache_creation.input_tokens</code></td>
+<td>写入提供商管理缓存的输入 Token 数。</td>
+</tr>
+<tr>
+<td><code>gen_ai.usage.cache_read.input_tokens</code></td>
+<td>从提供商管理缓存中提供服务的输入 Token 数。</td>
+</tr>
+<tr>
+<td><code>gen_ai.usage.input_tokens</code></td>
+<td>模型输入（Prompt）中使用的 Token 数。</td>
+</tr>
+<tr>
+<td><code>gen_ai.usage.output_tokens</code></td>
+<td>模型输出（Completion）中使用的 Token 数。</td>
+</tr>
+<tr>
+<td><code>gen_ai.usage.total_tokens</code></td>
+<td>模型交互中使用的总 Token 数。</td>
+</tr>
+<tr>
+<td><code>spring.ai.model.request.tool.names</code></td>
+<td>请求中提供给模型的工具定义列表。</td>
+</tr>
+</tbody></table>
+<h3 id="日志配置-1"><a href="#日志配置-1" class="headerlink" title="日志配置"></a>日志配置</h3><p>聊天 Prompt 和 Completion 数据通常体积较大，且可能包含敏感信息。出于这些原因，<strong>默认不会导出</strong>。</p>
+<p>Spring AI 支持记录聊天 Prompt 和 Completion 数据，在排查问题时非常有用。当启用追踪时，日志将包含追踪信息以便更好地关联。</p>
+<table>
+<thead>
+<tr>
+<th>配置项</th>
+<th>描述</th>
+<th>默认值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>spring.ai.chat.observations.log-prompt</code></td>
+<td>记录 Prompt 内容。<code>true</code> 或 <code>false</code>。</td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>spring.ai.chat.observations.log-completion</code></td>
+<td>记录 Completion 内容。<code>true</code> 或 <code>false</code>。</td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>spring.ai.chat.observations.include-error-logging</code></td>
+<td>在观测中包含错误日志。<code>true</code> 或 <code>false</code>。</td>
+<td><code>false</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="Tool-Calling-观测"><a href="#Tool-Calling-观测" class="headerlink" title="Tool Calling 观测"></a>Tool Calling 观测</h2><p>在聊天模型交互的上下文中执行工具调用时，会记录 <code>spring.ai.tool</code> 观测数据。它们衡量工具调用完成所花费的时间，并传播相关的追踪信息。</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>gen_ai.operation.name</code></td>
+<td>始终为 <code>execute_tool</code>。</td>
+</tr>
+<tr>
+<td><code>gen_ai.system</code></td>
+<td>负责该操作的提供商。始终为 <code>spring_ai</code>。</td>
+</tr>
+<tr>
+<td><code>spring.ai.kind</code></td>
+<td>Spring AI 执行的操作类型。始终为 <code>tool_call</code>。</td>
+</tr>
+<tr>
+<td><code>spring.ai.tool.definition.name</code></td>
+<td>工具的名称。</td>
+</tr>
+<tr>
+<td><code>spring.ai.tool.type</code></td>
+<td>工具的类型。默认为 <code>function</code>。</td>
+</tr>
+</tbody></table>
+<h3 id="附加属性-1"><a href="#附加属性-1" class="headerlink" title="附加属性"></a>附加属性</h3><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>spring.ai.tool.definition.description</code></td>
+<td>工具的描述。</td>
+</tr>
+<tr>
+<td><code>spring.ai.tool.definition.schema</code></td>
+<td>调用工具所用参数的 Schema。</td>
+</tr>
+<tr>
+<td><code>spring.ai.tool.call.id</code></td>
+<td>工具调用的 ID，由聊天模型识别。</td>
+</tr>
+<tr>
+<td><code>spring.ai.tool.call.arguments</code></td>
+<td>工具调用的输入参数。（仅当启用时）</td>
+</tr>
+<tr>
+<td><code>spring.ai.tool.call.result</code></td>
+<td>工具调用执行的结果。（仅当启用时）</td>
+</tr>
+</tbody></table>
+<p>工具调用的输入参数和结果默认<strong>不会导出</strong>，因为它们可能包含敏感信息。</p>
+<p>Spring AI 支持将工具调用参数和结果数据作为 Span 属性导出。</p>
+<table>
+<thead>
+<tr>
+<th>配置项</th>
+<th>描述</th>
+<th>默认值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>spring.ai.tools.observations.include-content</code></td>
+<td>在观测中包含工具调用内容。<code>true</code> 或 <code>false</code>。</td>
+<td><code>false</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="EmbeddingModel-观测"><a href="#EmbeddingModel-观测" class="headerlink" title="EmbeddingModel 观测"></a>EmbeddingModel 观测</h2><p>调用 Embedding 模型方法时记录 <code>gen_ai.client.operation</code> 观测数据。衡量方法执行完成所花费的时间，并传播相关的追踪信息。</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>gen_ai.operation.name</code></td>
+<td>正在执行的操作名称。</td>
+</tr>
+<tr>
+<td><code>gen_ai.system</code></td>
+<td>客户端插桩识别的模型提供商。</td>
+</tr>
+<tr>
+<td><code>gen_ai.request.model</code></td>
+<td>请求所指向的模型名称。</td>
+</tr>
+<tr>
+<td><code>gen_ai.response.model</code></td>
+<td>生成响应的模型名称。</td>
+</tr>
+<tr>
+<td><code>gen_ai.request.embedding.dimensions</code></td>
+<td>生成的输出嵌入的维度数量。</td>
+</tr>
+<tr>
+<td><code>gen_ai.usage.input_tokens</code></td>
+<td>模型输入中使用的 Token 数。</td>
+</tr>
+<tr>
+<td><code>gen_ai.usage.total_tokens</code></td>
+<td>模型交互中使用的总 Token 数。</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="ImageModel-观测"><a href="#ImageModel-观测" class="headerlink" title="ImageModel 观测"></a>ImageModel 观测</h2><p>调用图像模型方法时记录 <code>gen_ai.client.operation</code> 观测数据。衡量方法执行完成所花费的时间，并传播相关的追踪信息。</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>gen_ai.operation.name</code></td>
+<td>正在执行的操作名称。</td>
+</tr>
+<tr>
+<td><code>gen_ai.system</code></td>
+<td>客户端插桩识别的模型提供商。</td>
+</tr>
+<tr>
+<td><code>gen_ai.request.model</code></td>
+<td>请求所指向的模型名称。</td>
+</tr>
+<tr>
+<td><code>gen_ai.request.image.response_format</code></td>
+<td>生成图像的返回格式。</td>
+</tr>
+<tr>
+<td><code>gen_ai.request.image.size</code></td>
+<td>要生成的图像尺寸（例如 <code>1024x1024</code>）。</td>
+</tr>
+<tr>
+<td><code>gen_ai.request.image.style</code></td>
+<td>要生成的图像风格。</td>
+</tr>
+</tbody></table>
+<h3 id="日志配置-2"><a href="#日志配置-2" class="headerlink" title="日志配置"></a>日志配置</h3><p>图像 Prompt 数据通常体积较大，且可能包含敏感信息。出于这些原因，<strong>默认不会导出</strong>。</p>
+<p>Spring AI 支持记录图像 Prompt 数据，在排查问题时非常有用。当启用追踪时，日志将包含追踪信息以便更好地关联。</p>
+<table>
+<thead>
+<tr>
+<th>配置项</th>
+<th>描述</th>
+<th>默认值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>spring.ai.image.observations.log-prompt</code></td>
+<td>记录图像 Prompt 内容。<code>true</code> 或 <code>false</code>。</td>
+<td><code>false</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="VectorStore-观测"><a href="#VectorStore-观测" class="headerlink" title="VectorStore 观测"></a>VectorStore 观测</h2><p>Spring AI 中的所有向量存储实现都通过 Micrometer 插桩，以提供指标和分布式追踪数据。</p>
+<h3 id="db-vector-client-operation-观测"><a href="#db-vector-client-operation-观测" class="headerlink" title="db.vector.client.operation 观测"></a>db.vector.client.operation 观测</h3><p>与向量存储交互时记录。衡量在 <code>query</code>、<code>add</code> 和 <code>remove</code> 操作上花费的时间，并传播相关的追踪信息。</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>db.operation.name</code></td>
+<td>正在执行的操作或命令名称。为 <code>add</code>、<code>delete</code> 或 <code>query</code> 之一。</td>
+</tr>
+<tr>
+<td><code>db.system</code></td>
+<td>客户端插桩识别的数据库管理系统（DBMS）产品。为 <code>pg_vector</code>、<code>azure</code>、<code>cassandra</code>、<code>chroma</code>、<code>elasticsearch</code>、<code>milvus</code>、<code>neo4j</code>、<code>opensearch</code>、<code>qdrant</code>、<code>redis</code>、<code>typesense</code>、<code>weaviate</code>、<code>pinecone</code>、<code>oracle</code>、<code>mongodb</code>、<code>gemfire</code>、<code>simple</code> 之一。</td>
+</tr>
+<tr>
+<td><code>spring.ai.kind</code></td>
+<td>Spring AI 中框架 API 的类型：<code>vector_store</code>。</td>
+</tr>
+<tr>
+<td><code>db.collection.name</code></td>
+<td>数据库中的集合（表、容器）名称。</td>
+</tr>
+<tr>
+<td><code>db.namespace</code></td>
+<td>数据库名称，在服务器地址和端口范围内完全限定。</td>
+</tr>
+<tr>
+<td><code>db.search.similarity_metric</code></td>
+<td>相似度搜索中使用的度量标准。</td>
+</tr>
+<tr>
+<td><code>db.vector.dimension_count</code></td>
+<td>向量的维度。</td>
+</tr>
+<tr>
+<td><code>db.vector.field_name</code></td>
+<td>向量所在的字段名称（例如某个字段名）。</td>
+</tr>
+<tr>
+<td><code>db.vector.query.content</code></td>
+<td>正在执行的搜索查询内容。</td>
+</tr>
+<tr>
+<td><code>db.vector.query.filter</code></td>
+<td>搜索查询中使用的元数据过滤器。</td>
+</tr>
+<tr>
+<td><code>db.vector.query.response.documents</code></td>
+<td>相似度搜索查询返回的文档。可选。</td>
+</tr>
+<tr>
+<td><code>db.vector.query.similarity_threshold</code></td>
+<td>接受所有搜索分数的相似度阈值。阈值为 <code>0.0</code> 表示接受任何相似度或禁用相似度阈值过滤；阈值为 <code>1.0</code> 表示需要完全匹配。</td>
+</tr>
+<tr>
+<td><code>db.vector.query.top_k</code></td>
+<td>查询返回的前 k 个最相似向量。</td>
+</tr>
+</tbody></table>
+<h3 id="日志配置-3"><a href="#日志配置-3" class="headerlink" title="日志配置"></a>日志配置</h3><p>向量搜索响应数据通常体积较大，且可能包含敏感信息。出于这些原因，<strong>默认不会导出</strong>。</p>
+<p>Spring AI 支持记录向量搜索响应数据，在排查问题时非常有用。当启用追踪时，日志将包含追踪信息以便更好地关联。</p>
+<table>
+<thead>
+<tr>
+<th>配置项</th>
+<th>描述</th>
+<th>默认值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>spring.ai.vectorstore.observations.log-query-response</code></td>
+<td>记录向量存储查询响应内容。<code>true</code> 或 <code>false</code>。</td>
+<td><code>false</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="Prometheus-指标参考"><a href="#Prometheus-指标参考" class="headerlink" title="Prometheus 指标参考"></a>Prometheus 指标参考</h2><p>本节记录 Spring AI 组件以 Prometheus 格式发出的指标。</p>
+<p>Spring AI 使用 Micrometer。基础指标名称使用点号分隔（例如 <code>gen_ai.client.operation</code>），Prometheus 导出时会转换为下划线并附加标准后缀：</p>
+<ul>
+<li><strong>计时器（Timers）</strong> → <code>_seconds_count</code>、<code>_seconds_sum</code>、<code>_seconds_max</code>，以及（当支持时）<code>_active_count</code></li>
+<li><strong>计数器（Counters）</strong> → <code>_total</code>（单调）</li>
+</ul>
+<h3 id="基础指标名称到-Prometheus-时间序列的映射"><a href="#基础指标名称到-Prometheus-时间序列的映射" class="headerlink" title="基础指标名称到 Prometheus 时间序列的映射"></a>基础指标名称到 Prometheus 时间序列的映射</h3><h4 id="gen-ai-client-operation"><a href="#gen-ai-client-operation" class="headerlink" title="gen_ai.client.operation"></a>gen_ai.client.operation</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">gen_ai_client_operation_seconds_count</span><br><span class="line">gen_ai_client_operation_seconds_sum</span><br><span class="line">gen_ai_client_operation_seconds_max</span><br><span class="line">gen_ai_client_operation_active_count</span><br></pre></td></tr></table></figure>
+
+<h4 id="db-vector-client-operation"><a href="#db-vector-client-operation" class="headerlink" title="db.vector.client.operation"></a>db.vector.client.operation</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">db_vector_client_operation_seconds_count</span><br><span class="line">db_vector_client_operation_seconds_sum</span><br><span class="line">db_vector_client_operation_seconds_max</span><br><span class="line">db_vector_client_operation_active_count</span><br></pre></td></tr></table></figure>
+
+<h3 id="详细指标说明"><a href="#详细指标说明" class="headerlink" title="详细指标说明"></a>详细指标说明</h3><h4 id="ChatClient-指标"><a href="#ChatClient-指标" class="headerlink" title="ChatClient 指标"></a>ChatClient 指标</h4><table>
+<thead>
+<tr>
+<th>指标名称</th>
+<th>类型</th>
+<th>单位</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>gen_ai_chat_client_operation_seconds_sum</code></td>
+<td>Timer</td>
+<td>seconds</td>
+<td>ChatClient 操作（call/stream）花费的总时间</td>
+</tr>
+<tr>
+<td><code>gen_ai_chat_client_operation_seconds_count</code></td>
+<td>Counter</td>
+<td>count</td>
+<td>已完成的 ChatClient 操作数量</td>
+</tr>
+<tr>
+<td><code>gen_ai_chat_client_operation_seconds_max</code></td>
+<td>Gauge</td>
+<td>seconds</td>
+<td>观测到的 ChatClient 操作最大持续时间</td>
+</tr>
+<tr>
+<td><code>gen_ai_chat_client_operation_active_count</code></td>
+<td>Gauge</td>
+<td>count</td>
+<td>当前正在执行的 ChatClient 操作数量</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>Active vs Completed</strong>：<code>active_count</code> 显示正在进行的调用；<code>_seconds</code> 系列仅反映已完成的调用。</p>
+</blockquote>
+<h4 id="ChatModel-指标"><a href="#ChatModel-指标" class="headerlink" title="ChatModel 指标"></a>ChatModel 指标</h4><table>
+<thead>
+<tr>
+<th>指标名称</th>
+<th>类型</th>
+<th>单位</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>gen_ai_client_operation_seconds_sum</code></td>
+<td>Timer</td>
+<td>seconds</td>
+<td>执行聊天模型操作的总时间</td>
+</tr>
+<tr>
+<td><code>gen_ai_client_operation_seconds_count</code></td>
+<td>Counter</td>
+<td>count</td>
+<td>已完成的聊天模型操作数量</td>
+</tr>
+<tr>
+<td><code>gen_ai_client_operation_seconds_max</code></td>
+<td>Gauge</td>
+<td>seconds</td>
+<td>观测到的聊天模型操作最大持续时间</td>
+</tr>
+<tr>
+<td><code>gen_ai_client_operation_active_count</code></td>
+<td>Gauge</td>
+<td>count</td>
+<td>当前正在执行的聊天模型操作数量</td>
+</tr>
+<tr>
+<td><code>gen_ai_client_token_usage_total</code></td>
+<td>Counter</td>
+<td>tokens</td>
+<td>消耗的总 Token 数，按 Token 类型标记</td>
+</tr>
+</tbody></table>
+<p><strong>Token 类型标签：</strong></p>
+<table>
+<thead>
+<tr>
+<th>标签值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>gen_ai_token_type=input</code></td>
+<td>发送给模型的 Prompt Token</td>
+</tr>
+<tr>
+<td><code>gen_ai_token_type=output</code></td>
+<td>模型返回的 Completion Token</td>
+</tr>
+<tr>
+<td><code>gen_ai_token_type=total</code></td>
+<td>输入 + 输出</td>
+</tr>
+</tbody></table>
+<h4 id="VectorStore-指标"><a href="#VectorStore-指标" class="headerlink" title="VectorStore 指标"></a>VectorStore 指标</h4><table>
+<thead>
+<tr>
+<th>指标名称</th>
+<th>类型</th>
+<th>单位</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>db_vector_client_operation_seconds_sum</code></td>
+<td>Timer</td>
+<td>seconds</td>
+<td>向量存储操作（add/delete/query）花费的总时间</td>
+</tr>
+<tr>
+<td><code>db_vector_client_operation_seconds_count</code></td>
+<td>Counter</td>
+<td>count</td>
+<td>已完成的向量存储操作数量</td>
+</tr>
+<tr>
+<td><code>db_vector_client_operation_seconds_max</code></td>
+<td>Gauge</td>
+<td>seconds</td>
+<td>观测到的向量存储操作最大持续时间</td>
+</tr>
+<tr>
+<td><code>db_vector_client_operation_active_count</code></td>
+<td>Gauge</td>
+<td>count</td>
+<td>当前正在执行的向量存储操作数量</td>
+</tr>
+</tbody></table>
+<p><strong>常用标签：</strong></p>
+<table>
+<thead>
+<tr>
+<th>标签</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>db_operation_name</code></td>
+<td>操作类型（<code>add</code>、<code>delete</code>、<code>query</code>）</td>
+</tr>
+<tr>
+<td><code>db_system</code></td>
+<td>向量数据库/提供商（<code>redis</code>、<code>chroma</code>、<code>pgvector</code> 等）</td>
+</tr>
+<tr>
+<td><code>spring_ai_kind</code></td>
+<td><code>vector_store</code></td>
+</tr>
+</tbody></table>
+<h3 id="关键概念"><a href="#关键概念" class="headerlink" title="关键概念"></a>关键概念</h3><ul>
+<li><strong>Active（<code>*_active_count</code>）</strong> —— 正在进行的操作的瞬时 Gauge（并发/负载）。</li>
+<li><strong>Completed（<code>*_seconds_sum</code> | <code>count</code> | <code>max</code>）</strong> —— 已完成操作的统计：<ul>
+<li><code>_seconds_sum</code> / <code>_seconds_count</code> → 平均延迟</li>
+<li><code>_seconds_max</code> → 自上次抓取以来的高水位线（取决于注册表行为）</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/springai/" rel="tag"># springai</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2026/06/30/SpringAI — 核心概念整理/" rel="next" title="Spring AI 核心概念整理">
+                  <i class="fa fa-chevron-left"></i> Spring AI 核心概念整理
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ChatClient-观测（Observations）"><span class="nav-number">2.</span> <span class="nav-text">ChatClient 观测（Observations）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#通用属性"><span class="nav-number">2.1.</span> <span class="nav-text">通用属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#附加属性"><span class="nav-number">2.2.</span> <span class="nav-text">附加属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#日志配置"><span class="nav-number">2.3.</span> <span class="nav-text">日志配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Advisor-观测"><span class="nav-number">3.</span> <span class="nav-text">Advisor 观测</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ChatModel-观测"><span class="nav-number">4.</span> <span class="nav-text">ChatModel 观测</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#gen-ai-client-operation-观测"><span class="nav-number">4.1.</span> <span class="nav-text">gen_ai.client.operation 观测</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#日志配置-1"><span class="nav-number">4.2.</span> <span class="nav-text">日志配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Tool-Calling-观测"><span class="nav-number">5.</span> <span class="nav-text">Tool Calling 观测</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#附加属性-1"><span class="nav-number">5.1.</span> <span class="nav-text">附加属性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#EmbeddingModel-观测"><span class="nav-number">6.</span> <span class="nav-text">EmbeddingModel 观测</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ImageModel-观测"><span class="nav-number">7.</span> <span class="nav-text">ImageModel 观测</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#日志配置-2"><span class="nav-number">7.1.</span> <span class="nav-text">日志配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VectorStore-观测"><span class="nav-number">8.</span> <span class="nav-text">VectorStore 观测</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#db-vector-client-operation-观测"><span class="nav-number">8.1.</span> <span class="nav-text">db.vector.client.operation 观测</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#日志配置-3"><span class="nav-number">8.2.</span> <span class="nav-text">日志配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Prometheus-指标参考"><span class="nav-number">9.</span> <span class="nav-text">Prometheus 指标参考</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基础指标名称到-Prometheus-时间序列的映射"><span class="nav-number">9.1.</span> <span class="nav-text">基础指标名称到 Prometheus 时间序列的映射</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#gen-ai-client-operation"><span class="nav-number">9.1.1.</span> <span class="nav-text">gen_ai.client.operation</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#db-vector-client-operation"><span class="nav-number">9.1.2.</span> <span class="nav-text">db.vector.client.operation</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#详细指标说明"><span class="nav-number">9.2.</span> <span class="nav-text">详细指标说明</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ChatClient-指标"><span class="nav-number">9.2.1.</span> <span class="nav-text">ChatClient 指标</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ChatModel-指标"><span class="nav-number">9.2.2.</span> <span class="nav-text">ChatModel 指标</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#VectorStore-指标"><span class="nav-number">9.2.3.</span> <span class="nav-text">VectorStore 指标</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关键概念"><span class="nav-number">9.3.</span> <span class="nav-text">关键概念</span></a></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar.jpg"
+      alt="蝉">
+  <p class="site-author-name" itemprop="name">蝉</p>
+  <div class="site-description" itemprop="description">Another way to laugh !</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">73</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/lazycece" title="GitHub &rarr; https://github.com/lazycece" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:lazycece@qq.com" title="E-Mail &rarr; mailto:lazycece@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://blog.csdn.net/qq_28851503" title="CSDN &rarr; https://blog.csdn.net/qq_28851503" rel="noopener" target="_blank"><i class="fa fa-fw fa-vk"></i>CSDN</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://leetcode-cn.com/u/lazycece" title="LeetCode &rarr; https://leetcode-cn.com/u/lazycece" rel="noopener" target="_blank"><i class="fa fa-fw fa-vk"></i>LeetCode</a>
+      </span>
+    
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2026</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">蝉</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script><script src="/js/bookmark.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
