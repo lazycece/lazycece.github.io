@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":true,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="概述Spring AI 的 Advisors API 提供了一种灵活而强大的方式，用于在 Spring 应用中拦截、修改和增强 AI 驱动的交互。通过 Advisors API，开发者可以构建更复杂、可复用且易维护的 AI 组件。 主要优势：  封装常见的生成式 AI 模式（如 RAG、对话记忆、内容审查等） 转换发送给和接收自大语言模型（LLM）的数据 在不同模型和用例之间实现可移植性  推荐注">
+<meta name="keywords" content="springai">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringAI — Advisors（顾问模式）">
+<meta property="og:url" content="https://lazycece.github.io/2026/06/30/SpringAI — Advisors（顾问）/index.html">
+<meta property="og:site_name" content="W  pit">
+<meta property="og:description" content="概述Spring AI 的 Advisors API 提供了一种灵活而强大的方式，用于在 Spring 应用中拦截、修改和增强 AI 驱动的交互。通过 Advisors API，开发者可以构建更复杂、可复用且易维护的 AI 组件。 主要优势：  封装常见的生成式 AI 模式（如 RAG、对话记忆、内容审查等） 转换发送给和接收自大语言模型（LLM）的数据 在不同模型和用例之间实现可移植性  推荐注">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://lazycece.github.io/images/article/springai-advisors-components.png">
+<meta property="og:image" content="https://lazycece.github.io/images/article/springai-advisor-chain-invoke.png">
+<meta property="og:updated_time" content="2026-06-30T07:58:12.350Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SpringAI — Advisors（顾问模式）">
+<meta name="twitter:description" content="概述Spring AI 的 Advisors API 提供了一种灵活而强大的方式，用于在 Spring 应用中拦截、修改和增强 AI 驱动的交互。通过 Advisors API，开发者可以构建更复杂、可复用且易维护的 AI 组件。 主要优势：  封装常见的生成式 AI 模式（如 RAG、对话记忆、内容审查等） 转换发送给和接收自大语言模型（LLM）的数据 在不同模型和用例之间实现可移植性  推荐注">
+<meta name="twitter:image" content="https://lazycece.github.io/images/article/springai-advisors-components.png">
+  <link rel="canonical" href="https://lazycece.github.io/2026/06/30/SpringAI — Advisors（顾问）/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>SpringAI — Advisors（顾问模式） | W  pit</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">W  pit</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">A thousand miles begins with a single step .</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a class="book-mark-link book-mark-link-fixed" href="#"></a>
+
+  <a href="https://github.com/lazycece" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2026/06/30/SpringAI — Advisors（顾问）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="蝉">
+      <meta itemprop="description" content="Another way to laugh !">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="W  pit">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">SpringAI — Advisors（顾问模式）
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2026-06-30 14:57:08 / Modified: 15:58:12" itemprop="dateCreated datePublished" datetime="2026-06-30T14:57:08+08:00">2026-06-30</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/springai/" itemprop="url" rel="index"><span itemprop="name">springai</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>Spring AI 的 <strong>Advisors API</strong> 提供了一种灵活而强大的方式，用于在 Spring 应用中<strong>拦截、修改和增强 AI 驱动的交互</strong>。通过 Advisors API，开发者可以构建更复杂、可复用且易维护的 AI 组件。</p>
+<p><strong>主要优势：</strong></p>
+<ul>
+<li><strong>封装常见的生成式 AI 模式</strong>（如 RAG、对话记忆、内容审查等）</li>
+<li><strong>转换发送给和接收自大语言模型（LLM）的数据</strong></li>
+<li><strong>在不同模型和用例之间实现可移植性</strong></li>
+</ul>
+<p><strong>推荐注册方式：</strong>官方建议在构建时使用 <code>ChatClient</code> 的 <code>defaultAdvisors()</code> 方法注册 Advisor：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ChatClient.builder(chatModel)</span><br><span class="line">    .defaultAdvisors(<span class="keyword">new</span> MyAdvisor())</span><br><span class="line">    .build();</span><br></pre></td></tr></table></figure>
+
+<p>同时Advisor 也会加入 <strong>Observability（可观测性）栈</strong>，你可以查看其执行的指标（Metrics）和链路追踪（Traces）。</p>
+<a id="more"></a>
+
+<h2 id="核心组件"><a href="#核心组件" class="headerlink" title="核心组件"></a>核心组件</h2><p>API 包含以下核心接口和类：</p>
+<table>
+<thead>
+<tr>
+<th>组件</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>CallAdvisor</code> / <code>CallAdvisorChain</code></td>
+<td>非流式（同步）场景</td>
+</tr>
+<tr>
+<td><code>StreamAdvisor</code> / <code>StreamAdvisorChain</code></td>
+<td>流式（响应式）场景</td>
+</tr>
+<tr>
+<td><code>ChatClientRequest</code></td>
+<td>表示未封包的 Prompt 请求</td>
+</tr>
+<tr>
+<td><code>ChatClientResponse</code></td>
+<td>表示 Chat Completion 响应</td>
+</tr>
+</tbody></table>
+<p>二者都持有 <code>advise-context</code>，用于在 Advisor 链中共享状态。</p>
+<p><img src="/images/article/springai-advisors-components.png" alt="springai-advisors-components"></p>
+<p><strong>关键方法</strong></p>
+<ul>
+<li><strong><code>adviseCall()</code></strong> —— 非流式 Advisor 的核心方法</li>
+<li><strong><code>adviseStream()</code></strong> —— 流式 Advisor 的核心方法</li>
+</ul>
+<p>这些方法通常执行以下操作：</p>
+<ol>
+<li>检查未封包的 Prompt 数据</li>
+<li>自定义和增强 Prompt 数据</li>
+<li>调用链中的下一个实体</li>
+<li>可选：阻断请求（不调用下一个实体）</li>
+<li>检查 Chat Completion 响应</li>
+<li>抛出异常以指示处理错误</li>
+</ol>
+<p>此外：</p>
+<ul>
+<li><strong><code>getOrder()</code></strong> —— 决定 Advisor 在链中的执行顺序</li>
+<li><strong><code>getName()</code></strong> —— 提供唯一的 Advisor 名称</li>
+</ul>
+<h2 id="Advisor-链的执行流程"><a href="#Advisor-链的执行流程" class="headerlink" title="Advisor 链的执行流程"></a>Advisor 链的执行流程</h2><p>Spring AI 框架advisor和聊天模型之间的交互流程如下：<br><img src="/images/article/springai-advisor-chain-invoke.png" alt="springai-advisor-chain-invoke"></p>
+<ol>
+<li>根据用户 <code>Prompt</code> 创建 <code>ChatClientRequest</code>，并初始化一个空的 advisor <code>context</code></li>
+<li>链中<strong>每个 Advisor 依次处理请求</strong>（可修改请求，也可选择不调用下一个实体从而阻断请求——此时 Advisor 需自行填充响应）</li>
+<li>框架自动添加的<strong>最后一个 Advisor 将请求发送给 Chat Model</strong></li>
+<li>Chat Model 的响应沿 Advisor 链<strong>反向传回</strong>，转换为 <code>ChatClientResponse</code>（包含共享的 context）</li>
+<li>每个 Advisor 可处理或修改响应</li>
+<li>最终 <code>ChatClientResponse</code> 被返回给调用方</li>
+</ol>
+<h2 id="执行顺序（Order）"><a href="#执行顺序（Order）" class="headerlink" title="执行顺序（Order）"></a>执行顺序（Order）</h2><p>执行顺序由 <code>getOrder()</code> 方法控制，遵循 Spring <code>Ordered</code> 接口的语义：</p>
+<ul>
+<li><strong>order 值越小，优先级越高，越先执行（请求阶段），越后执行（响应阶段）</strong></li>
+<li>Advisor 链表现为<strong>栈（Stack）结构</strong>：<ul>
+<li>第一个入栈的 Advisor → 最先处理请求（栈展开时）</li>
+<li>同一个 Advisor → 最后处理响应（栈回退时）</li>
+</ul>
+</li>
+<li>顺序控制<ul>
+<li>Ordered.HIGHEST_PRECEDENCE，以确保顾问在链中首先执行（请求处理首先执行，响应处理最后执行）</li>
+<li>Ordered.LOWEST_PRECEDENCE，以确保顾问程序在链中最后执行（请求处理最后执行，响应处理最先执行）。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>⚠️ <strong>相同 order 值时不保证执行顺序。</strong></p>
+</blockquote>
+<p>如果需要在请求和响应端都位于顾问链首位，建议如下：</p>
+<ol>
+<li>拆分为<strong>两个独立的 Advisor</strong></li>
+<li>分别配置不同的 order 值</li>
+<li>通过 advisor context 在它们之间共享状态</li>
+</ol>
+<h2 id="自定义-Advisor"><a href="#自定义-Advisor" class="headerlink" title="自定义 Advisor"></a>自定义 Advisor</h2><p>要实现自定义 Advisor，需实现 <code>CallAdvisor</code> 或 <code>StreamAdvisor</code>（或两者都实现）：</p>
+<ul>
+<li>非流式核心方法：<code>nextCall(CallAdvisorChain chain, ChatClientRequest request)</code></li>
+<li>流式核心方法：<code>nextStream(StreamAdvisorChain chain, ChatClientRequest request)</code></li>
+</ul>
+<h3 id="Logging-Advisor-示意"><a href="#Logging-Advisor-示意" class="headerlink" title="Logging Advisor 示意"></a>Logging Advisor 示意</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SimpleLoggerAdvisor</span> <span class="keyword">implements</span> <span class="title">CallAdvisor</span>, <span class="title">StreamAdvisor</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger logger = LoggerFactory.getLogger(SimpleLoggerAdvisor<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">this</span>.getClass().getSimpleName();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getOrder</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> ChatClientResponse <span class="title">adviseCall</span><span class="params">(ChatClientRequest chatClientRequest, CallAdvisorChain callAdvisorChain)</span> </span>&#123;</span><br><span class="line">		logRequest(chatClientRequest);</span><br><span class="line"></span><br><span class="line">		ChatClientResponse chatClientResponse = callAdvisorChain.nextCall(chatClientRequest);</span><br><span class="line"></span><br><span class="line">		logResponse(chatClientResponse);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> chatClientResponse;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> Flux&lt;ChatClientResponse&gt; <span class="title">adviseStream</span><span class="params">(ChatClientRequest chatClientRequest,</span></span></span><br><span class="line"><span class="function"><span class="params">			StreamAdvisorChain streamAdvisorChain)</span> </span>&#123;</span><br><span class="line">		logRequest(chatClientRequest);</span><br><span class="line"></span><br><span class="line">		Flux&lt;ChatClientResponse&gt; chatClientResponses = streamAdvisorChain.nextStream(chatClientRequest);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">new</span> ChatClientMessageAggregator().aggregateChatClientResponse(chatClientResponses, <span class="keyword">this</span>::logResponse);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">logRequest</span><span class="params">(ChatClientRequest request)</span> </span>&#123;</span><br><span class="line">		logger.debug(<span class="string">"request: &#123;&#125;"</span>, request);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">logResponse</span><span class="params">(ChatClientResponse chatClientResponse)</span> </span>&#123;</span><br><span class="line">		logger.debug(<span class="string">"response: &#123;&#125;"</span>, chatClientResponse);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="内置-Advisor"><a href="#内置-Advisor" class="headerlink" title="内置 Advisor"></a>内置 Advisor</h2><p>Spring AI 框架提供了多个内置 Advisor 来增强与AI 交互：</p>
+<h3 id="对话记忆-Advisor"><a href="#对话记忆-Advisor" class="headerlink" title="对话记忆 Advisor"></a>对话记忆 Advisor</h3><table>
+<thead>
+<tr>
+<th>Advisor</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>MessageChatMemoryAdvisor</strong></td>
+<td>从对话记忆存储中检索历史消息，作为消息集合加入 Prompt，保留对话结构。注意：并非所有 AI 模型都支持此方式。</td>
+</tr>
+<tr>
+<td><strong>VectorStoreChatMemoryAdvisor</strong></td>
+<td>从 <code>VectorStore</code> 检索记忆，注入到 Prompt 的 system text 中。适合从大规模数据集中高效搜索和检索相关信息。</td>
+</tr>
+</tbody></table>
+<h3 id="RAG（检索增强生成）Advisor"><a href="#RAG（检索增强生成）Advisor" class="headerlink" title="RAG（检索增强生成）Advisor"></a>RAG（检索增强生成）Advisor</h3><table>
+<thead>
+<tr>
+<th>Advisor</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>QuestionAnswerAdvisor</strong></td>
+<td>使用向量存储提供问答能力，实现 Naive RAG 模式。</td>
+</tr>
+<tr>
+<td><strong>RetrievalAugmentationAdvisor</strong></td>
+<td>使用 <code>org.springframework.ai.rag</code> 包中定义的构建块实现常见的 RAG 流程，遵循模块化 RAG 架构。</td>
+</tr>
+</tbody></table>
+<h3 id="其他-Advisor"><a href="#其他-Advisor" class="headerlink" title="其他 Advisor"></a>其他 Advisor</h3><table>
+<thead>
+<tr>
+<th>Advisor</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>ReReadingAdvisor</strong></td>
+<td>实现 RE2 重读策略，在输入阶段增强 LLM 的理解能力。基于论文：<em>Re-Reading Improves Reasoning in LLMs</em>。</td>
+</tr>
+<tr>
+<td><strong>ToolCallingAdvisor</strong></td>
+<td>处理 Tool Calling 循环。该 Advisor 始终由 <code>ChatClient</code> 自动注册（除非被显式禁用），支持运行时由其他 Advisor 注入工具。实现 <code>ToolAdvisor</code> 标记接口，防止第二个 <code>ToolCallingAdvisor</code> 被自动注册。</td>
+</tr>
+<tr>
+<td><strong>SafeGuardAdvisor</strong></td>
+<td>简单的内容安全 Advisor，用于防止模型生成有害或不恰当的内容。</td>
+</tr>
+</tbody></table>
+<h2 id="最佳实践"><a href="#最佳实践" class="headerlink" title="最佳实践"></a>最佳实践</h2><ul>
+<li>✅ 保持每个 Advisor <strong>职责单一</strong>，提升模块化程度</li>
+<li>✅ 必要时通过 <code>adviseContext</code> / <code>updateContext()</code> 在 Advisor 间共享状态</li>
+<li>✅ 尽量同时实现流式和非流式版本，以获得最大灵活性</li>
+<li>✅ 仔细规划 Advisor 的 <code>getOrder()</code> 值，确保数据流转正确</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/springai/" rel="tag"># springai</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2026/06/29/SpringAI — Tool-Search-Tool（工具搜索工具）/" rel="next" title="SpringAI — Tool Search Tool（工具搜索工具）">
+                  <i class="fa fa-chevron-left"></i> SpringAI — Tool Search Tool（工具搜索工具）
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#核心组件"><span class="nav-number">2.</span> <span class="nav-text">核心组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Advisor-链的执行流程"><span class="nav-number">3.</span> <span class="nav-text">Advisor 链的执行流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#执行顺序（Order）"><span class="nav-number">4.</span> <span class="nav-text">执行顺序（Order）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义-Advisor"><span class="nav-number">5.</span> <span class="nav-text">自定义 Advisor</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Logging-Advisor-示意"><span class="nav-number">5.1.</span> <span class="nav-text">Logging Advisor 示意</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内置-Advisor"><span class="nav-number">6.</span> <span class="nav-text">内置 Advisor</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#对话记忆-Advisor"><span class="nav-number">6.1.</span> <span class="nav-text">对话记忆 Advisor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RAG（检索增强生成）Advisor"><span class="nav-number">6.2.</span> <span class="nav-text">RAG（检索增强生成）Advisor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他-Advisor"><span class="nav-number">6.3.</span> <span class="nav-text">其他 Advisor</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#最佳实践"><span class="nav-number">7.</span> <span class="nav-text">最佳实践</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar.jpg"
+      alt="蝉">
+  <p class="site-author-name" itemprop="name">蝉</p>
+  <div class="site-description" itemprop="description">Another way to laugh !</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">112</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">73</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/lazycece" title="GitHub &rarr; https://github.com/lazycece" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:lazycece@qq.com" title="E-Mail &rarr; mailto:lazycece@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://blog.csdn.net/qq_28851503" title="CSDN &rarr; https://blog.csdn.net/qq_28851503" rel="noopener" target="_blank"><i class="fa fa-fw fa-vk"></i>CSDN</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://leetcode-cn.com/u/lazycece" title="LeetCode &rarr; https://leetcode-cn.com/u/lazycece" rel="noopener" target="_blank"><i class="fa fa-fw fa-vk"></i>LeetCode</a>
+      </span>
+    
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2026</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">蝉</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script><script src="/js/bookmark.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
