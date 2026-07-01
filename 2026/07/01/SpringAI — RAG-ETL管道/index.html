@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":true,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="概述ETL（提取、转换和加载） 管道为 Spring AI 中的 RAG 用例提供了完整的数据处理解决方案，其负责提取、转换和存储 Document 实例。  Document 类包含文本、元数据以及可选的附加媒体类型，如图像、音频和视频等  1234┌─────────────────┐    ┌───────────────────┐    ┌─────────────────┐│  Docu">
+<meta name="keywords" content="springai">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringAI — RAG ETL管道">
+<meta property="og:url" content="https://lazycece.github.io/2026/07/01/SpringAI — RAG-ETL管道/index.html">
+<meta property="og:site_name" content="W  pit">
+<meta property="og:description" content="概述ETL（提取、转换和加载） 管道为 Spring AI 中的 RAG 用例提供了完整的数据处理解决方案，其负责提取、转换和存储 Document 实例。  Document 类包含文本、元数据以及可选的附加媒体类型，如图像、音频和视频等  1234┌─────────────────┐    ┌───────────────────┐    ┌─────────────────┐│  Docu">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2026-07-01T07:35:42.016Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SpringAI — RAG ETL管道">
+<meta name="twitter:description" content="概述ETL（提取、转换和加载） 管道为 Spring AI 中的 RAG 用例提供了完整的数据处理解决方案，其负责提取、转换和存储 Document 实例。  Document 类包含文本、元数据以及可选的附加媒体类型，如图像、音频和视频等  1234┌─────────────────┐    ┌───────────────────┐    ┌─────────────────┐│  Docu">
+  <link rel="canonical" href="https://lazycece.github.io/2026/07/01/SpringAI — RAG-ETL管道/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>SpringAI — RAG ETL管道 | W  pit</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">W  pit</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">A thousand miles begins with a single step .</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a class="book-mark-link book-mark-link-fixed" href="#"></a>
+
+  <a href="https://github.com/lazycece" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2026/07/01/SpringAI — RAG-ETL管道/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="蝉">
+      <meta itemprop="description" content="Another way to laugh !">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="W  pit">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">SpringAI — RAG ETL管道
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2026-07-01 15:23:02 / Modified: 15:35:42" itemprop="dateCreated datePublished" datetime="2026-07-01T15:23:02+08:00">2026-07-01</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/springai/" itemprop="url" rel="index"><span itemprop="name">springai</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>ETL（提取、转换和加载） 管道为 Spring AI 中的 RAG 用例提供了完整的数据处理解决方案，其负责提取、转换和存储 <code>Document</code> 实例。</p>
+<blockquote>
+<p><code>Document</code> 类包含文本、元数据以及可选的附加媒体类型，如图像、音频和视频等</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────┐    ┌───────────────────┐    ┌─────────────────┐</span><br><span class="line">│  DocumentReader  │ -&gt; │ DocumentTransformer │ -&gt; │  DocumentWriter  │</span><br><span class="line">│  (数据提取)      │    │   (数据转换)        │    │   (数据存储)     │</span><br><span class="line">└─────────────────┘    └───────────────────┘    └─────────────────┘</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>提取阶段</strong>：使用各种 <code>DocumentReader</code> 实现从 JSON、文本、HTML、Markdown、PDF 等多种格式读取数据。</li>
+<li><strong>转换阶段</strong>：使用 <code>TokenTextSplitter</code> 进行文本分块，或使用 <code>KeywordMetadataEnricher</code> 和 <code>SummaryMetadataEnricher</code> 等增强器丰富元数据。</li>
+<li><strong>加载阶段</strong>：使用 <code>DocumentWriter</code> 实现（如 <code>VectorStore</code> 或 <code>FileDocumentWriter</code>）将处理后的数据存储到目标位置。</li>
+</ul>
+<a id="more"></a>
+
+<hr>
+<h2 id="核心组件"><a href="#核心组件" class="headerlink" title="核心组件"></a>核心组件</h2><p>ETL 管道有三个主要组件：</p>
+<table>
+<thead>
+<tr>
+<th>组件</th>
+<th>接口</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>DocumentReader</strong></td>
+<td><code>Supplier&lt;List&lt;Document&gt;&gt;</code></td>
+<td>从多种来源提供文档</td>
+</tr>
+<tr>
+<td><strong>DocumentTransformer</strong></td>
+<td><code>Function&lt;List&lt;Document&gt;, List&lt;Document&gt;&gt;</code></td>
+<td>作为处理工作流的一部分，转换一批文档</td>
+</tr>
+<tr>
+<td><strong>DocumentWriter</strong></td>
+<td><code>Consumer&lt;List&lt;Document&gt;&gt;</code></td>
+<td>管理 ETL 过程的最后阶段，为存储准备文档</td>
+</tr>
+</tbody></table>
+<h3 id="构建简单的-ETL-管道"><a href="#构建简单的-ETL-管道" class="headerlink" title="构建简单的 ETL 管道"></a>构建简单的 ETL 管道</h3><p>假设我们有以下三个 ETL 类型的实例：</p>
+<ul>
+<li><code>PagePdfDocumentReader</code> — <code>DocumentReader</code> 的实现</li>
+<li><code>TokenTextSplitter</code> — <code>DocumentTransformer</code> 的实现</li>
+<li><code>VectorStore</code> — <code>DocumentWriter</code> 的实现</li>
+</ul>
+<p>要将数据加载到向量数据库中以供检索增强生成模式使用，可以使用以下 Java 函数式语法代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> PagePdfDocumentReader(resource)</span><br><span class="line">    .andThen(<span class="keyword">new</span> TokenTextSplitter())</span><br><span class="line">    .andThen(vectorStore)</span><br><span class="line">    .apply();</span><br></pre></td></tr></table></figure>
+
+<p>或者，你可以使用更具领域表达力的方式：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">PagePdfDocumentReader pdfReader = <span class="keyword">new</span> PagePdfDocumentReader(resource);</span><br><span class="line">TokenTextSplitter splitter = <span class="keyword">new</span> TokenTextSplitter();</span><br><span class="line"></span><br><span class="line">List&lt;Document&gt; documents = pdfReader.get();</span><br><span class="line">documents = splitter.apply(documents);</span><br><span class="line">vectorStore.accept(documents);</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="DocumentReader-实现"><a href="#DocumentReader-实现" class="headerlink" title="DocumentReader 实现"></a>DocumentReader 实现</h2><h3 id="JsonReader"><a href="#JsonReader" class="headerlink" title="JsonReader"></a>JsonReader</h3><p><code>JsonReader</code> 处理 JSON 文档，将其转换为 <code>Document</code> 对象列表。</p>
+<p><strong>构造函数选项：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">JsonReader(Resource resource)</span><br><span class="line">JsonReader(Resource resource, String... jsonKeysToUse)</span><br><span class="line">JsonReader(Resource resource, JsonMetadataGenerator jsonMetadataGenerator, String... jsonKeysToUse)</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>resource</code></td>
+<td>指向 JSON 文件的 Spring <code>Resource</code> 对象</td>
+</tr>
+<tr>
+<td><code>jsonKeysToUse</code></td>
+<td>要用作结果 <code>Document</code> 对象中文本内容的 JSON 键数组</td>
+</tr>
+<tr>
+<td><code>jsonMetadataGenerator</code></td>
+<td>可选的 <code>JsonMetadataGenerator</code>，用于为每个 <code>Document</code> 创建元数据</td>
+</tr>
+</tbody></table>
+<p><strong>处理逻辑：</strong></p>
+<ol>
+<li>可以处理 JSON 数组和单个 JSON 对象。</li>
+<li>对于每个 JSON 对象（无论是在数组中还是单个对象）：<ul>
+<li>根据指定的 <code>jsonKeysToUse</code> 提取内容。</li>
+<li>如果未指定键，则使用整个 JSON 对象作为内容。</li>
+<li>使用提供的 <code>JsonMetadataGenerator</code> 生成元数据（如果未提供则使用空的）。</li>
+<li>创建包含提取内容和元数据的 <code>Document</code> 对象。</li>
+</ul>
+</li>
+</ol>
+<p><strong>JSON Pointer 支持：</strong></p>
+<p><code>JsonReader</code> 现在支持使用 <strong>JSON Pointer</strong> 检索 JSON 文档的特定部分。此功能允许你轻松地从复杂的 JSON 结构中提取嵌套数据。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">List&lt;Document&gt; <span class="title">getDocumentsByPointer</span><span class="params">(String pointer)</span></span></span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>pointer</code></td>
+<td>一个 JSON Pointer 字符串（如 RFC 6901 所定义），用于定位 JSON 结构中的目标元素</td>
+</tr>
+</tbody></table>
+<p>返回值：包含从指针定位的 JSON 元素解析出的文档的 <code>List</code>。</p>
+<ul>
+<li>如果指针有效且指向现有元素：<ul>
+<li>对于 JSON 对象：返回包含单个 Document 的列表。</li>
+<li>对于 JSON 数组：返回 Document 列表，数组中的每个元素对应一个。</li>
+</ul>
+</li>
+<li>如果指针无效或指向不存在的元素，则抛出 <code>IllegalArgumentException</code>。</li>
+</ul>
+<p><strong>示例：</strong> 如果 <code>JsonReader</code> 配置为使用 <code>&quot;description&quot;</code> 作为 <code>jsonKeysToUse</code>，它将为数组中的每辆自行车创建一个 <code>Document</code> 对象，其中内容为 “description” 字段的值。</p>
+<p><strong>特性说明：</strong></p>
+<ul>
+<li><code>JsonReader</code> 使用 Jackson 进行 JSON 解析。</li>
+<li>通过对数组使用流式处理，可以高效处理大型 JSON 文件。</li>
+<li>如果 <code>jsonKeysToUse</code> 中指定了多个键，则内容将是这些键对应值的拼接。</li>
+<li>通过自定义 <code>jsonKeysToUse</code> 和 <code>JsonMetadataGenerator</code>，读取器可以灵活适配各种 JSON 结构。</li>
+</ul>
+<hr>
+<h3 id="TextReader"><a href="#TextReader" class="headerlink" title="TextReader"></a>TextReader</h3><p><code>TextReader</code> 处理纯文本文档，将其转换为 <code>Document</code> 对象列表。</p>
+<p><strong>构造函数选项：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">TextReader(String resourceUrl)</span><br><span class="line">TextReader(Resource resource)</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>resourceUrl</code></td>
+<td>表示要读取的资源 URL 的字符串</td>
+</tr>
+<tr>
+<td><code>resource</code></td>
+<td>指向文本文件的 Spring <code>Resource</code> 对象</td>
+</tr>
+</tbody></table>
+<p><strong>可配置方法：</strong></p>
+<ul>
+<li><code>setCharset(Charset charset)</code> — 设置读取文本文件时使用的字符集，默认为 UTF-8。</li>
+<li><code>getCustomMetadata()</code> — 返回一个可变 Map，用于添加文档的自定义元数据。</li>
+</ul>
+<p><strong>处理逻辑：</strong></p>
+<ol>
+<li>将文本文件的全部内容读入单个 <code>Document</code> 对象。</li>
+<li>文件内容成为 <code>Document</code> 的内容。</li>
+<li>元数据会自动添加到 <code>Document</code> 中：<ul>
+<li><code>charset</code>：读取文件时使用的字符集（默认：”UTF-8”）</li>
+<li><code>source</code>：源文本文件的文件名</li>
+<li>通过 <code>getCustomMetadata()</code> 添加的任何自定义元数据也包含在 <code>Document</code> 中。</li>
+</ul>
+</li>
+</ol>
+<p><strong>注意事项：</strong></p>
+<ul>
+<li><code>TextReader</code> 将整个文件内容读入内存，因此可能不适合非常大的文件。</li>
+<li>如果需要将文本拆分为更小的块，可以在读取文档后使用文本拆分器（如 <code>TokenTextSplitter</code>）：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">TextReader textReader = <span class="keyword">new</span> TextReader(resource);</span><br><span class="line">List&lt;Document&gt; documents = textReader.get();</span><br><span class="line">documents = <span class="keyword">new</span> TokenTextSplitter().apply(documents);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>读取器使用 Spring 的 <code>Resource</code> 抽象，允许从各种来源读取（类路径、文件系统、URL 等）。</li>
+<li>可以使用 <code>getCustomMetadata()</code> 方法向读取器创建的所有文档添加自定义元数据。</li>
+</ul>
+<hr>
+<h3 id="JsoupDocumentReader"><a href="#JsoupDocumentReader" class="headerlink" title="JsoupDocumentReader"></a>JsoupDocumentReader</h3><p><code>JsoupDocumentReader</code> 使用 JSoup 库处理 HTML 文档，将其转换为 <code>Document</code> 对象列表。</p>
+<p><strong>添加依赖：</strong></p>
+<p>Maven：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.jsoup<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jsoup<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.17.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>Gradle：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">implementation <span class="string">'org.jsoup:jsoup:1.17.2'</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>JsoupDocumentReaderConfig 配置项：</strong></p>
+<table>
+<thead>
+<tr>
+<th>配置项</th>
+<th>描述</th>
+<th>默认值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>charset</code></td>
+<td>指定 HTML 文档的字符编码</td>
+<td><code>&quot;UTF-8&quot;</code></td>
+</tr>
+<tr>
+<td><code>selector</code></td>
+<td>JSoup CSS 选择器，指定要从中提取文本的元素</td>
+<td><code>&quot;body&quot;</code></td>
+</tr>
+<tr>
+<td><code>separator</code></td>
+<td>用于连接来自多个选中元素的文本的字符串</td>
+<td><code>&quot;\n&quot;</code></td>
+</tr>
+<tr>
+<td><code>allElements</code></td>
+<td>如果为 <code>true</code>，提取 <code>&lt;body&gt;</code> 中的所有文本，忽略 <code>selector</code></td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>groupByElement</code></td>
+<td>如果为 <code>true</code>，为 <code>selector</code> 匹配的每个元素创建单独的 <code>Document</code></td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>includeLinkUrls</code></td>
+<td>如果为 <code>true</code>，提取绝对链接 URL 并将其添加到元数据</td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>metadataTags</code></td>
+<td>要从中提取内容的标签名称列表</td>
+<td><code>[&quot;description&quot;, &quot;keywords&quot;]</code></td>
+</tr>
+<tr>
+<td><code>additionalMetadata</code></td>
+<td>允许向所有创建的 <code>Document</code> 对象添加自定义元数据</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<p><strong>行为说明：</strong></p>
+<ul>
+<li><code>selector</code> 决定使用哪些元素进行文本提取。</li>
+<li>如果 <code>allElements</code> 为 <code>true</code>，则 <code>&lt;body&gt;</code> 中的所有文本被提取到单个 <code>Document</code> 中。</li>
+<li>如果 <code>groupByElement</code> 为 <code>true</code>，则 <code>selector</code> 匹配的每个元素都会创建单独的 <code>Document</code>。</li>
+<li>如果 <code>allElements</code> 和 <code>groupByElement</code> 都不为 <code>true</code>，则使用 <code>separator</code> 连接所有匹配 <code>selector</code> 的元素中的文本。</li>
+<li>文档标题、指定标签的内容和（可选）链接 URL 会被添加到 <code>Document</code> 元数据中。</li>
+<li>用于解析相对链接的基础 URI 将从 URL 资源中提取。</li>
+<li>读取器保留选中元素的文本内容，但会移除其中的任何 HTML 标签。</li>
+</ul>
+<hr>
+<h3 id="MarkdownDocumentReader"><a href="#MarkdownDocumentReader" class="headerlink" title="MarkdownDocumentReader"></a>MarkdownDocumentReader</h3><p><code>MarkdownDocumentReader</code> 处理 Markdown 文档，将其转换为 <code>Document</code> 对象列表。</p>
+<p><strong>添加依赖：</strong></p>
+<p>Maven：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.commonmark<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>commonmark<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>0.21.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>Gradle：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">implementation <span class="string">'org.commonmark:commonmark:0.21.0'</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>MarkdownDocumentReaderConfig 配置项：</strong></p>
+<table>
+<thead>
+<tr>
+<th>配置项</th>
+<th>描述</th>
+<th>默认值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>horizontalRuleCreateDocument</code></td>
+<td>当设置为 <code>true</code> 时，Markdown 中的水平分隔线将创建新的 <code>Document</code> 对象</td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>includeCodeBlock</code></td>
+<td>当设置为 <code>true</code> 时，代码块将包含在周围文本的同一 <code>Document</code> 中；当 <code>false</code> 时，代码块创建单独的 <code>Document</code> 对象</td>
+<td><code>true</code></td>
+</tr>
+<tr>
+<td><code>includeBlockquote</code></td>
+<td>当设置为 <code>true</code> 时，引用块将包含在周围文本的同一 <code>Document</code> 中；当 <code>false</code> 时，引用块创建单独的 <code>Document</code> 对象</td>
+<td><code>true</code></td>
+</tr>
+<tr>
+<td><code>additionalMetadata</code></td>
+<td>允许向所有创建的 <code>Document</code> 对象添加自定义元数据</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<p><strong>行为说明：</strong></p>
+<ul>
+<li>标题成为 <code>Document</code> 对象中的元数据。</li>
+<li>段落成为 <code>Document</code> 对象的内容。</li>
+<li>代码块可以分离为各自的 <code>Document</code> 对象，也可以与周围文本包含在一起。</li>
+<li>引用块可以分离为各自的 <code>Document</code> 对象，也可以与周围文本包含在一起。</li>
+<li>水平分隔线可用于将内容拆分为单独的 <code>Document</code> 对象。</li>
+<li>读取器保留内容中的格式，如行内代码、列表和文本样式。</li>
+</ul>
+<hr>
+<h3 id="PagePdfDocumentReader"><a href="#PagePdfDocumentReader" class="headerlink" title="PagePdfDocumentReader"></a>PagePdfDocumentReader</h3><p><code>PagePdfDocumentReader</code> 使用 Apache PdfBox 库解析 PDF 文档。</p>
+<p><strong>添加依赖：</strong></p>
+<p>Maven：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.pdfbox<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>pdfbox<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.0.30<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>Gradle：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">implementation <span class="string">'org.apache.pdfbox:pdfbox:2.0.30'</span></span><br></pre></td></tr></table></figure>
+
+<p>该读取器按页读取 PDF 内容，每页生成一个 <code>Document</code> 对象。</p>
+<hr>
+<h3 id="ParagraphPdfDocumentReader"><a href="#ParagraphPdfDocumentReader" class="headerlink" title="ParagraphPdfDocumentReader"></a>ParagraphPdfDocumentReader</h3><p><code>ParagraphPdfDocumentReader</code> 使用 PDF 目录（如 TOC）信息将输入 PDF 拆分为文本段落，每个段落输出一个单独的 <code>Document</code>。</p>
+<blockquote>
+<p>⚠️ <strong>注意：</strong> 并非所有 PDF 文档都包含 PDF 目录。</p>
+</blockquote>
+<p><strong>添加依赖：</strong></p>
+<p>Maven：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.pdfbox<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>pdfbox<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.0.30<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>Gradle：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">implementation <span class="string">'org.apache.pdfbox:pdfbox:2.0.30'</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="TikaDocumentReader"><a href="#TikaDocumentReader" class="headerlink" title="TikaDocumentReader"></a>TikaDocumentReader</h3><p><code>TikaDocumentReader</code> 使用 Apache Tika 从多种文档格式中提取文本，例如 PDF、DOC/DOCX、PPT/PPTX 和 HTML。有关支持的格式的完整列表，请参阅 <a href="https://tika.apache.org/" target="_blank" rel="noopener">Tika 文档</a>。</p>
+<p><strong>添加依赖：</strong></p>
+<p>Maven：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.tika<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>tika-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.9.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.tika<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>tika-parsers-standard-package<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.9.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>Gradle：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">implementation <span class="string">'org.apache.tika:tika-core:2.9.2'</span></span><br><span class="line">implementation <span class="string">'org.apache.tika:tika-parsers-standard-package:2.9.2'</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="DocumentTransformer-实现"><a href="#DocumentTransformer-实现" class="headerlink" title="DocumentTransformer 实现"></a>DocumentTransformer 实现</h2><h3 id="TextSplitter（抽象基类）"><a href="#TextSplitter（抽象基类）" class="headerlink" title="TextSplitter（抽象基类）"></a>TextSplitter（抽象基类）</h3><p><code>TextSplitter</code> 是一个抽象基类，用于帮助分割文档以适应 AI 模型的上下文窗口。</p>
+<hr>
+<h3 id="TokenTextSplitter"><a href="#TokenTextSplitter" class="headerlink" title="TokenTextSplitter"></a>TokenTextSplitter</h3><p><code>TokenTextSplitter</code> 是 <code>TextSplitter</code> 的一个实现，它基于 token 数量将文本拆分为块。它支持可配置的编码类型（如 <code>CL100K_BASE</code>、<code>P50K_BASE</code>、<code>O200K_BASE</code>），默认使用 <code>CL100K_BASE</code>。</p>
+<p><strong>配置编码类型：</strong></p>
+<p>你可以使用 <code>TokenTextSplitter.builder()</code> 创建实例。所有构造函数已弃用，推荐使用构建器。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">TokenTextSplitter splitter = TokenTextSplitter.builder()</span><br><span class="line">    .withEncodingType(EncodingType.CL100K_BASE)</span><br><span class="line">    .withChunkSize(<span class="number">800</span>)</span><br><span class="line">    .withMinChunkSizeChars(<span class="number">350</span>)</span><br><span class="line">    .withMinChunkLengthToEmbed(<span class="number">5</span>)</span><br><span class="line">    .withMaxNumChunks(<span class="number">10000</span>)</span><br><span class="line">    .withKeepSeparator(<span class="keyword">true</span>)</span><br><span class="line">    .withPunctuationMarks(Arrays.asList(<span class="string">'.'</span>, <span class="string">'?'</span>, <span class="string">'!'</span>, <span class="string">'\n'</span>))</span><br><span class="line">    .build();</span><br></pre></td></tr></table></figure>
+
+<p><strong>构建器配置项：</strong></p>
+<table>
+<thead>
+<tr>
+<th>配置项</th>
+<th>描述</th>
+<th>默认值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>encodingType</code></td>
+<td>用于 token 化的编码类型</td>
+<td><code>CL100K_BASE</code></td>
+</tr>
+<tr>
+<td><code>chunkSize</code></td>
+<td>每个文本块的目标大小（以 token 计）</td>
+<td><code>800</code></td>
+</tr>
+<tr>
+<td><code>minChunkSizeChars</code></td>
+<td>每个文本块的最小字符数</td>
+<td><code>350</code></td>
+</tr>
+<tr>
+<td><code>minChunkLengthToEmbed</code></td>
+<td>要包含的块的最小长度</td>
+<td><code>5</code></td>
+</tr>
+<tr>
+<td><code>maxNumChunks</code></td>
+<td>从文本生成的最大块数</td>
+<td><code>10000</code></td>
+</tr>
+<tr>
+<td><code>keepSeparator</code></td>
+<td>是否在块中保留分隔符（如换行符）</td>
+<td><code>true</code></td>
+</tr>
+<tr>
+<td><code>punctuationMarks</code></td>
+<td>用作拆分句子边界的字符列表</td>
+<td><code>., ?, !, \n</code></td>
+</tr>
+</tbody></table>
+<p><strong>处理逻辑：</strong></p>
+<ol>
+<li>使用 CL100K_BASE 编码将输入文本编码为 token。</li>
+<li>根据 <code>chunkSize</code> 将编码后的文本拆分为块。</li>
+<li>对于每个块：<ul>
+<li>将块解码回文本。</li>
+<li>仅当总 token 数超过块大小时，才尝试在 <code>minChunkSizeChars</code> 之后找到合适的断点（使用配置的 <code>punctuationMarks</code>）。</li>
+<li>如果找到断点，则在该点截断块。</li>
+<li>修剪块，并根据 <code>keepSeparator</code> 设置选择性地移除换行符。</li>
+<li>如果结果块的长度大于 <code>minChunkLengthToEmbed</code>，则将其添加到输出中。</li>
+</ul>
+</li>
+<li>此过程持续进行，直到所有 token 都被处理或达到 <code>maxNumChunks</code>。</li>
+<li>任何剩余的文本如果长度大于 <code>minChunkLengthToEmbed</code>，将作为最终块添加。</li>
+</ol>
+<p><strong>特性说明：</strong></p>
+<ul>
+<li><code>TokenTextSplitter</code> 使用 <code>jtokkit</code> 库中的 CL100K_BASE 编码，与较新的 OpenAI 模型兼容。</li>
+<li>拆分器尝试通过在可能的情况下在句子边界处断开来创建语义上有意义的块。</li>
+<li>原始文档的元数据会被保留并复制到从该文档派生的所有块中。</li>
+<li>如果 <code>copyContentFormatter</code> 设置为 <code>true</code>（默认行为），原始文档的内容格式化器也会复制到派生的块中。</li>
+<li>此拆分器特别适用于为具有 token 限制的大语言模型准备文本，确保每个块都在模型的处理能力范围内。</li>
+</ul>
+<p><strong>最佳实践：</strong></p>
+<table>
+<thead>
+<tr>
+<th>建议</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>自定义标点符号</strong></td>
+<td>默认的标点符号（<code>.</code>, <code>?</code>, <code>!</code>, <code>\n</code>）适用于英文文本。对于其他语言或专业内容，请使用构建器的 <code>withPunctuationMarks()</code> 方法自定义标点符号</td>
+</tr>
+<tr>
+<td><strong>性能考虑</strong></td>
+<td>虽然拆分器可以处理任意数量的标点符号，但建议将列表保持在合理的小范围内（20 个字符以下），以获得最佳性能，因为每个标记都会对每个块进行检查</td>
+</tr>
+<tr>
+<td><strong>可扩展性</strong></td>
+<td><code>getLastPunctuationIndex(String)</code> 方法是 <code>protected</code> 的，允许子类为专业用例覆盖标点检测逻辑</td>
+</tr>
+<tr>
+<td><strong>小文本处理</strong></td>
+<td>从 2.0 版本开始，小文本（token 计数等于或低于块大小）不再在标点符号处拆分，防止对已经符合大小限制的内容进行不必要的碎片化</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="KeywordMetadataEnricher"><a href="#KeywordMetadataEnricher" class="headerlink" title="KeywordMetadataEnricher"></a>KeywordMetadataEnricher</h3><p><code>KeywordMetadataEnricher</code> 是一个 <code>DocumentTransformer</code>，它使用生成式 AI 模型从文档内容中提取关键词并将其添加为元数据。</p>
+<p><strong>构造函数选项：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">KeywordMetadataEnricher(ChatModel chatModel, <span class="keyword">int</span> keywordCount)</span><br><span class="line">KeywordMetadataEnricher(ChatModel chatModel, PromptTemplate keywordsTemplate)</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>chatModel</code></td>
+<td>用于生成关键词的 AI 模型</td>
+</tr>
+<tr>
+<td><code>keywordCount</code></td>
+<td>要提取的关键词数量</td>
+</tr>
+<tr>
+<td><code>keywordsTemplate</code></td>
+<td>用于关键词自定义的模板（可选）</td>
+</tr>
+</tbody></table>
+<p><strong>处理逻辑：</strong></p>
+<ol>
+<li>对于每个输入文档，使用文档内容创建一个提示词（Prompt）。</li>
+<li>将此提示词发送到提供的 <code>ChatModel</code> 以生成关键词。</li>
+<li>生成的关键词以 <code>&quot;excerpt_keywords&quot;</code> 为键添加到文档的元数据中。</li>
+<li>返回增强后的文档。</li>
+</ol>
+<p><strong>默认模板：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Extract %s keywords from the following text. Return only the keywords as a comma-separated list.</span><br><span class="line">Text: %s</span><br></pre></td></tr></table></figure>
+
+<p>其中 <code>%s</code> 分别被替换为关键词数量和文档内容。</p>
+<p><strong>特性说明：</strong></p>
+<ul>
+<li><code>KeywordMetadataEnricher</code> 需要一个正常工作的 <code>ChatModel</code> 来生成关键词。</li>
+<li>关键词数量必须为 1 或更大。</li>
+<li>增强器为每个处理的文档添加 <code>&quot;excerpt_keywords&quot;</code> 元数据字段。</li>
+<li>生成的关键词以逗号分隔的字符串形式返回。</li>
+<li>此增强器特别适用于提高文档的可搜索性，以及为文档生成标签或类别。</li>
+<li>在构建器模式中，如果设置了 <code>keywordsTemplate</code> 参数，则 <code>keywordCount</code> 参数将被忽略。</li>
+</ul>
+<hr>
+<h3 id="SummaryMetadataEnricher"><a href="#SummaryMetadataEnricher" class="headerlink" title="SummaryMetadataEnricher"></a>SummaryMetadataEnricher</h3><p><code>SummaryMetadataEnricher</code> 是一个 <code>DocumentTransformer</code>，它使用生成式 AI 模型为文档创建摘要并将其添加为元数据。它可以生成当前文档以及相邻文档（前一个和后一个）的摘要。</p>
+<p><strong>构造函数选项：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SummaryMetadataEnricher(ChatModel chatModel, List&lt;SummaryType&gt; summaryTypes)</span><br><span class="line">SummaryMetadataEnricher(ChatModel chatModel, List&lt;SummaryType&gt; summaryTypes, String summaryTemplate, MetadataMode metadataMode)</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>chatModel</code></td>
+<td>用于生成摘要的 AI 模型</td>
+</tr>
+<tr>
+<td><code>summaryTypes</code></td>
+<td><code>SummaryType</code> 枚举值列表，指示要生成哪些摘要（<code>PREVIOUS</code>、<code>CURRENT</code>、<code>NEXT</code>）</td>
+</tr>
+<tr>
+<td><code>summaryTemplate</code></td>
+<td>用于摘要生成的自定义模板（可选）</td>
+</tr>
+<tr>
+<td><code>metadataMode</code></td>
+<td>指定在生成摘要时如何处理文档元数据（可选）</td>
+</tr>
+</tbody></table>
+<p><strong>处理逻辑：</strong></p>
+<ol>
+<li>对于每个输入文档，使用文档内容和指定的摘要模板创建一个提示词。</li>
+<li>将此提示词发送到提供的 <code>ChatModel</code> 以生成摘要。</li>
+<li>根据指定的 <code>summaryTypes</code>，向每个文档添加以下元数据：<ul>
+<li><code>section_summary</code>：当前文档的摘要。</li>
+<li><code>prev_section_summary</code>：前一个文档的摘要（如果可用且已请求）。</li>
+<li><code>next_section_summary</code>：后一个文档的摘要（如果可用且已请求）。</li>
+</ul>
+</li>
+<li>返回增强后的文档。</li>
+</ol>
+<p><strong>默认模板：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Summarize the following text in 1-2 sentences.</span><br><span class="line">Text: %s</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例行为：</strong></p>
+<p>对于包含两个文档的列表：</p>
+<ul>
+<li>两个文档都会收到一个 <code>section_summary</code>。</li>
+<li>第一个文档收到一个 <code>next_section_summary</code>，但没有 <code>prev_section_summary</code>。</li>
+<li>第二个文档收到一个 <code>prev_section_summary</code>，但没有 <code>next_section_summary</code>。</li>
+<li>第一个文档的 <code>section_summary</code> 与第二个文档的 <code>prev_section_summary</code> 相匹配。</li>
+<li>第一个文档的 <code>next_section_summary</code> 与第二个文档的 <code>section_summary</code> 相匹配。</li>
+</ul>
+<p><strong>特性说明：</strong></p>
+<ul>
+<li><code>SummaryMetadataEnricher</code> 需要一个正常工作的 <code>ChatModel</code> 来生成摘要。</li>
+<li>增强器可以处理任意大小的文档列表，妥善处理第一个和最后一个文档的边界情况。</li>
+<li>此增强器特别适用于创建上下文感知的摘要，从而更好地理解序列中文档的关系。</li>
+<li><code>MetadataMode</code> 参数允许控制如何将现有元数据纳入摘要生成过程。</li>
+</ul>
+<hr>
+<h2 id="DocumentWriter-实现"><a href="#DocumentWriter-实现" class="headerlink" title="DocumentWriter 实现"></a>DocumentWriter 实现</h2><h3 id="FileDocumentWriter"><a href="#FileDocumentWriter" class="headerlink" title="FileDocumentWriter"></a>FileDocumentWriter</h3><p><code>FileDocumentWriter</code> 是一个 <code>DocumentWriter</code> 实现，用于将 <code>Document</code> 对象列表的内容写入文件。</p>
+<p><strong>构造函数选项：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">FileDocumentWriter(String fileName)</span><br><span class="line">FileDocumentWriter(String fileName, <span class="keyword">boolean</span> withDocumentMarkers)</span><br><span class="line">FileDocumentWriter(String fileName, <span class="keyword">boolean</span> withDocumentMarkers, MetadataMode metadataMode, <span class="keyword">boolean</span> append)</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>描述</th>
+<th>默认值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>fileName</code></td>
+<td>要写入文档的文件名</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>withDocumentMarkers</code></td>
+<td>是否在输出中包含文档标记</td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>metadataMode</code></td>
+<td>指定要写入文件的文档内容（元数据模式）</td>
+<td><code>MetadataMode.NONE</code></td>
+</tr>
+<tr>
+<td><code>append</code></td>
+<td>如果为 <code>true</code>，数据将写入文件末尾而不是开头</td>
+<td><code>false</code></td>
+</tr>
+</tbody></table>
+<p><strong>处理逻辑：</strong></p>
+<ol>
+<li>为指定的文件名打开一个 FileWriter。</li>
+<li>对于输入列表中的每个文档：<ul>
+<li>如果 <code>withDocumentMarkers</code> 为 <code>true</code>，则写入包含文档索引和页码的文档标记。</li>
+<li>根据指定的 <code>metadataMode</code> 写入文档的格式化内容。</li>
+</ul>
+</li>
+<li>所有文档写入后关闭文件。</li>
+</ol>
+<p><strong>文档标记格式：</strong></p>
+<p>当 <code>withDocumentMarkers</code> 设置为 <code>true</code> 时，写入器会包含每个文档的标记，格式如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">--- DOCUMENT 0 (page 1) ---</span><br></pre></td></tr></table></figure>
+
+<p>写入器使用两个特定的元数据键：</p>
+<ul>
+<li><code>page_number</code>：表示文档的起始页码。</li>
+<li><code>end_page_number</code>：表示文档的结束页码。</li>
+</ul>
+<p>这些在写入文档标记时使用。</p>
+<p><strong>示例：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">FileDocumentWriter writer = <span class="keyword">new</span> FileDocumentWriter(</span><br><span class="line">    <span class="string">"output.txt"</span>,</span><br><span class="line">    <span class="keyword">true</span>,                          <span class="comment">// withDocumentMarkers</span></span><br><span class="line">    MetadataMode.ALL,              <span class="comment">// metadataMode</span></span><br><span class="line">    <span class="keyword">true</span>                           <span class="comment">// append</span></span><br><span class="line">);</span><br><span class="line">writer.accept(documents);</span><br></pre></td></tr></table></figure>
+
+<p>这会将所有文档写入 “output.txt”，包含文档标记，使用所有可用的元数据，并在文件已存在时追加写入。</p>
+<p><strong>特性说明：</strong></p>
+<ul>
+<li>写入器使用 <code>FileWriter</code>，因此使用操作系统的默认字符编码写入文本文件。</li>
+<li>如果写入过程中发生错误，会抛出以原始异常为原因的 <code>RuntimeException</code>。</li>
+<li><code>metadataMode</code> 参数允许控制如何将现有元数据纳入写入的内容。</li>
+<li>此写入器特别适用于调试或创建文档集合的可人工阅读的输出。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/springai/" rel="tag"># springai</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2026/07/01/SpringAI — RAG（检索增强生成）/" rel="next" title="SpringAI — RAG（检索增强生成）">
+                  <i class="fa fa-chevron-left"></i> SpringAI — RAG（检索增强生成）
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#核心组件"><span class="nav-number">2.</span> <span class="nav-text">核心组件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#构建简单的-ETL-管道"><span class="nav-number">2.1.</span> <span class="nav-text">构建简单的 ETL 管道</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DocumentReader-实现"><span class="nav-number">3.</span> <span class="nav-text">DocumentReader 实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#JsonReader"><span class="nav-number">3.1.</span> <span class="nav-text">JsonReader</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TextReader"><span class="nav-number">3.2.</span> <span class="nav-text">TextReader</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JsoupDocumentReader"><span class="nav-number">3.3.</span> <span class="nav-text">JsoupDocumentReader</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MarkdownDocumentReader"><span class="nav-number">3.4.</span> <span class="nav-text">MarkdownDocumentReader</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PagePdfDocumentReader"><span class="nav-number">3.5.</span> <span class="nav-text">PagePdfDocumentReader</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ParagraphPdfDocumentReader"><span class="nav-number">3.6.</span> <span class="nav-text">ParagraphPdfDocumentReader</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TikaDocumentReader"><span class="nav-number">3.7.</span> <span class="nav-text">TikaDocumentReader</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DocumentTransformer-实现"><span class="nav-number">4.</span> <span class="nav-text">DocumentTransformer 实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#TextSplitter（抽象基类）"><span class="nav-number">4.1.</span> <span class="nav-text">TextSplitter（抽象基类）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TokenTextSplitter"><span class="nav-number">4.2.</span> <span class="nav-text">TokenTextSplitter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#KeywordMetadataEnricher"><span class="nav-number">4.3.</span> <span class="nav-text">KeywordMetadataEnricher</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SummaryMetadataEnricher"><span class="nav-number">4.4.</span> <span class="nav-text">SummaryMetadataEnricher</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DocumentWriter-实现"><span class="nav-number">5.</span> <span class="nav-text">DocumentWriter 实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#FileDocumentWriter"><span class="nav-number">5.1.</span> <span class="nav-text">FileDocumentWriter</span></a></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar.jpg"
+      alt="蝉">
+  <p class="site-author-name" itemprop="name">蝉</p>
+  <div class="site-description" itemprop="description">Another way to laugh !</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">117</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">73</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/lazycece" title="GitHub &rarr; https://github.com/lazycece" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:lazycece@qq.com" title="E-Mail &rarr; mailto:lazycece@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://blog.csdn.net/qq_28851503" title="CSDN &rarr; https://blog.csdn.net/qq_28851503" rel="noopener" target="_blank"><i class="fa fa-fw fa-vk"></i>CSDN</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://leetcode-cn.com/u/lazycece" title="LeetCode &rarr; https://leetcode-cn.com/u/lazycece" rel="noopener" target="_blank"><i class="fa fa-fw fa-vk"></i>LeetCode</a>
+      </span>
+    
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2026</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">蝉</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script><script src="/js/bookmark.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
