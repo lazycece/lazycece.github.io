@@ -222,6 +222,107 @@
   
   
   <div class="post-block home">
+    <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2026/07/01/SpringAI — Promots（提示词）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="蝉">
+      <meta itemprop="description" content="Another way to laugh !">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="W  pit">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+            
+            <a href="/2026/07/01/SpringAI — Promots（提示词）/" class="post-title-link" itemprop="url">SpringAI — Promots（提示词）</a>
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2026-07-01 18:04:59 / Modified: 23:55:32" itemprop="dateCreated datePublished" datetime="2026-07-01T18:04:59+08:00">2026-07-01</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/springai/" itemprop="url" rel="index"><span itemprop="name">springai</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>提示词（Prompts）是引导 AI 模型生成特定输出的输入内容，这些提示词的设计和措辞会显著影响模型的响应。</p>
+<p>在 Spring AI 中，与 AI 模型交互的最低层级上，处理提示词的方式有些类似于在 Spring MVC 中管理”视图（View）”。这涉及创建包含动态内容占位符的大量文本，然后根据用户请求或应用程序中的其他代码来替换这些占位符。另一个类比就是包含占位符的 SQL 语句。</p>
+<p>随着 Spring AI 的发展，它将引入更高层次的抽象来简化与 AI 模型的交互。本节描述的基础类在角色和功能上可以类比为 JDBC：</p>
+<ul>
+<li><strong>ChatModel</strong> 类类似于 JDK 中的核心 JDBC 库。</li>
+<li><strong>ChatClient</strong> 类可以类比为 <strong>JdbcClient</strong>，构建在 ChatModel 之上，通过 Advisor 提供更多高级构造，用于考虑与模型的过去交互、用额外的上下文文档增强提示词，以及引入代理行为。</li>
+</ul>
+<p>提示词的结构在 AI 领域随着时间的推移不断演进。最初，提示词只是简单的字符串。后来，它们逐渐包含了特定输入的占位符，例如 AI 模型能识别的 “USER:”。OpenAI 通过将多个消息字符串在处理前按不同角色进行分类，为提示词引入了更结构化的形式。</p>
+          <!--noindex-->
+          
+            <div class="post-button">
+              <a class="btn" href="/2026/07/01/SpringAI — Promots（提示词）/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-eof"></div>
+        
+      </footer>
+  </div>
+  
+  
+  
+  </article>
+
+    
+        <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block home">
     <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2026/07/01/SpringAI — 结构化输出/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1155,108 +1256,6 @@
   </article>
 
     
-        <article itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block home">
-    <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2026/06/29/SpringAI — Tool Calling（工具调用）/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="蝉">
-      <meta itemprop="description" content="Another way to laugh !">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="W  pit">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-            
-            <a href="/2026/06/29/SpringAI — Tool Calling（工具调用）/" class="post-title-link" itemprop="url">SpringAI — Tool Calling（工具调用）</a>
-          
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              
-                
-              
-
-              <time title="Created: 2026-06-29 19:19:28 / Modified: 19:39:11" itemprop="dateCreated datePublished" datetime="2026-06-29T19:19:28+08:00">2026-06-29</time>
-            </span>
-          
-            
-
-            
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/springai/" itemprop="url" rel="index"><span itemprop="name">springai</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="工具调用概述"><a href="#工具调用概述" class="headerlink" title="工具调用概述"></a>工具调用概述</h2><p><strong>工具调用</strong>（Tool Calling，也称为 <strong>函数调用 Function Calling</strong>）是 AI 应用中的一种常见模式，允许模型与一组 API 或”工具”交互，从而扩展模型的能力。</p>
-<p>工具主要用于以下场景：</p>
-<ul>
-<li>信息检索（Information Retrieval）：此类工具用于从外部源（如数据库、Web 服务、文件系统或搜索引擎）检索信息，目的是增强模型的知识，使其能回答原本无法回答的问题，比如适用于 <strong>检索增强生成（RAG）</strong> 场景。工具的使用例子有“获取某地的当前天气”、“检索最新新闻文章”、“查询数据库中的特定记录”等等 </li>
-<li>执行操作（Taking Action）：此类工具可在软件系统中执行操作，如发送邮件、在数据库中创建记录、提交表单或触发工作流，旨在自动化原需人工干预或显式编程的任务。比如“为聊天机器人用户预订航班”、“填写网页表单”、“在代码生成场景中依据自动化测试实现 Java 类（TDD）”</li>
-</ul>
-<blockquote>
-<p>虽然通常称”工具调用”是模型的能力，但实际上<strong>由客户端应用程序提供工具调用逻辑</strong>。模型只能<strong>请求调用工具并提供输入参数</strong>，应用程序负责执行工具并返回结果。模型<strong>永远不会直接接触</strong>被注册为工具的 API。</p>
-</blockquote>
-          <!--noindex-->
-          
-            <div class="post-button">
-              <a class="btn" href="/2026/06/29/SpringAI — Tool Calling（工具调用）/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-          <div class="post-eof"></div>
-        
-      </footer>
-  </div>
-  
-  
-  
-  </article>
-
-    
   </div>
 
   
@@ -1310,7 +1309,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">119</span>
+          <span class="site-state-item-count">120</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
