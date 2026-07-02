@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":true,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="什么是模型上下文协议 (MCP)？模型上下文协议（Model Context Protocol，MCP） 是一种标准化协议，使 AI 模型能够以结构化的方式与外部工具和资源进行交互。可以将其视为 AI 模型与现实世界之间的桥梁——允许模型通过一致的接口访问数据库、API、文件系统和其他外部服务。它支持多种传输机制，以适应不同环境下的灵活性需求。 MCP Java SDK 提供了模型上下文协议的 J">
+<meta name="keywords" content="springai">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringAI — MCP">
+<meta property="og:url" content="https://lazycece.github.io/2026/07/02/SpringAI — MCP/index.html">
+<meta property="og:site_name" content="W  pit">
+<meta property="og:description" content="什么是模型上下文协议 (MCP)？模型上下文协议（Model Context Protocol，MCP） 是一种标准化协议，使 AI 模型能够以结构化的方式与外部工具和资源进行交互。可以将其视为 AI 模型与现实世界之间的桥梁——允许模型通过一致的接口访问数据库、API、文件系统和其他外部服务。它支持多种传输机制，以适应不同环境下的灵活性需求。 MCP Java SDK 提供了模型上下文协议的 J">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://lazycece.github.io/images/article/springai-mcp-stack-architecture.png">
+<meta property="og:updated_time" content="2026-07-02T06:46:06.133Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SpringAI — MCP">
+<meta name="twitter:description" content="什么是模型上下文协议 (MCP)？模型上下文协议（Model Context Protocol，MCP） 是一种标准化协议，使 AI 模型能够以结构化的方式与外部工具和资源进行交互。可以将其视为 AI 模型与现实世界之间的桥梁——允许模型通过一致的接口访问数据库、API、文件系统和其他外部服务。它支持多种传输机制，以适应不同环境下的灵活性需求。 MCP Java SDK 提供了模型上下文协议的 J">
+<meta name="twitter:image" content="https://lazycece.github.io/images/article/springai-mcp-stack-architecture.png">
+  <link rel="canonical" href="https://lazycece.github.io/2026/07/02/SpringAI — MCP/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>SpringAI — MCP | W  pit</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">W  pit</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">A thousand miles begins with a single step .</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a class="book-mark-link book-mark-link-fixed" href="#"></a>
+
+  <a href="https://github.com/lazycece" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2026/07/02/SpringAI — MCP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="蝉">
+      <meta itemprop="description" content="Another way to laugh !">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="W  pit">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">SpringAI — MCP
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2026-07-02 14:38:02 / Modified: 14:46:06" itemprop="dateCreated datePublished" datetime="2026-07-02T14:38:02+08:00">2026-07-02</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/springai/" itemprop="url" rel="index"><span itemprop="name">springai</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="什么是模型上下文协议-MCP-？"><a href="#什么是模型上下文协议-MCP-？" class="headerlink" title="什么是模型上下文协议 (MCP)？"></a>什么是模型上下文协议 (MCP)？</h2><p><strong>模型上下文协议（Model Context Protocol，MCP）</strong> 是一种标准化协议，使 AI 模型能够以结构化的方式与外部工具和资源进行交互。可以将其视为 AI 模型与现实世界之间的桥梁——允许模型通过一致的接口访问数据库、API、文件系统和其他外部服务。它支持多种传输机制，以适应不同环境下的灵活性需求。</p>
+<p><strong>MCP Java SDK</strong> 提供了模型上下文协议的 Java 实现，支持通过同步和异步通信模式与 AI 模型及工具进行标准化交互。</p>
+<p>Spring AI 通过专用的 Boot Starters 和 MCP Java 注解，全面拥抱 MCP，使得构建能够无缝连接外部系统的复杂 AI 驱动应用程序变得前所未有的简单。这意味着 Spring 开发者可以参与 MCP 生态系统的两端——构建消费 MCP 服务器的 AI 应用程序，以及创建向更广泛的 AI 社区暴露基于 Spring 的服务的 MCP 服务器。使用 <a href="https://start.spring.io/" target="_blank" rel="noopener">Spring Initializer</a> 快速启动带有 MCP 支持的 AI 应用程序。</p>
+<a id="more"></a>
+<hr>
+<h2 id="Java-MCP-架构"><a href="#Java-MCP-架构" class="headerlink" title="Java MCP 架构"></a>Java MCP 架构</h2><p>Java MCP 实现遵循<strong>三层架构</strong>，各层关注点分离，以确保可维护性和灵活性：</p>
+<p><img src="/images/article/springai-mcp-stack-architecture.png" alt="springai-mcp-stack-architecture"></p>
+<h3 id="1-客户端-服务器层（顶层）"><a href="#1-客户端-服务器层（顶层）" class="headerlink" title="1. 客户端/服务器层（顶层）"></a>1. 客户端/服务器层（顶层）</h3><p>顶层处理主要的应用程序逻辑和协议操作：</p>
+<table>
+<thead>
+<tr>
+<th>组件</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>McpClient</code></td>
+<td>管理客户端操作和服务器连接</td>
+</tr>
+<tr>
+<td><code>McpServer</code></td>
+<td>处理服务器端协议操作和客户端请求</td>
+</tr>
+</tbody></table>
+<p>这两个组件都利用下方的会话层进行通信管理。</p>
+<h3 id="2-会话层（中间层）"><a href="#2-会话层（中间层）" class="headerlink" title="2. 会话层（中间层）"></a>2. 会话层（中间层）</h3><p>中间层管理通信模式并维护连接状态：</p>
+<table>
+<thead>
+<tr>
+<th>组件</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>McpSession</code></td>
+<td>核心会话管理接口</td>
+</tr>
+<tr>
+<td><code>McpClientSession</code></td>
+<td>客户端特定的会话实现</td>
+</tr>
+<tr>
+<td><code>McpServerSession</code></td>
+<td>服务器特定的会话实现</td>
+</tr>
+</tbody></table>
+<h3 id="3-传输层（底层）"><a href="#3-传输层（底层）" class="headerlink" title="3. 传输层（底层）"></a>3. 传输层（底层）</h3><p>底层处理实际的消息传输和序列化：</p>
+<table>
+<thead>
+<tr>
+<th>组件</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>McpTransport</code></td>
+<td>管理 JSON-RPC 消息的序列化和反序列化</td>
+</tr>
+<tr>
+<td>传输实现</td>
+<td>支持多种传输实现（STDIO、HTTP/SSE、Streamable-HTTP 等）</td>
+</tr>
+<tr>
+<td>基础</td>
+<td>为所有高层通信提供基础</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="MCP-客户端"><a href="#MCP-客户端" class="headerlink" title="MCP 客户端"></a>MCP 客户端</h2><p>MCP 客户端是模型上下文协议（MCP）架构中的关键组件，负责建立和管理与 MCP 服务器的连接。它实现了协议的客户端部分，处理以下事务：</p>
+<ul>
+<li><strong>协议版本协商</strong>：确保与服务器的兼容性</li>
+<li><strong>能力协商</strong>：确定可用的功能特性</li>
+<li><strong>消息传输和 JSON-RPC 通信</strong></li>
+<li><strong>工具发现和执行</strong></li>
+<li><strong>资源访问和管理</strong></li>
+<li><strong>提示系统交互</strong></li>
+</ul>
+<h3 id="可选功能"><a href="#可选功能" class="headerlink" title="可选功能"></a>可选功能</h3><ul>
+<li><strong>Roots 管理</strong></li>
+<li><strong>采样（Sampling）支持</strong></li>
+<li><strong>同步和异步操作</strong></li>
+</ul>
+<h3 id="传输选项"><a href="#传输选项" class="headerlink" title="传输选项"></a>传输选项</h3><table>
+<thead>
+<tr>
+<th>传输方式</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Stdio</strong></td>
+<td>基于标准输入/输出的进程间通信</td>
+</tr>
+<tr>
+<td><strong>Java HttpClient SSE</strong></td>
+<td>基于 Java HttpClient 的 SSE 客户端传输</td>
+</tr>
+<tr>
+<td><strong>WebFlux SSE</strong></td>
+<td>用于响应式 HTTP 流式的 WebFlux SSE 客户端传输</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="MCP-服务器"><a href="#MCP-服务器" class="headerlink" title="MCP 服务器"></a>MCP 服务器</h2><p>MCP 服务器是模型上下文协议（MCP）架构中的基础组件，向客户端提供工具、资源和能力。它实现了协议的服务器端，负责：</p>
+<ul>
+<li><strong>服务器端协议操作的实现</strong></li>
+<li><strong>工具的暴露和发现</strong></li>
+<li><strong>基于 URI 访问的资源管理</strong></li>
+<li><strong>提示模板的提供和处理</strong></li>
+<li><strong>与客户端的能力协商</strong></li>
+<li><strong>结构化日志和通知</strong></li>
+<li><strong>并发客户端连接管理</strong></li>
+<li><strong>同步和异步 API 支持</strong></li>
+</ul>
+<h3 id="传输实现"><a href="#传输实现" class="headerlink" title="传输实现"></a>传输实现</h3><table>
+<thead>
+<tr>
+<th>传输方式</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Stdio</strong></td>
+<td>标准输入/输出</td>
+</tr>
+<tr>
+<td><strong>Streamable-HTTP</strong></td>
+<td>可流式传输的 HTTP</td>
+</tr>
+<tr>
+<td><strong>Stateless Streamable-HTTP</strong></td>
+<td>无状态可流式传输的 HTTP</td>
+</tr>
+<tr>
+<td><strong>SSE</strong></td>
+<td>服务器发送事件</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>如需使用底层 MCP 客户端/服务器 API 的详细实现指南，请参阅 <a href="https://github.com/modelcontextprotocol/java-sdk" target="_blank" rel="noopener">MCP Java SDK 文档</a>。如需使用 Spring Boot 进行简化配置，请使用下文所述的 MCP Boot Starters。</p>
+</blockquote>
+<hr>
+<h2 id="Spring-AI-MCP-Boot-Starters"><a href="#Spring-AI-MCP-Boot-Starters" class="headerlink" title="Spring AI MCP Boot Starters"></a>Spring AI MCP Boot Starters</h2><p>Spring AI 通过以下 Spring Boot Starters 提供 MCP 集成：</p>
+<h3 id="标准输入-输出-STDIO"><a href="#标准输入-输出-STDIO" class="headerlink" title="标准输入/输出 (STDIO)"></a>标准输入/输出 (STDIO)</h3><table>
+<thead>
+<tr>
+<th>服务器类型</th>
+<th>依赖</th>
+<th>属性配置</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>STDIO</strong></td>
+<td><code>spring-ai-starter-mcp-server</code></td>
+<td><code>spring.ai.mcp.server.stdio=true</code></td>
+</tr>
+</tbody></table>
+<h3 id="WebMVC-传输"><a href="#WebMVC-传输" class="headerlink" title="WebMVC 传输"></a>WebMVC 传输</h3><table>
+<thead>
+<tr>
+<th>服务器类型</th>
+<th>依赖</th>
+<th>属性配置</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>SSE WebMVC</strong></td>
+<td><code>spring-ai-starter-mcp-server-webmvc</code></td>
+<td><code>spring.ai.mcp.server.protocol=SSE</code> 或留空</td>
+</tr>
+<tr>
+<td><strong>Streamable-HTTP WebMVC</strong></td>
+<td><code>spring-ai-starter-mcp-server-webmvc</code></td>
+<td><code>spring.ai.mcp.server.protocol=STREAMABLE</code></td>
+</tr>
+<tr>
+<td><strong>Stateless Streamable-HTTP WebMVC</strong></td>
+<td><code>spring-ai-starter-mcp-server-webmvc</code></td>
+<td><code>spring.ai.mcp.server.protocol=STATELESS</code></td>
+</tr>
+</tbody></table>
+<h3 id="WebFlux-传输"><a href="#WebFlux-传输" class="headerlink" title="WebFlux 传输"></a>WebFlux 传输</h3><table>
+<thead>
+<tr>
+<th>服务器类型</th>
+<th>依赖</th>
+<th>属性配置</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>SSE WebFlux</strong></td>
+<td><code>spring-ai-starter-mcp-server-webflux</code></td>
+<td><code>spring.ai.mcp.server.protocol=SSE</code> 或留空</td>
+</tr>
+<tr>
+<td><strong>Streamable-HTTP WebFlux</strong></td>
+<td><code>spring-ai-starter-mcp-server-webflux</code></td>
+<td><code>spring.ai.mcp.server.protocol=STREAMABLE</code></td>
+</tr>
+<tr>
+<td><strong>Stateless Streamable-HTTP WebFlux</strong></td>
+<td><code>spring-ai-starter-mcp-server-webflux</code></td>
+<td><code>spring.ai.mcp.server.protocol=STATELESS</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="MCP-注解模块"><a href="#MCP-注解模块" class="headerlink" title="MCP 注解模块"></a>MCP 注解模块</h2><p>除了编程式的 MCP 客户端和服务器配置外，Spring AI 还通过 <strong>MCP 注解模块</strong> 为 MCP 服务器和客户端提供基于注解的方法处理。这种方式使用简洁的声明式编程模型配合 Java 注解，简化了 MCP 操作的创建和注册。</p>
+<h3 id="MCP-注解模块使开发者能够："><a href="#MCP-注解模块使开发者能够：" class="headerlink" title="MCP 注解模块使开发者能够："></a>MCP 注解模块使开发者能够：</h3><ul>
+<li>使用简单的注解创建 MCP 工具、资源和提示</li>
+<li>以声明式方式处理客户端通知和请求</li>
+<li>减少样板代码，提高可维护性</li>
+<li>自动生成工具参数的 JSON Schema</li>
+<li>访问特殊参数和上下文信息</li>
+</ul>
+<h3 id="核心功能包括："><a href="#核心功能包括：" class="headerlink" title="核心功能包括："></a>核心功能包括：</h3><h4 id="服务器端注解"><a href="#服务器端注解" class="headerlink" title="服务器端注解"></a>服务器端注解</h4><table>
+<thead>
+<tr>
+<th>注解</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>@McpTool</code></td>
+<td>将方法暴露为 MCP 工具</td>
+</tr>
+<tr>
+<td><code>@McpResource</code></td>
+<td>将方法暴露为 MCP 资源</td>
+</tr>
+<tr>
+<td><code>@McpPrompt</code></td>
+<td>将方法暴露为 MCP 提示模板</td>
+</tr>
+<tr>
+<td><code>@McpComplete</code></td>
+<td>为工具参数提供自动补全</td>
+</tr>
+</tbody></table>
+<h4 id="客户端注解"><a href="#客户端注解" class="headerlink" title="客户端注解"></a>客户端注解</h4><table>
+<thead>
+<tr>
+<th>注解</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>@McpLogging</code></td>
+<td>处理日志通知</td>
+</tr>
+<tr>
+<td><code>@McpSampling</code></td>
+<td>处理采样请求</td>
+</tr>
+<tr>
+<td><code>@McpElicitation</code></td>
+<td>处理请求附加信息</td>
+</tr>
+<tr>
+<td><code>@McpProgress</code></td>
+<td>处理进度通知</td>
+</tr>
+</tbody></table>
+<h4 id="特殊参数"><a href="#特殊参数" class="headerlink" title="特殊参数"></a>特殊参数</h4><table>
+<thead>
+<tr>
+<th>参数类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>McpSyncServerExchange</code></td>
+<td>同步服务器交换上下文</td>
+</tr>
+<tr>
+<td><code>McpAsyncServerExchange</code></td>
+<td>异步服务器交换上下文</td>
+</tr>
+<tr>
+<td><code>McpTransportContext</code></td>
+<td>传输上下文信息</td>
+</tr>
+<tr>
+<td><code>McpMeta</code></td>
+<td>元数据访问</td>
+</tr>
+</tbody></table>
+<h4 id="其他特性"><a href="#其他特性" class="headerlink" title="其他特性"></a>其他特性</h4><ul>
+<li><strong>自动发现</strong>：支持可配置包包含/排除的注解扫描</li>
+<li><strong>Spring Boot 集成</strong>：与 MCP Boot Starters 无缝集成</li>
+</ul>
+<hr>
+<h2 id="升级到-Spring-AI-2-0"><a href="#升级到-Spring-AI-2-0" class="headerlink" title="升级到 Spring AI 2.0"></a>升级到 Spring AI 2.0</h2><p>从 <strong>Spring AI 2.0</strong> 开始，Spring 特定的 MCP 传输实现（<code>mcp-spring-webflux</code> 和 <code>mcp-spring-webmvc</code>）不再由 MCP Java SDK 提供。它们已被移至 Spring AI 项目本身。这是一个<strong>破坏性变更</strong>，需要直接引用这些传输制品或类的应用程序更新依赖和导入。</p>
+<h3 id="Maven-依赖-Group-ID-变更"><a href="#Maven-依赖-Group-ID-变更" class="headerlink" title="Maven 依赖 Group ID 变更"></a>Maven 依赖 Group ID 变更</h3><p><code>mcp-spring-webflux</code> 和 <code>mcp-spring-webmvc</code> 制品已从 <code>io.modelcontextprotocol.sdk</code> 组迁移至 <code>org.springframework.ai</code>。</p>
+<p><strong>迁移前（MCP Java SDK）：</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.modelcontextprotocol.sdk<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mcp-spring-webflux<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.modelcontextprotocol.sdk<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mcp-spring-webmvc<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>迁移后（MCP Java SDK &gt;= 1.0.x 且 Spring AI &gt;= 2.0.x）：</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.ai<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mcp-spring-webflux<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.ai<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mcp-spring-webmvc<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>当使用 <code>spring-ai-bom</code> 或 Spring AI Starter 依赖（<code>spring-ai-starter-mcp-server-webflux</code>、<code>spring-ai-starter-mcp-server-webmvc</code>、<code>spring-ai-starter-mcp-client-webflux</code>）时，无需显式指定版本——BOM 会自动管理。</p>
+</blockquote>
+<h3 id="Java-包路径迁移"><a href="#Java-包路径迁移" class="headerlink" title="Java 包路径迁移"></a>Java 包路径迁移</h3><p>所有传输类已迁移至 <code>org.springframework.ai</code> 包下。</p>
+<h4 id="服务器传输类"><a href="#服务器传输类" class="headerlink" title="服务器传输类"></a>服务器传输类</h4><table>
+<thead>
+<tr>
+<th>类名</th>
+<th>旧包路径 (MCP SDK)</th>
+<th>新包路径 (Spring AI)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>WebFluxSseServerTransportProvider</code></td>
+<td><code>io.modelcontextprotocol.server.transport</code></td>
+<td><code>org.springframework.ai.mcp.server.webflux.transport</code></td>
+</tr>
+<tr>
+<td><code>WebFluxStreamableServerTransportProvider</code></td>
+<td><code>io.modelcontextprotocol.server.transport</code></td>
+<td><code>org.springframework.ai.mcp.server.webflux.transport</code></td>
+</tr>
+<tr>
+<td><code>WebFluxStatelessServerTransport</code></td>
+<td><code>io.modelcontextprotocol.server.transport</code></td>
+<td><code>org.springframework.ai.mcp.server.webflux.transport</code></td>
+</tr>
+<tr>
+<td><code>WebMvcSseServerTransportProvider</code></td>
+<td><code>io.modelcontextprotocol.server.transport</code></td>
+<td><code>org.springframework.ai.mcp.server.webmvc.transport</code></td>
+</tr>
+<tr>
+<td><code>WebMvcStreamableServerTransportProvider</code></td>
+<td><code>io.modelcontextprotocol.server.transport</code></td>
+<td><code>org.springframework.ai.mcp.server.webmvc.transport</code></td>
+</tr>
+<tr>
+<td><code>WebMvcStatelessServerTransport</code></td>
+<td><code>io.modelcontextprotocol.server.transport</code></td>
+<td><code>org.springframework.ai.mcp.server.webmvc.transport</code></td>
+</tr>
+</tbody></table>
+<h4 id="客户端传输类"><a href="#客户端传输类" class="headerlink" title="客户端传输类"></a>客户端传输类</h4><table>
+<thead>
+<tr>
+<th>类名</th>
+<th>旧包路径 (MCP SDK)</th>
+<th>新包路径 (Spring AI)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>WebFluxSseClientTransport</code></td>
+<td><code>io.modelcontextprotocol.client.transport</code></td>
+<td><code>org.springframework.ai.mcp.client.webflux.transport</code></td>
+</tr>
+<tr>
+<td><code>WebClientStreamableHttpTransport</code></td>
+<td><code>io.modelcontextprotocol.client.transport</code></td>
+<td><code>org.springframework.ai.mcp.client.webflux.transport</code></td>
+</tr>
+</tbody></table>
+<h4 id="导入示例更新"><a href="#导入示例更新" class="headerlink" title="导入示例更新"></a>导入示例更新</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 迁移前</span></span><br><span class="line"><span class="keyword">import</span> io.modelcontextprotocol.server.transport.WebFluxSseServerTransportProvider;</span><br><span class="line"><span class="keyword">import</span> io.modelcontextprotocol.server.transport.WebMvcSseServerTransportProvider;</span><br><span class="line"><span class="keyword">import</span> io.modelcontextprotocol.client.transport.WebFluxSseClientTransport;</span><br><span class="line"><span class="keyword">import</span> io.modelcontextprotocol.client.transport.WebClientStreamableHttpTransport;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 迁移后</span></span><br><span class="line"><span class="keyword">import</span> org.springframework.ai.mcp.server.webflux.transport.WebFluxSseServerTransportProvider;</span><br><span class="line"><span class="keyword">import</span> org.springframework.ai.mcp.server.webmvc.transport.WebMvcSseServerTransportProvider;</span><br><span class="line"><span class="keyword">import</span> org.springframework.ai.mcp.client.webflux.transport.WebFluxSseClientTransport;</span><br><span class="line"><span class="keyword">import</span> org.springframework.ai.mcp.client.webflux.transport.WebClientStreamableHttpTransport;</span><br></pre></td></tr></table></figure>
+
+<h3 id="MCP-SDK-版本要求"><a href="#MCP-SDK-版本要求" class="headerlink" title="MCP SDK 版本要求"></a>MCP SDK 版本要求</h3><p>Spring AI 2.0 要求 <strong>MCP Java SDK 1.0.0</strong>（RC1 或更高版本）。SDK 版本已从 <code>0.18.x</code> 升级至 <code>1.0.x</code> 系列。请相应更新您的 BOM 或显式版本号。</p>
+<h3 id="Spring-Boot-自动配置用户"><a href="#Spring-Boot-自动配置用户" class="headerlink" title="Spring Boot 自动配置用户"></a>Spring Boot 自动配置用户</h3><p>如果您<strong>仅依赖</strong>通过 Spring AI Starters 进行的 Spring Boot 自动配置，则<strong>无需更改任何 Java 代码</strong>。自动配置已在内部更新为引用新包路径。只需按上述说明更新 <code>pom.xml</code> / <code>build.gradle</code> 中的依赖坐标即可。</p>
+<hr>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="https://docs.spring.io/spring-ai/reference/api/mcp/mcp-annotations-overview.html" target="_blank" rel="noopener">MCP 注解文档</a></li>
+<li><a href="https://docs.spring.io/spring-ai/reference/api/mcp/mcp-client-boot-starter-docs.html" target="_blank" rel="noopener">MCP 客户端 Boot Starters 文档</a></li>
+<li><a href="https://docs.spring.io/spring-ai/reference/api/mcp/mcp-server-boot-starter-docs.html" target="_blank" rel="noopener">MCP 服务器 Boot Starters 文档</a></li>
+<li><a href="https://modelcontextprotocol.io/docs/getting-started/intro" target="_blank" rel="noopener">模型上下文协议规范</a></li>
+<li><a href="https://github.com/modelcontextprotocol/java-sdk" target="_blank" rel="noopener">MCP Java SDK 文档</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/springai/" rel="tag"># springai</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2026/07/02/SpringAI — 聊天记忆/" rel="next" title="SpringAI — 聊天记忆">
+                  <i class="fa fa-chevron-left"></i> SpringAI — 聊天记忆
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是模型上下文协议-MCP-？"><span class="nav-number">1.</span> <span class="nav-text">什么是模型上下文协议 (MCP)？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-MCP-架构"><span class="nav-number">2.</span> <span class="nav-text">Java MCP 架构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-客户端-服务器层（顶层）"><span class="nav-number">2.1.</span> <span class="nav-text">1. 客户端/服务器层（顶层）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-会话层（中间层）"><span class="nav-number">2.2.</span> <span class="nav-text">2. 会话层（中间层）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-传输层（底层）"><span class="nav-number">2.3.</span> <span class="nav-text">3. 传输层（底层）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MCP-客户端"><span class="nav-number">3.</span> <span class="nav-text">MCP 客户端</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#可选功能"><span class="nav-number">3.1.</span> <span class="nav-text">可选功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#传输选项"><span class="nav-number">3.2.</span> <span class="nav-text">传输选项</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MCP-服务器"><span class="nav-number">4.</span> <span class="nav-text">MCP 服务器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#传输实现"><span class="nav-number">4.1.</span> <span class="nav-text">传输实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Spring-AI-MCP-Boot-Starters"><span class="nav-number">5.</span> <span class="nav-text">Spring AI MCP Boot Starters</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#标准输入-输出-STDIO"><span class="nav-number">5.1.</span> <span class="nav-text">标准输入/输出 (STDIO)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#WebMVC-传输"><span class="nav-number">5.2.</span> <span class="nav-text">WebMVC 传输</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#WebFlux-传输"><span class="nav-number">5.3.</span> <span class="nav-text">WebFlux 传输</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MCP-注解模块"><span class="nav-number">6.</span> <span class="nav-text">MCP 注解模块</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MCP-注解模块使开发者能够："><span class="nav-number">6.1.</span> <span class="nav-text">MCP 注解模块使开发者能够：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#核心功能包括："><span class="nav-number">6.2.</span> <span class="nav-text">核心功能包括：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#服务器端注解"><span class="nav-number">6.2.1.</span> <span class="nav-text">服务器端注解</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#客户端注解"><span class="nav-number">6.2.2.</span> <span class="nav-text">客户端注解</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#特殊参数"><span class="nav-number">6.2.3.</span> <span class="nav-text">特殊参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#其他特性"><span class="nav-number">6.2.4.</span> <span class="nav-text">其他特性</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#升级到-Spring-AI-2-0"><span class="nav-number">7.</span> <span class="nav-text">升级到 Spring AI 2.0</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Maven-依赖-Group-ID-变更"><span class="nav-number">7.1.</span> <span class="nav-text">Maven 依赖 Group ID 变更</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Java-包路径迁移"><span class="nav-number">7.2.</span> <span class="nav-text">Java 包路径迁移</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#服务器传输类"><span class="nav-number">7.2.1.</span> <span class="nav-text">服务器传输类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#客户端传输类"><span class="nav-number">7.2.2.</span> <span class="nav-text">客户端传输类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#导入示例更新"><span class="nav-number">7.2.3.</span> <span class="nav-text">导入示例更新</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MCP-SDK-版本要求"><span class="nav-number">7.3.</span> <span class="nav-text">MCP SDK 版本要求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spring-Boot-自动配置用户"><span class="nav-number">7.4.</span> <span class="nav-text">Spring Boot 自动配置用户</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">8.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar.jpg"
+      alt="蝉">
+  <p class="site-author-name" itemprop="name">蝉</p>
+  <div class="site-description" itemprop="description">Another way to laugh !</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">122</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">73</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/lazycece" title="GitHub &rarr; https://github.com/lazycece" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:lazycece@qq.com" title="E-Mail &rarr; mailto:lazycece@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://blog.csdn.net/qq_28851503" title="CSDN &rarr; https://blog.csdn.net/qq_28851503" rel="noopener" target="_blank"><i class="fa fa-fw fa-vk"></i>CSDN</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://leetcode-cn.com/u/lazycece" title="LeetCode &rarr; https://leetcode-cn.com/u/lazycece" rel="noopener" target="_blank"><i class="fa fa-fw fa-vk"></i>LeetCode</a>
+      </span>
+    
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2026</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">蝉</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script><script src="/js/bookmark.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
