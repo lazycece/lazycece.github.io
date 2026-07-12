@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":true,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="RAG 流程RAG 流程分为两个截然不同的阶段：索引阶段和检索阶段，LangChain4j 为两个阶段都提供了工具支持。 索引阶段在索引阶段，文档会被预处理，以便在检索阶段实现高效搜索。这个过程会根据所使用的信息检索方法而有所不同。对于向量搜索，通常包括：清洗文档、用额外数据和元数据丰富文档、将文档分割成更小的片段（即分块）、对这些片段进行嵌入编码，最后将它们存储到嵌入存储（即向量数据库）中。 索">
+<meta name="keywords" content="langchain4j">
+<meta property="og:type" content="article">
+<meta property="og:title" content="langchain4j RAG支持">
+<meta property="og:url" content="https://lazycece.github.io/2026/07/12/langchain4j-RAG支持/index.html">
+<meta property="og:site_name" content="W  pit">
+<meta property="og:description" content="RAG 流程RAG 流程分为两个截然不同的阶段：索引阶段和检索阶段，LangChain4j 为两个阶段都提供了工具支持。 索引阶段在索引阶段，文档会被预处理，以便在检索阶段实现高效搜索。这个过程会根据所使用的信息检索方法而有所不同。对于向量搜索，通常包括：清洗文档、用额外数据和元数据丰富文档、将文档分割成更小的片段（即分块）、对这些片段进行嵌入编码，最后将它们存储到嵌入存储（即向量数据库）中。 索">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://lazycece.github.io/images/article/langchain4j-rag-index.png">
+<meta property="og:image" content="https://lazycece.github.io/images/article/langchain4j-rag-retri.png">
+<meta property="og:updated_time" content="2026-07-12T10:40:15.878Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="langchain4j RAG支持">
+<meta name="twitter:description" content="RAG 流程RAG 流程分为两个截然不同的阶段：索引阶段和检索阶段，LangChain4j 为两个阶段都提供了工具支持。 索引阶段在索引阶段，文档会被预处理，以便在检索阶段实现高效搜索。这个过程会根据所使用的信息检索方法而有所不同。对于向量搜索，通常包括：清洗文档、用额外数据和元数据丰富文档、将文档分割成更小的片段（即分块）、对这些片段进行嵌入编码，最后将它们存储到嵌入存储（即向量数据库）中。 索">
+<meta name="twitter:image" content="https://lazycece.github.io/images/article/langchain4j-rag-index.png">
+  <link rel="canonical" href="https://lazycece.github.io/2026/07/12/langchain4j-RAG支持/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>langchain4j RAG支持 | W  pit</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">W  pit</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">A thousand miles begins with a single step .</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a class="book-mark-link book-mark-link-fixed" href="#"></a>
+
+  <a href="https://github.com/lazycece" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2026/07/12/langchain4j-RAG支持/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="蝉">
+      <meta itemprop="description" content="Another way to laugh !">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="W  pit">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">langchain4j RAG支持
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2026-07-12 18:21:28 / Modified: 18:40:15" itemprop="dateCreated datePublished" datetime="2026-07-12T18:21:28+08:00">2026-07-12</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/langchain4j/" itemprop="url" rel="index"><span itemprop="name">langchain4j</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="RAG-流程"><a href="#RAG-流程" class="headerlink" title="RAG 流程"></a>RAG 流程</h2><p>RAG 流程分为两个截然不同的阶段：<strong>索引阶段</strong>和<strong>检索阶段</strong>，LangChain4j 为两个阶段都提供了工具支持。</p>
+<h3 id="索引阶段"><a href="#索引阶段" class="headerlink" title="索引阶段"></a>索引阶段</h3><p>在索引阶段，文档会被预处理，以便在检索阶段实现高效搜索。这个过程会根据所使用的信息检索方法而有所不同。对于向量搜索，通常包括：清洗文档、用额外数据和元数据丰富文档、将文档分割成更小的片段（即分块）、对这些片段进行嵌入编码，最后将它们存储到嵌入存储（即向量数据库）中。</p>
+<p>索引阶段通常发生在<strong>离线</strong>状态下，这意味着不需要终端用户等待其完成。例如，可以通过 cron 定时任务在周末每周一次重新索引公司内部文档。负责索引的代码也可以是一个单独的应用程序，仅处理索引任务。然而，在某些场景下，终端用户可能希望上传自定义文档以使其可被 LLM 访问。在这种情况下，索引应在<strong>在线</strong>状态下执行，并作为主应用程序的一部分。</p>
+<p>以下是索引阶段的简化示意图：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">文档 → 清洗/丰富 → 分块 → 嵌入 → 嵌入存储（向量数据库）</span><br></pre></td></tr></table></figure>
+
+<a id="more"></a>
+
+<p><img src="/images/article/langchain4j-rag-index.png" alt="langchain4j-rag-index.png"></p>
+<h3 id="检索阶段"><a href="#检索阶段" class="headerlink" title="检索阶段"></a>检索阶段</h3><p>检索阶段通常发生在<strong>在线</strong>状态下，当用户提交一个需要使用已索引文档来回答的问题时。这个过程会根据所使用的信息检索方法而有所不同。对于向量搜索，通常包括：对用户查询（问题）进行嵌入编码，然后在嵌入存储中执行相似度搜索。相关片段（原始文档的片段）随后被注入到提示中并发送给 LLM。</p>
+<p>以下是检索阶段的简化示意图：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">用户查询 → 嵌入 → 相似度搜索 → 检索相关片段 → 注入提示 → LLM</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/article/langchain4j-rag-retri.png" alt="langchain4j-rag-retri.png"></p>
+<hr>
+<h2 id="LangChain4j-的三种-RAG-方式"><a href="#LangChain4j-的三种-RAG-方式" class="headerlink" title="LangChain4j 的三种 RAG 方式"></a>LangChain4j 的三种 RAG 方式</h2><p>LangChain4j 提供了三种 RAG 实现方式：</p>
+<ol>
+<li><strong>Easy RAG</strong> — 最简单的入门方式</li>
+<li><strong>Naive RAG</strong> — 使用 <code>EmbeddingStoreContentRetriever</code> 的基础 RAG</li>
+<li><strong>Advanced RAG</strong> — 使用 <code>RetrievalAugmentor</code> 的高级 RAG 管道</li>
+</ol>
+<hr>
+<h2 id="Easy-RAG"><a href="#Easy-RAG" class="headerlink" title="Easy RAG"></a>Easy RAG</h2><p>LangChain4j 有一个”Easy RAG”功能，让你尽可能轻松地开始使用 RAG。你无需了解嵌入、选择向量存储、寻找合适的嵌入模型、弄清楚如何解析和分割文档等。只需指向你的文档，LangChain4j 就会施展魔法。</p>
+<p>当然，这种”Easy RAG”的质量会低于定制化的 RAG 设置。然而，这是开始学习 RAG 和/或制作概念验证的最简单方式。之后，你可以从 Easy RAG 平滑过渡到更高级的 RAG，逐步调整和优化更多方面。</p>
+<h3 id="Easy-RAG-示例"><a href="#Easy-RAG-示例" class="headerlink" title="Easy RAG 示例"></a>Easy RAG 示例</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 从文件系统加载文档</span></span><br><span class="line">List&lt;Document&gt; documents = FileSystemDocumentLoader.loadDocuments(<span class="string">"/path/to/your/documents"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用 EmbeddingStoreIngestor 进行索引</span></span><br><span class="line">EmbeddingStoreIngestor ingestor = EmbeddingStoreIngestor.builder()</span><br><span class="line">    .embeddingStore(embeddingStore)</span><br><span class="line">    .embeddingModel(embeddingModel)</span><br><span class="line">    .build();</span><br><span class="line">ingestor.ingest(documents);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 配置 AI Service 使用 RAG</span></span><br><span class="line">Assistant assistant = AiServices.builder(Assistant<span class="class">.<span class="keyword">class</span>)</span></span><br><span class="line"><span class="class">    .<span class="title">chatModel</span>(<span class="title">chatModel</span>)</span></span><br><span class="line"><span class="class">    .<span class="title">chatMemory</span>(<span class="title">chatMemory</span>)</span></span><br><span class="line"><span class="class">    .<span class="title">contentRetriever</span>(<span class="title">EmbeddingStoreContentRetriever</span>.<span class="title">from</span>(<span class="title">embeddingStore</span>, <span class="title">embeddingModel</span>))</span></span><br><span class="line"><span class="class">    .<span class="title">build</span>()</span>;</span><br></pre></td></tr></table></figure>
+
+<p>这将加载指定目录中的所有文件。</p>
+<p>Apache Tika 库支持多种文档类型，用于检测文档类型并解析它们。由于我们没有明确指定使用哪个 <code>DocumentParser</code>，<code>FileSystemDocumentLoader</code> 将通过 SPI 加载一个由 <code>langchain4j-easy-rag</code> 依赖提供的 <code>ApacheTikaDocumentParser</code>。</p>
+<p>如果你想从所有子目录加载文档，可以使用 <code>loadDocumentsRecursively</code> 方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Document&gt; documents = FileSystemDocumentLoader.loadDocumentsRecursively(<span class="string">"/path/to/your/documents"</span>);</span><br></pre></td></tr></table></figure>
+
+<p>此外，你可以使用 glob 或 regex 过滤文档：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Document&gt; documents = FileSystemDocumentLoader.loadDocuments(</span><br><span class="line">    <span class="string">"/path/to/your/documents"</span>,</span><br><span class="line">    glob(<span class="string">"*.pdf"</span>)  <span class="comment">// 只加载 PDF 文件</span></span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>使用 <code>loadDocumentsRecursively</code> 方法时，你可能需要在 glob 中使用双星号（而不是单星号）：<code>glob:**.pdf</code>。</p>
+<p><code>EmbeddingStoreIngestor</code> 通过 SPI 从 <code>langchain4j-easy-rag</code> 依赖中加载一个 <code>DocumentSplitter</code>。每个 <code>Document</code> 被分割成更小的片段（<code>TextSegment</code>），每个片段最多包含 300 个 token，并有 30 个 token 的重叠。</p>
+<p><code>EmbeddingStoreIngestor</code> 通过 SPI 从 <code>langchain4j-easy-rag</code> 依赖中加载一个 <code>EmbeddingModel</code>。每个 <code>TextSegment</code> 使用 <code>EmbeddingModel</code> 转换为一个 <code>Embedding</code>。</p>
+<blockquote>
+<p>langchain4j选择了 <strong>bge-small-en-v1.5</strong> 作为 Easy RAG 的默认嵌入模型。它在 <a href="https://huggingface.co/spaces/mteb/leaderboard" target="_blank" rel="noopener">MTEB 排行榜</a> 上取得了令人印象深刻的分数，其量化版本仅占用 24 MB 空间。因此可以轻松地将其加载到内存中，并使用 ONNX Runtime 在同一进程中运行。</p>
+</blockquote>
+<p>没错，你可以在完全离线的状态下，在相同的 JVM 进程中将文本转换为嵌入，无需任何外部服务。LangChain4j 开箱即用地提供了一些流行的嵌入模型。在这里配置 <code>Assistant</code> 使用 OpenAI LLM 来回答用户问题，记住对话中最近的 10 条消息，并从包含我们文档的 <code>EmbeddingStore</code> 中检索相关内容。</p>
+<hr>
+<h2 id="RAG-核心-API"><a href="#RAG-核心-API" class="headerlink" title="RAG 核心 API"></a>RAG 核心 API</h2><p>LangChain4j 提供了丰富的 API 集，让你轻松构建自定义 RAG 管道，从简单的到高级的都可以。在本节中，我们将介绍主要的领域类和 API。</p>
+<h3 id="Document（文档）"><a href="#Document（文档）" class="headerlink" title="Document（文档）"></a>Document（文档）</h3><p><code>Document</code> 类代表一个完整的文档，例如单个 PDF 文件或网页。目前，<code>Document</code> 只能表示文本信息，但未来的更新将使其支持图像和表格。每个 <code>Document</code> 都包含 <code>Metadata</code>，它存储有关 <code>Document</code> 的元信息，例如名称、来源、最后更新日期、所有者或任何其他相关详细信息。<code>Metadata</code> 存储为键值对映射，其中键为 <code>String</code> 类型，值可以是以下类型之一：<code>String</code>、<code>Integer</code>、<code>Long</code>、<code>Float</code>、<code>Double</code>、<code>UUID</code>。</p>
+<p>Metadata 在以下场景中非常有用：</p>
+<ul>
+<li>过滤和搜索文档</li>
+<li>在检索结果中提供上下文信息</li>
+<li>跟踪文档来源和版本</li>
+</ul>
+<p>你可以从 <code>String</code> 创建 <code>Document</code>，但更简单的方法是使用库中包含的文档加载器：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Document document = Document.from(<span class="string">"这是文档内容"</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="DocumentParser（文档解析器）"><a href="#DocumentParser（文档解析器）" class="headerlink" title="DocumentParser（文档解析器）"></a>DocumentParser（文档解析器）</h3><p>文档可以表示各种格式的文件，如 PDF、DOC、TXT 等。要解析每种格式，有一个 <code>DocumentParser</code> 接口，库中包含了多个实现：</p>
+<table>
+<thead>
+<tr>
+<th>解析器</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>TextDocumentParser</code></td>
+<td>解析纯文本文件</td>
+</tr>
+<tr>
+<td><code>ApacheTikaDocumentParser</code></td>
+<td>使用 Apache Tika 解析多种格式</td>
+</tr>
+<tr>
+<td><code>PdfDocumentParser</code></td>
+<td>解析 PDF 文件</td>
+</tr>
+</tbody></table>
+<p>以下是从文件系统加载一个或多个 <code>Document</code> 的示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Document&gt; documents = FileSystemDocumentLoader.loadDocuments(</span><br><span class="line">    Paths.get(<span class="string">"/path/to/document.pdf"</span>),</span><br><span class="line">    <span class="keyword">new</span> PdfDocumentParser()</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>你也可以在不显式指定 <code>DocumentParser</code> 的情况下加载文档。在这种情况下，将使用默认的 <code>DocumentParser</code>。默认解析器通过 SPI 加载（例如，如果导入了 <code>langchain4j-document-parser-apache-tika</code> 或 <code>langchain4j-easy-rag</code>）。如果通过 SPI 没有找到 <code>DocumentParser</code>，则使用 <code>TextDocumentParser</code> 作为回退。</p>
+<h3 id="DocumentTransformer（文档转换器）"><a href="#DocumentTransformer（文档转换器）" class="headerlink" title="DocumentTransformer（文档转换器）"></a>DocumentTransformer（文档转换器）</h3><p><code>DocumentTransformer</code> 实现可以执行各种文档转换，例如：</p>
+<ul>
+<li>清洗和规范化文本</li>
+<li>提取特定内容</li>
+<li>添加或修改元数据</li>
+</ul>
+<p>在此阶段也可以添加、修改或删除 <code>Metadata</code> 条目。</p>
+<p>目前，开箱即提供的唯一实现是 <code>langchain4j-document-transformer-jsoup</code> 模块中的 <code>HtmlToTextDocumentTransformer</code>，它可以从原始 HTML 中提取所需的文本内容和元数据条目。</p>
+<p>由于没有一个放之四海而皆准的解决方案，我们建议根据你的独特数据实现自己的 <code>DocumentTransformer</code>。</p>
+<h3 id="GraphTransformer（图转换器）"><a href="#GraphTransformer（图转换器）" class="headerlink" title="GraphTransformer（图转换器）"></a>GraphTransformer（图转换器）</h3><p><code>GraphTransformer</code> 是一个将非结构化 <code>Document</code> 对象转换为结构化 <code>GraphDocument</code> 的接口，通过提取语义图元素（如节点和关系）。它非常适合将原始文本转换为结构化语义图。</p>
+<p><code>GraphTransformer</code> 将原始文档转换为 <code>GraphDocument</code>，包括：</p>
+<ul>
+<li><strong>节点（Nodes）</strong>：实体及其属性</li>
+<li><strong>关系（Relationships）</strong>：实体之间的连接</li>
+</ul>
+<p>默认实现是 <code>LLMGraphTransformer</code>，它使用语言模型（如 OpenAI）通过提示工程从自然语言中提取图信息。</p>
+<h3 id="DocumentSplitter（文档分割器）"><a href="#DocumentSplitter（文档分割器）" class="headerlink" title="DocumentSplitter（文档分割器）"></a>DocumentSplitter（文档分割器）</h3><p>加载 <code>Document</code> 后，是时候将它们分割成更小的片段了。LangChain4j 的领域模型包含一个 <code>TextSegment</code> 类，表示 <code>Document</code> 的一个片段。顾名思义，<code>TextSegment</code> 只能表示文本信息。</p>
+<p>你可能只想在提示中包含几个相关片段而不是整个知识库，原因有以下几点：</p>
+<ul>
+<li><strong>上下文窗口限制</strong>：LLM 的上下文窗口有限</li>
+<li><strong>相关性</strong>：不相关的信息可能分散 LLM 的注意力</li>
+<li><strong>成本</strong>：更长的提示意味着更高的 API 调用成本</li>
+</ul>
+<p>我们可以通过将知识库分割成更小、更易消化的片段来解决这些问题。这些片段应该多大？这是一个好问题。一如既往，这取决于具体情况。</p>
+<p>目前有两种广泛使用的方法：</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>按字符数分割</strong></td>
+<td>按固定字符数切分，简单但可能切断语义</td>
+</tr>
+<tr>
+<td><strong>按 token 数分割</strong></td>
+<td>按 token 数量切分，更精确</td>
+</tr>
+</tbody></table>
+<p>LangChain4j 有一个 <code>DocumentSplitter</code> 接口，提供了多个开箱即用的实现：</p>
+<ul>
+<li><code>DocumentByCharacterSplitter</code> — 按字符数分割</li>
+<li><code>DocumentByTokenSplitter</code> — 按 token 数分割</li>
+<li><code>DocumentByLineSplitter</code> — 按行分割</li>
+<li><code>DocumentByParagraphSplitter</code> — 按段落分割</li>
+</ul>
+<p>它们的工作原理如下：将 <code>Document</code> 分割成具有指定大小和重叠的 <code>TextSegment</code>。</p>
+<h3 id="TextSegmentTransformer（文本片段转换器）"><a href="#TextSegmentTransformer（文本片段转换器）" class="headerlink" title="TextSegmentTransformer（文本片段转换器）"></a>TextSegmentTransformer（文本片段转换器）</h3><p><code>TextSegmentTransformer</code> 类似于 <code>DocumentTransformer</code>（如上所述），但它转换的是 <code>TextSegment</code>。</p>
+<p>与 <code>DocumentTransformer</code> 一样，没有一个放之四海而皆准的解决方案，因此我们建议根据你的独特数据实现自己的 <code>TextSegmentTransformer</code>。</p>
+<p>一种对改善检索效果很好的技术是在每个 <code>TextSegment</code> 中包含 <code>Document</code> 标题或简短摘要。</p>
+<h3 id="Embedding（嵌入）"><a href="#Embedding（嵌入）" class="headerlink" title="Embedding（嵌入）"></a>Embedding（嵌入）</h3><p><code>Embedding</code> 类封装了一个数值向量，代表被嵌入内容的”语义含义”（通常是文本，如 <code>TextSegment</code>）。</p>
+<p>在此处阅读更多关于向量嵌入的内容。</p>
+<p><code>EmbeddingModel</code> 接口代表一种特殊类型的模型，它将文本转换为 <code>Embedding</code>。</p>
+<p>当前支持的嵌入模型可以在<a href="https://docs.langchain4j.dev/integrations/language-models" target="_blank" rel="noopener">此处</a>找到。</p>
+<h3 id="EmbeddingStore（嵌入存储）"><a href="#EmbeddingStore（嵌入存储）" class="headerlink" title="EmbeddingStore（嵌入存储）"></a>EmbeddingStore（嵌入存储）</h3><p><code>EmbeddingStore</code> 接口代表一个用于存储 <code>Embedding</code> 的存储，也称为向量数据库。它允许存储和高效搜索相似的（在嵌入空间中接近的）<code>Embedding</code>。</p>
+<p>当前支持的嵌入存储可以在<a href="https://docs.langchain4j.dev/integrations/embedding-stores" target="_blank" rel="noopener">此处</a>找到。</p>
+<p><code>EmbeddingStore</code> 可以单独存储 <code>Embedding</code>，也可以与相应的 <code>TextSegment</code> 一起存储：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">embeddingStore.add(embedding, textSegment);</span><br></pre></td></tr></table></figure>
+
+<h3 id="EmbeddingSearchRequest（嵌入搜索请求）"><a href="#EmbeddingSearchRequest（嵌入搜索请求）" class="headerlink" title="EmbeddingSearchRequest（嵌入搜索请求）"></a>EmbeddingSearchRequest（嵌入搜索请求）</h3><p><code>EmbeddingSearchRequest</code> 代表在 <code>EmbeddingStore</code> 中搜索的请求。它具有以下属性：</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>queryEmbedding</code></td>
+<td>查询的嵌入向量</td>
+</tr>
+<tr>
+<td><code>maxResults</code></td>
+<td>返回的最大结果数</td>
+</tr>
+<tr>
+<td><code>minScore</code></td>
+<td>最小相似度分数阈值</td>
+</tr>
+<tr>
+<td><code>filter</code></td>
+<td>元数据过滤条件</td>
+</tr>
+</tbody></table>
+<p><code>Filter</code> 允许在执行向量搜索时按 <code>Metadata</code> 条目进行过滤。</p>
+<p>目前支持以下 <code>Filter</code> 类型/操作：</p>
+<table>
+<thead>
+<tr>
+<th>过滤器</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>isEqualTo</code></td>
+<td>等于指定值</td>
+</tr>
+<tr>
+<td><code>isNotEqualTo</code></td>
+<td>不等于指定值</td>
+</tr>
+<tr>
+<td><code>isGreaterThan</code></td>
+<td>大于指定值</td>
+</tr>
+<tr>
+<td><code>isGreaterThanOrEqualTo</code></td>
+<td>大于或等于指定值</td>
+</tr>
+<tr>
+<td><code>isLessThan</code></td>
+<td>小于指定值</td>
+</tr>
+<tr>
+<td><code>isLessThanOrEqualTo</code></td>
+<td>小于或等于指定值</td>
+</tr>
+<tr>
+<td><code>containsString</code></td>
+<td>包含指定字符串</td>
+</tr>
+<tr>
+<td><code>in</code></td>
+<td>在指定集合中</td>
+</tr>
+</tbody></table>
+<p>并非所有嵌入存储都支持按 <code>Metadata</code> 过滤，请参阅<a href="https://docs.langchain4j.dev/integrations/embedding-stores" target="_blank" rel="noopener">此处</a>的”按元数据过滤”列。一些支持按 <code>Metadata</code> 过滤的存储不支持所有可能的 <code>Filter</code> 类型/操作。例如，<code>ContainsString</code> 目前仅由 Milvus、PgVector 和 Qdrant 支持。</p>
+<p>关于 <code>Filter</code> 的更多详细信息可以在<a href="https://docs.langchain4j.dev/tutorials/rag#filtering" target="_blank" rel="noopener">此处</a>找到。</p>
+<h3 id="EmbeddingSearchResult（嵌入搜索结果）"><a href="#EmbeddingSearchResult（嵌入搜索结果）" class="headerlink" title="EmbeddingSearchResult（嵌入搜索结果）"></a>EmbeddingSearchResult（嵌入搜索结果）</h3><p><code>EmbeddingSearchResult</code> 代表在 <code>EmbeddingStore</code> 中搜索的结果。它包含 <code>EmbeddingMatch</code> 的列表。</p>
+<p><code>EmbeddingMatch</code> 代表一个匹配的 <code>Embedding</code>，以及其相关性分数、ID 和原始嵌入数据（通常是 <code>TextSegment</code>）。</p>
+<h3 id="EmbeddingStoreIngestor（嵌入存储摄取器）"><a href="#EmbeddingStoreIngestor（嵌入存储摄取器）" class="headerlink" title="EmbeddingStoreIngestor（嵌入存储摄取器）"></a>EmbeddingStoreIngestor（嵌入存储摄取器）</h3><p><code>EmbeddingStoreIngestor</code> 代表一个摄取管道，负责将 <code>Document</code> 摄取到 <code>EmbeddingStore</code> 中。</p>
+<p>在最简单的配置中，<code>EmbeddingStoreIngestor</code> 使用指定的 <code>EmbeddingModel</code> 将提供的 <code>Document</code> 嵌入，并将它们及其 <code>Embedding</code> 一起存储到指定的 <code>EmbeddingStore</code> 中：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">EmbeddingStoreIngestor ingestor = EmbeddingStoreIngestor.builder()</span><br><span class="line">    .embeddingStore(embeddingStore)</span><br><span class="line">    .embeddingModel(embeddingModel)</span><br><span class="line">    .build();</span><br><span class="line">ingestor.ingest(documents);</span><br></pre></td></tr></table></figure>
+
+<p><code>EmbeddingStoreIngestor</code> 中的所有 <code>ingest()</code> 方法都返回一个 <code>IngestionResult</code>。<code>IngestionResult</code> 包含有用的信息，包括 <code>TokenUsage</code>，显示用于嵌入的 token 数量。</p>
+<p>可选地，<code>EmbeddingStoreIngestor</code> 可以使用指定的 <code>DocumentTransformer</code> 转换 <code>Document</code>。如果你想在嵌入之前清洗、丰富或格式化 <code>Document</code>，这会很有用。</p>
+<p>可选地，<code>EmbeddingStoreIngestor</code> 可以使用指定的 <code>DocumentSplitter</code> 将 <code>Document</code> 分割成 <code>TextSegment</code>。如果 <code>Document</code> 很大，并且你想将它们分割成更小的 <code>TextSegment</code> 以提高相似度搜索的质量并减少发送给 LLM 的提示的大小和成本，这会很有用。</p>
+<p>可选地，<code>EmbeddingStoreIngestor</code> 可以使用指定的 <code>TextSegmentTransformer</code> 转换 <code>TextSegment</code>。如果你想在嵌入之前清洗、丰富或格式化 <code>TextSegment</code>，这会很有用。</p>
+<p>示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">EmbeddingStoreIngestor ingestor = EmbeddingStoreIngestor.builder()</span><br><span class="line">    .documentTransformer(documentTransformer)    <span class="comment">// 可选：转换文档</span></span><br><span class="line">    .documentSplitter(documentSplitter)          <span class="comment">// 可选：分割文档</span></span><br><span class="line">    .textSegmentTransformer(textSegmentTransformer) <span class="comment">// 可选：转换文本片段</span></span><br><span class="line">    .embeddingModel(embeddingModel)             <span class="comment">// 必需：嵌入模型</span></span><br><span class="line">    .embeddingStore(embeddingStore)             <span class="comment">// 必需：嵌入存储</span></span><br><span class="line">    .build();</span><br><span class="line">ingestor.ingest(documents);</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="Naive-RAG"><a href="#Naive-RAG" class="headerlink" title="Naive RAG"></a>Naive RAG</h2><p>一旦我们的文档被摄取（见前面的章节），我们可以创建一个 <code>EmbeddingStoreContentRetriever</code> 来启用朴素 RAG 功能。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">ContentRetriever contentRetriever = EmbeddingStoreContentRetriever.builder()</span><br><span class="line">    .embeddingStore(embeddingStore)</span><br><span class="line">    .embeddingModel(embeddingModel)</span><br><span class="line">    .maxResults(<span class="number">3</span>)</span><br><span class="line">    .minScore(<span class="number">0.6</span>)</span><br><span class="line">    .build();</span><br></pre></td></tr></table></figure>
+
+<p>使用 AI Services 时，Naive RAG 可以配置如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Assistant assistant = AiServices.builder(Assistant<span class="class">.<span class="keyword">class</span>)</span></span><br><span class="line"><span class="class">    .<span class="title">chatModel</span>(<span class="title">chatModel</span>)</span></span><br><span class="line"><span class="class">    .<span class="title">contentRetriever</span>(<span class="title">contentRetriever</span>)</span></span><br><span class="line"><span class="class">    .<span class="title">build</span>()</span>;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="Advanced-RAG"><a href="#Advanced-RAG" class="headerlink" title="Advanced RAG"></a>Advanced RAG</h2><p>使用 LangChain4j 可以通过以下核心组件实现高级 RAG：</p>
+<table>
+<thead>
+<tr>
+<th>组件</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>RetrievalAugmentor</code></td>
+<td>RAG 管道的入口点</td>
+</tr>
+<tr>
+<td><code>Query</code></td>
+<td>用户查询的表示</td>
+</tr>
+<tr>
+<td><code>QueryTransformer</code></td>
+<td>查询转换器</td>
+</tr>
+<tr>
+<td><code>ContentRetriever</code></td>
+<td>内容检索器</td>
+</tr>
+<tr>
+<td><code>QueryRouter</code></td>
+<td>查询路由器</td>
+</tr>
+<tr>
+<td><code>ContentAggregator</code></td>
+<td>内容聚合器</td>
+</tr>
+<tr>
+<td><code>ContentInjector</code></td>
+<td>内容注入器</td>
+</tr>
+</tbody></table>
+<p>下图展示了这些组件如何协同工作：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">用户消息 → QueryTransformer → QueryRouter → ContentRetriever(s)</span><br><span class="line">                                                    ↓</span><br><span class="line">UserMessage ← ContentInjector ← ContentAggregator ← 检索到的内容</span><br></pre></td></tr></table></figure>
+
+<p>流程如下：</p>
+<ol>
+<li>用户发送消息</li>
+<li><code>QueryTransformer</code> 将消息转换为一个或多个 <code>Query</code></li>
+<li><code>QueryRouter</code> 将 <code>Query</code> 路由到适当的 <code>ContentRetriever</code></li>
+<li><code>ContentRetriever</code> 从底层数据源检索相关内容</li>
+<li><code>ContentAggregator</code> 聚合来自多个来源的结果</li>
+<li><code>ContentInjector</code> 将检索到的内容注入到 <code>UserMessage</code> 中</li>
+<li>增强后的消息被发送给 LLM</li>
+</ol>
+<p>请参阅每个组件的 Javadoc 以获取更多详细信息。</p>
+<h3 id="RetrievalAugmentor（检索增强器）"><a href="#RetrievalAugmentor（检索增强器）" class="headerlink" title="RetrievalAugmentor（检索增强器）"></a>RetrievalAugmentor（检索增强器）</h3><p><code>RetrievalAugmentor</code> 是 RAG 管道的入口点。它负责用从各种来源检索到的相关 <code>Content</code> 来增强 <code>ChatMessage</code>。</p>
+<p>可以在创建 AI Service 时指定 <code>RetrievalAugmentor</code> 的实例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Assistant assistant = AiServices.builder(Assistant<span class="class">.<span class="keyword">class</span>)</span></span><br><span class="line"><span class="class">    .<span class="title">chatModel</span>(<span class="title">chatModel</span>)</span></span><br><span class="line"><span class="class">    .<span class="title">retrievalAugmentor</span>(<span class="title">retrievalAugmentor</span>)</span></span><br><span class="line"><span class="class">    .<span class="title">build</span>()</span>;</span><br></pre></td></tr></table></figure>
+
+<p>每次调用 AI Service 时，指定的 <code>RetrievalAugmentor</code> 将被调用来增强当前的 <code>UserMessage</code>。</p>
+<p>你可以使用 <code>RetrievalAugmentor</code> 的默认实现（如下所述）或实现自定义的。</p>
+<p>LangChain4j 提供了一个开箱即用的 <code>RetrievalAugmentor</code> 接口实现：<code>DefaultRetrievalAugmentor</code>，它应该适用于大多数 RAG 用例。它的灵感来自<a href="https://www.pinecone.io/learn/retrieval-augmentation/" target="_blank" rel="noopener">这篇文章</a>和<a href="https://arxiv.org/abs/2005.11401" target="_blank" rel="noopener">这篇论文</a>。建议查阅这些资源以更好地理解这个概念。</p>
+<h3 id="Query（查询）"><a href="#Query（查询）" class="headerlink" title="Query（查询）"></a>Query（查询）</h3><p><code>Query</code> 代表 RAG 管道中的用户查询。它包含查询文本和查询元数据。<code>Query</code> 中的 <code>Metadata</code> 包含可能在 RAG 管道的各个组件中使用的有用信息，例如：</p>
+<ul>
+<li>用户身份信息</li>
+<li>会话上下文</li>
+<li>自定义参数</li>
+</ul>
+<p><code>InvocationParameters</code> 也可以在以下其他 AI Service 组件中访问：</p>
+<ul>
+<li><code>QueryTransformer</code></li>
+<li><code>ContentRetriever</code></li>
+<li><code>ContentInjector</code></li>
+<li>Tools</li>
+</ul>
+<p>参数存储在一个可变的、线程安全的 <code>Map</code> 中。</p>
+<p>数据可以在 AI Service 的单个调用期间，通过 <code>InvocationParameters</code> 在 AI Service 组件之间传递（例如，从一个 RAG 组件到另一个 RAG 组件，或从 RAG 组件到工具）。</p>
+<h3 id="QueryTransformer（查询转换器）"><a href="#QueryTransformer（查询转换器）" class="headerlink" title="QueryTransformer（查询转换器）"></a>QueryTransformer（查询转换器）</h3><p><code>QueryTransformer</code> 将给定的 <code>Query</code> 转换为一个或多个 <code>Query</code>。目标是通过修改或扩展原始 <code>Query</code> 来提高检索质量。</p>
+<p>一些已知的改进检索的方法包括：</p>
+<ul>
+<li><strong>查询压缩</strong>：将后续问题压缩为独立查询</li>
+<li><strong>查询扩展</strong>：将单个查询扩展为多个变体</li>
+<li><strong>查询重写</strong>：用不同的措辞重新表述查询</li>
+</ul>
+<p>更多细节可以在<a href="https://docs.langchain4j.dev/tutorials/rag#query-transformer" target="_blank" rel="noopener">此处</a>找到。</p>
+<p>LangChain4j 还有一个可选的社区 Prompt Repetition 模块，提供 <code>RepeatingQueryTransformer</code>。它在内容检索之前重复检索查询，应该用于转换查询本身，而不是发送到模型的最终增强提示。</p>
+<h4 id="DefaultQueryTransformer"><a href="#DefaultQueryTransformer" class="headerlink" title="DefaultQueryTransformer"></a>DefaultQueryTransformer</h4><p><code>DefaultQueryTransformer</code> 是 <code>DefaultRetrievalAugmentor</code> 中使用的默认实现。它不对 <code>Query</code> 做任何修改，只是将其传递下去。</p>
+<h4 id="CompressingQueryTransformer"><a href="#CompressingQueryTransformer" class="headerlink" title="CompressingQueryTransformer"></a>CompressingQueryTransformer</h4><p><code>CompressingQueryTransformer</code> 使用 LLM 将给定 <code>Query</code> 和之前的对话压缩为一个独立的 <code>Query</code>。当用户可能提出涉及之前问题或答案信息的后续问题时，这非常有用。</p>
+<p>示例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">对话历史：</span><br><span class="line">用户：John Doe 是谁？</span><br><span class="line">LLM：John Doe 是一位著名的科学家。</span><br><span class="line"></span><br><span class="line">用户：他住在哪里？</span><br></pre></td></tr></table></figure>
+
+<p>查询”他住在哪里？”本身无法检索到所需信息，因为没有明确提及 John Doe，不清楚”他”指的是谁。</p>
+<p>使用 <code>CompressingQueryTransformer</code> 时，LLM 将阅读整个对话并将”他住在哪里？”转换为”John Doe 住在哪里？”。</p>
+<h4 id="ExpandingQueryTransformer"><a href="#ExpandingQueryTransformer" class="headerlink" title="ExpandingQueryTransformer"></a>ExpandingQueryTransformer</h4><p><code>ExpandingQueryTransformer</code> 使用 LLM 将给定 <code>Query</code> 扩展为多个 <code>Query</code>。这很有用，因为 LLM 可以用各种方式重新措辞和重新表述 <code>Query</code>，这将有助于检索更多相关内容。</p>
+<h3 id="Content（内容）"><a href="#Content（内容）" class="headerlink" title="Content（内容）"></a>Content（内容）</h3><p><code>Content</code> 代表与用户 <code>Query</code> 相关的内容。目前，它仅限于文本内容（即 <code>TextSegment</code>），但未来可能支持其他模态（如图像、音频、视频等）。</p>
+<h3 id="ContentRetriever（内容检索器）"><a href="#ContentRetriever（内容检索器）" class="headerlink" title="ContentRetriever（内容检索器）"></a>ContentRetriever（内容检索器）</h3><p><code>ContentRetriever</code> 使用给定的 <code>Query</code> 从底层数据源检索 <code>Content</code>。底层数据源几乎可以是任何东西：</p>
+<ul>
+<li>向量数据库（嵌入存储）</li>
+<li>关系型数据库</li>
+<li>搜索引擎</li>
+<li>图数据库</li>
+<li>Web 搜索</li>
+</ul>
+<p><code>ContentRetriever</code> 返回的 <code>Content</code> 列表按相关性从高到低排序。</p>
+<h4 id="EmbeddingStoreContentRetriever"><a href="#EmbeddingStoreContentRetriever" class="headerlink" title="EmbeddingStoreContentRetriever"></a>EmbeddingStoreContentRetriever</h4><p><code>EmbeddingStoreContentRetriever</code> 使用 <code>EmbeddingModel</code> 嵌入 <code>Query</code>，从 <code>EmbeddingStore</code> 中检索相关 <code>Content</code>。</p>
+<p>示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">ContentRetriever retriever = EmbeddingStoreContentRetriever.builder()</span><br><span class="line">    .embeddingStore(embeddingStore)</span><br><span class="line">    .embeddingModel(embeddingModel)</span><br><span class="line">    .maxResults(<span class="number">5</span>)</span><br><span class="line">    .minScore(<span class="number">0.5</span>)</span><br><span class="line">    .build();</span><br></pre></td></tr></table></figure>
+
+<h4 id="WebSearchContentRetriever"><a href="#WebSearchContentRetriever" class="headerlink" title="WebSearchContentRetriever"></a>WebSearchContentRetriever</h4><p><code>WebSearchContentRetriever</code> 使用 <code>WebSearchEngine</code> 从 Web 检索相关 <code>Content</code>。</p>
+<p>所有支持的 <code>WebSearchEngine</code> 集成可以在<a href="https://docs.langchain4j.dev/integrations/web-search" target="_blank" rel="noopener">此处</a>找到。</p>
+<p>示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ContentRetriever retriever = WebSearchContentRetriever.builder()</span><br><span class="line">    .webSearchEngine(webSearchEngine)</span><br><span class="line">    .maxResults(<span class="number">5</span>)</span><br><span class="line">    .build();</span><br></pre></td></tr></table></figure>
+
+<p>完整示例可以在<a href="https://docs.langchain4j.dev/tutorials/rag#web-search-example" target="_blank" rel="noopener">此处</a>找到。</p>
+<h4 id="SqlDatabaseContentRetriever"><a href="#SqlDatabaseContentRetriever" class="headerlink" title="SqlDatabaseContentRetriever"></a>SqlDatabaseContentRetriever</h4><p><code>SqlDatabaseContentRetriever</code> 是 <code>ContentRetriever</code> 的一个实验性实现，可以在 <code>langchain4j-experimental-sql</code> 模块中找到。</p>
+<p>它使用 <code>DataSource</code> 和 LLM 为给定的自然语言 <code>Query</code> 生成并执行 SQL 查询。</p>
+<p>有关更多信息，请参阅 <code>SqlDatabaseContentRetriever</code> 的 javadoc。</p>
+<h4 id="AzureAiSearchContentRetriever"><a href="#AzureAiSearchContentRetriever" class="headerlink" title="AzureAiSearchContentRetriever"></a>AzureAiSearchContentRetriever</h4><p><code>AzureAiSearchContentRetriever</code> 是与 Azure AI Search 的集成。它支持全文、向量和混合搜索，以及重新排序。它可以在 <code>langchain4j-azure-ai-search</code> 模块中找到。请参阅 <a href="https://docs.langchain4j.dev/tutorials/rag#azure-ai-search" target="_blank" rel="noopener">AzureAiSearchContentRetriever Javadoc</a> 以获取更多信息。</p>
+<h4 id="Neo4jContentRetriever"><a href="#Neo4jContentRetriever" class="headerlink" title="Neo4jContentRetriever"></a>Neo4jContentRetriever</h4><p><code>Neo4jContentRetriever</code> 是与 Neo4j 图数据库的集成。它将自然语言查询转换为 Neo4j Cypher 查询，并通过在 Neo4j 中运行这些查询来检索相关信息。它可以在 <code>langchain4j-community-neo4j-retriever</code> 模块中找到。</p>
+<h4 id="ElasticsearchContentRetriever"><a href="#ElasticsearchContentRetriever" class="headerlink" title="ElasticsearchContentRetriever"></a>ElasticsearchContentRetriever</h4><p><code>ElasticsearchContentRetriever</code> 是与 Elasticsearch 的集成。它支持全文、向量和混合搜索。它可以在 <code>langchain4j-elasticsearch</code> 模块中找到。请参阅 <a href="https://docs.langchain4j.dev/tutorials/rag#elasticsearch" target="_blank" rel="noopener">ElasticsearchContentRetriever Javadoc</a> 以获取更多信息。</p>
+<h3 id="QueryRouter（查询路由器）"><a href="#QueryRouter（查询路由器）" class="headerlink" title="QueryRouter（查询路由器）"></a>QueryRouter（查询路由器）</h3><p><code>QueryRouter</code> 负责将 <code>Query</code> 路由到适当的 <code>ContentRetriever</code>。</p>
+<h4 id="DefaultQueryRouter"><a href="#DefaultQueryRouter" class="headerlink" title="DefaultQueryRouter"></a>DefaultQueryRouter</h4><p><code>DefaultQueryRouter</code> 是 <code>DefaultRetrievalAugmentor</code> 中使用的默认实现。它将每个 <code>Query</code> 路由到所有配置的 <code>ContentRetriever</code>。</p>
+<h4 id="LanguageModelQueryRouter"><a href="#LanguageModelQueryRouter" class="headerlink" title="LanguageModelQueryRouter"></a>LanguageModelQueryRouter</h4><p><code>LanguageModelQueryRouter</code> 使用 LLM 来决定将给定 <code>Query</code> 路由到哪里。</p>
+<h3 id="ContentAggregator（内容聚合器）"><a href="#ContentAggregator（内容聚合器）" class="headerlink" title="ContentAggregator（内容聚合器）"></a>ContentAggregator（内容聚合器）</h3><p><code>ContentAggregator</code> 负责聚合来自以下来源的多个排序的 <code>Content</code> 列表：</p>
+<ul>
+<li>多个 <code>ContentRetriever</code> 返回的结果</li>
+<li>单个 <code>ContentRetriever</code> 返回的多个结果</li>
+</ul>
+<h4 id="DefaultContentAggregator"><a href="#DefaultContentAggregator" class="headerlink" title="DefaultContentAggregator"></a>DefaultContentAggregator</h4><p><code>DefaultContentAggregator</code> 是 <code>ContentAggregator</code> 的默认实现，它执行两阶段互惠排名融合（RRF）。请参阅 <a href="https://docs.langchain4j.dev/tutorials/rag#default-content-aggregator" target="_blank" rel="noopener">DefaultContentAggregator Javadoc</a> 了解更多详情。</p>
+<h4 id="ReRankingContentAggregator"><a href="#ReRankingContentAggregator" class="headerlink" title="ReRankingContentAggregator"></a>ReRankingContentAggregator</h4><p><code>ReRankingContentAggregator</code> 使用 <code>ScoringModel</code>（如 Cohere）执行重新排序。支持的评分（重新排序）模型完整列表可以在<a href="https://docs.langchain4j.dev/integrations/reranking-models" target="_blank" rel="noopener">此处</a>找到。请参阅 <a href="https://docs.langchain4j.dev/tutorials/rag#reranking-content-aggregator" target="_blank" rel="noopener">ReRankingContentAggregator Javadoc</a> 了解更多详情。</p>
+<h3 id="ContentInjector（内容注入器）"><a href="#ContentInjector（内容注入器）" class="headerlink" title="ContentInjector（内容注入器）"></a>ContentInjector（内容注入器）</h3><p><code>ContentInjector</code> 负责将 <code>ContentAggregator</code> 返回的 <code>Content</code> 注入到 <code>UserMessage</code> 中。</p>
+<h4 id="DefaultContentInjector"><a href="#DefaultContentInjector" class="headerlink" title="DefaultContentInjector"></a>DefaultContentInjector</h4><p><code>DefaultContentInjector</code> 是 <code>ContentInjector</code> 的默认实现，它只是将 <code>Content</code> 附加到 <code>UserMessage</code> 的末尾，前缀为”Answer using the following information:”。</p>
+<p>你可以通过以下 3 种方式自定义 <code>Content</code> 如何注入到 <code>UserMessage</code> 中：</p>
+<ol>
+<li>使用自定义的 <code>PromptTemplate</code></li>
+<li>实现自定义的 <code>ContentInjector</code></li>
+<li>使用 <code>DefaultContentInjector</code> 并配置选项</li>
+</ol>
+<p>请注意，<code>PromptTemplate</code> 必须包含 <code>contents</code> 变量。</p>
+<p><code>DefaultContentInjector</code> 还支持从检索到的 <code>Content.textSegment()</code> 注入 <code>Metadata</code> 条目：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">DefaultContentInjector injector = DefaultContentInjector.builder()</span><br><span class="line">    .metadataKeysToInclude(List.of(<span class="string">"source"</span>, <span class="string">"page"</span>))</span><br><span class="line">    .build();</span><br></pre></td></tr></table></figure>
+
+<p>在这种情况下，<code>TextSegment.text()</code> 将以”content: “前缀开头，而 <code>Metadata</code> 中的每个值将以键作为前缀。最终的 <code>UserMessage</code> 将如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Answer using the following information:</span><br><span class="line">content: 这是检索到的文档内容</span><br><span class="line">source: document.pdf</span><br><span class="line">page: 42</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="并发与性能"><a href="#并发与性能" class="headerlink" title="并发与性能"></a>并发与性能</h2><p>当只有一个 <code>Query</code> 和一个 <code>ContentRetriever</code> 时，<code>DefaultRetrievalAugmentor</code> 在同一线程中执行查询路由和内容检索。否则，将使用 <code>Executor</code> 来并行化处理。默认情况下，使用修改后的 <code>Executors.newCachedThreadPool()</code>（<code>keepAliveTime</code> 为 1 秒而不是 60 秒），但你可以在创建 <code>DefaultRetrievalAugmentor</code> 时提供自定义的 <code>Executor</code> 实例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">RetrievalAugmentor augmentor = DefaultRetrievalAugmentor.builder()</span><br><span class="line">    .queryRouter(queryRouter)</span><br><span class="line">    .contentAggregator(contentAggregator)</span><br><span class="line">    .contentInjector(contentInjector)</span><br><span class="line">    .executor(customExecutor)</span><br><span class="line">    .build();</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="访问检索到的来源"><a href="#访问检索到的来源" class="headerlink" title="访问检索到的来源"></a>访问检索到的来源</h2><p>当你使用 AI Services 时，如果希望访问来源（用于增强消息的检索到的 <code>Content</code>），可以通过将返回类型包装在 <code>Result</code> 类中轻松实现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Result&lt;String&gt; result = assistant.chat(userMessage);</span><br><span class="line">String answer = result.content();</span><br><span class="line">List&lt;Content&gt; sources = result.sources();</span><br></pre></td></tr></table></figure>
+
+<p>流式传输时，可以使用 <code>onRetrieved()</code> 方法指定一个 <code>Consumer&lt;List&lt;Content&gt;&gt;</code>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">assistant.chat(userMessage, <span class="keyword">new</span> StreamingResponseHandler() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onRetrieved</span><span class="params">(List&lt;Content&gt; contents)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 处理检索到的内容</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// ... 其他方法</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="聊天记忆中的内容存储"><a href="#聊天记忆中的内容存储" class="headerlink" title="聊天记忆中的内容存储"></a>聊天记忆中的内容存储</h2><p>当使用 <code>RetrievalAugmentor</code> 与 AI Services 时，你可以控制是将在聊天记忆中存储<strong>增强后的</strong>用户消息（注入了检索到的 <code>Content</code>）还是<strong>原始的</strong>用户消息。</p>
+<p>此行为使用 <code>AiServices</code> builder 上的 <code>storeRetrievedContentInChatMemory</code> 选项进行配置：</p>
+<table>
+<thead>
+<tr>
+<th>值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>true</code>（默认）</td>
+<td>将增强后的 <code>UserMessage</code>（原始查询 + 检索到的内容）存储在聊天记忆中。相同的增强消息也会发送给 LLM。</td>
+</tr>
+<tr>
+<td><code>false</code></td>
+<td>仅将原始 <code>UserMessage</code>（不含检索到的内容）存储在聊天记忆中。推理期间仍会将增强消息发送给 LLM。</td>
+</tr>
+</tbody></table>
+<p>仅存储原始用户消息在你希望保持聊天历史简洁并与用户的实际输入一致时非常有用，同时仍为 LLM 提供检索到的上下文以生成答案。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Assistant assistant = AiServices.builder(Assistant<span class="class">.<span class="keyword">class</span>)</span></span><br><span class="line"><span class="class">    .<span class="title">chatModel</span>(<span class="title">chatModel</span>)</span></span><br><span class="line"><span class="class">    .<span class="title">retrievalAugmentor</span>(<span class="title">retrievalAugmentor</span>)</span></span><br><span class="line"><span class="class">    .<span class="title">storeRetrievedContentInChatMemory</span>(<span class="title">false</span>)  // 仅存储原始用户消息</span></span><br><span class="line"><span class="class">    .<span class="title">build</span>()</span>;</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/langchain4j/" rel="tag"># langchain4j</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2026/07/12/langchain4j-Tools支持/" rel="next" title="langchain4j Tools支持">
+                  <i class="fa fa-chevron-left"></i> langchain4j Tools支持
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#RAG-流程"><span class="nav-number">1.</span> <span class="nav-text">RAG 流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#索引阶段"><span class="nav-number">1.1.</span> <span class="nav-text">索引阶段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#检索阶段"><span class="nav-number">1.2.</span> <span class="nav-text">检索阶段</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LangChain4j-的三种-RAG-方式"><span class="nav-number">2.</span> <span class="nav-text">LangChain4j 的三种 RAG 方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Easy-RAG"><span class="nav-number">3.</span> <span class="nav-text">Easy RAG</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Easy-RAG-示例"><span class="nav-number">3.1.</span> <span class="nav-text">Easy RAG 示例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RAG-核心-API"><span class="nav-number">4.</span> <span class="nav-text">RAG 核心 API</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Document（文档）"><span class="nav-number">4.1.</span> <span class="nav-text">Document（文档）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DocumentParser（文档解析器）"><span class="nav-number">4.2.</span> <span class="nav-text">DocumentParser（文档解析器）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DocumentTransformer（文档转换器）"><span class="nav-number">4.3.</span> <span class="nav-text">DocumentTransformer（文档转换器）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GraphTransformer（图转换器）"><span class="nav-number">4.4.</span> <span class="nav-text">GraphTransformer（图转换器）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DocumentSplitter（文档分割器）"><span class="nav-number">4.5.</span> <span class="nav-text">DocumentSplitter（文档分割器）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TextSegmentTransformer（文本片段转换器）"><span class="nav-number">4.6.</span> <span class="nav-text">TextSegmentTransformer（文本片段转换器）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Embedding（嵌入）"><span class="nav-number">4.7.</span> <span class="nav-text">Embedding（嵌入）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EmbeddingStore（嵌入存储）"><span class="nav-number">4.8.</span> <span class="nav-text">EmbeddingStore（嵌入存储）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EmbeddingSearchRequest（嵌入搜索请求）"><span class="nav-number">4.9.</span> <span class="nav-text">EmbeddingSearchRequest（嵌入搜索请求）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EmbeddingSearchResult（嵌入搜索结果）"><span class="nav-number">4.10.</span> <span class="nav-text">EmbeddingSearchResult（嵌入搜索结果）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EmbeddingStoreIngestor（嵌入存储摄取器）"><span class="nav-number">4.11.</span> <span class="nav-text">EmbeddingStoreIngestor（嵌入存储摄取器）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Naive-RAG"><span class="nav-number">5.</span> <span class="nav-text">Naive RAG</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Advanced-RAG"><span class="nav-number">6.</span> <span class="nav-text">Advanced RAG</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#RetrievalAugmentor（检索增强器）"><span class="nav-number">6.1.</span> <span class="nav-text">RetrievalAugmentor（检索增强器）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Query（查询）"><span class="nav-number">6.2.</span> <span class="nav-text">Query（查询）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#QueryTransformer（查询转换器）"><span class="nav-number">6.3.</span> <span class="nav-text">QueryTransformer（查询转换器）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#DefaultQueryTransformer"><span class="nav-number">6.3.1.</span> <span class="nav-text">DefaultQueryTransformer</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CompressingQueryTransformer"><span class="nav-number">6.3.2.</span> <span class="nav-text">CompressingQueryTransformer</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ExpandingQueryTransformer"><span class="nav-number">6.3.3.</span> <span class="nav-text">ExpandingQueryTransformer</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Content（内容）"><span class="nav-number">6.4.</span> <span class="nav-text">Content（内容）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ContentRetriever（内容检索器）"><span class="nav-number">6.5.</span> <span class="nav-text">ContentRetriever（内容检索器）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#EmbeddingStoreContentRetriever"><span class="nav-number">6.5.1.</span> <span class="nav-text">EmbeddingStoreContentRetriever</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#WebSearchContentRetriever"><span class="nav-number">6.5.2.</span> <span class="nav-text">WebSearchContentRetriever</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SqlDatabaseContentRetriever"><span class="nav-number">6.5.3.</span> <span class="nav-text">SqlDatabaseContentRetriever</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AzureAiSearchContentRetriever"><span class="nav-number">6.5.4.</span> <span class="nav-text">AzureAiSearchContentRetriever</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Neo4jContentRetriever"><span class="nav-number">6.5.5.</span> <span class="nav-text">Neo4jContentRetriever</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ElasticsearchContentRetriever"><span class="nav-number">6.5.6.</span> <span class="nav-text">ElasticsearchContentRetriever</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#QueryRouter（查询路由器）"><span class="nav-number">6.6.</span> <span class="nav-text">QueryRouter（查询路由器）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#DefaultQueryRouter"><span class="nav-number">6.6.1.</span> <span class="nav-text">DefaultQueryRouter</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#LanguageModelQueryRouter"><span class="nav-number">6.6.2.</span> <span class="nav-text">LanguageModelQueryRouter</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ContentAggregator（内容聚合器）"><span class="nav-number">6.7.</span> <span class="nav-text">ContentAggregator（内容聚合器）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#DefaultContentAggregator"><span class="nav-number">6.7.1.</span> <span class="nav-text">DefaultContentAggregator</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ReRankingContentAggregator"><span class="nav-number">6.7.2.</span> <span class="nav-text">ReRankingContentAggregator</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ContentInjector（内容注入器）"><span class="nav-number">6.8.</span> <span class="nav-text">ContentInjector（内容注入器）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#DefaultContentInjector"><span class="nav-number">6.8.1.</span> <span class="nav-text">DefaultContentInjector</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#并发与性能"><span class="nav-number">7.</span> <span class="nav-text">并发与性能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#访问检索到的来源"><span class="nav-number">8.</span> <span class="nav-text">访问检索到的来源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#聊天记忆中的内容存储"><span class="nav-number">9.</span> <span class="nav-text">聊天记忆中的内容存储</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar.jpg"
+      alt="蝉">
+  <p class="site-author-name" itemprop="name">蝉</p>
+  <div class="site-description" itemprop="description">Another way to laugh !</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">132</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">78</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/lazycece" title="GitHub &rarr; https://github.com/lazycece" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:lazycece@qq.com" title="E-Mail &rarr; mailto:lazycece@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://blog.csdn.net/qq_28851503" title="CSDN &rarr; https://blog.csdn.net/qq_28851503" rel="noopener" target="_blank"><i class="fa fa-fw fa-vk"></i>CSDN</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://leetcode-cn.com/u/lazycece" title="LeetCode &rarr; https://leetcode-cn.com/u/lazycece" rel="noopener" target="_blank"><i class="fa fa-fw fa-vk"></i>LeetCode</a>
+      </span>
+    
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2026</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">蝉</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script><script src="/js/bookmark.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

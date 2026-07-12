@@ -222,6 +222,104 @@
   
   
   <div class="post-block home">
+    <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2026/07/12/langchain4j-RAG支持/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="蝉">
+      <meta itemprop="description" content="Another way to laugh !">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="W  pit">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+            
+            <a href="/2026/07/12/langchain4j-RAG支持/" class="post-title-link" itemprop="url">langchain4j RAG支持</a>
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2026-07-12 18:21:28 / Modified: 18:40:15" itemprop="dateCreated datePublished" datetime="2026-07-12T18:21:28+08:00">2026-07-12</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/langchain4j/" itemprop="url" rel="index"><span itemprop="name">langchain4j</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="RAG-流程"><a href="#RAG-流程" class="headerlink" title="RAG 流程"></a>RAG 流程</h2><p>RAG 流程分为两个截然不同的阶段：<strong>索引阶段</strong>和<strong>检索阶段</strong>，LangChain4j 为两个阶段都提供了工具支持。</p>
+<h3 id="索引阶段"><a href="#索引阶段" class="headerlink" title="索引阶段"></a>索引阶段</h3><p>在索引阶段，文档会被预处理，以便在检索阶段实现高效搜索。这个过程会根据所使用的信息检索方法而有所不同。对于向量搜索，通常包括：清洗文档、用额外数据和元数据丰富文档、将文档分割成更小的片段（即分块）、对这些片段进行嵌入编码，最后将它们存储到嵌入存储（即向量数据库）中。</p>
+<p>索引阶段通常发生在<strong>离线</strong>状态下，这意味着不需要终端用户等待其完成。例如，可以通过 cron 定时任务在周末每周一次重新索引公司内部文档。负责索引的代码也可以是一个单独的应用程序，仅处理索引任务。然而，在某些场景下，终端用户可能希望上传自定义文档以使其可被 LLM 访问。在这种情况下，索引应在<strong>在线</strong>状态下执行，并作为主应用程序的一部分。</p>
+<p>以下是索引阶段的简化示意图：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">文档 → 清洗/丰富 → 分块 → 嵌入 → 嵌入存储（向量数据库）</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+          
+            <div class="post-button">
+              <a class="btn" href="/2026/07/12/langchain4j-RAG支持/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-eof"></div>
+        
+      </footer>
+  </div>
+  
+  
+  
+  </article>
+
+    
+        <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block home">
     <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2026/07/12/langchain4j-Tools支持/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1110,102 +1208,6 @@
   </article>
 
     
-        <article itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block home">
-    <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2026/07/02/SpringAI — MCP/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="蝉">
-      <meta itemprop="description" content="Another way to laugh !">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="W  pit">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-            
-            <a href="/2026/07/02/SpringAI — MCP/" class="post-title-link" itemprop="url">SpringAI — MCP</a>
-          
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              
-                
-              
-
-              <time title="Created: 2026-07-02 14:38:02 / Modified: 14:46:06" itemprop="dateCreated datePublished" datetime="2026-07-02T14:38:02+08:00">2026-07-02</time>
-            </span>
-          
-            
-
-            
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/springai/" itemprop="url" rel="index"><span itemprop="name">springai</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="什么是模型上下文协议-MCP-？"><a href="#什么是模型上下文协议-MCP-？" class="headerlink" title="什么是模型上下文协议 (MCP)？"></a>什么是模型上下文协议 (MCP)？</h2><p><strong>模型上下文协议（Model Context Protocol，MCP）</strong> 是一种标准化协议，使 AI 模型能够以结构化的方式与外部工具和资源进行交互。可以将其视为 AI 模型与现实世界之间的桥梁——允许模型通过一致的接口访问数据库、API、文件系统和其他外部服务。它支持多种传输机制，以适应不同环境下的灵活性需求。</p>
-<p><strong>MCP Java SDK</strong> 提供了模型上下文协议的 Java 实现，支持通过同步和异步通信模式与 AI 模型及工具进行标准化交互。</p>
-<p>Spring AI 通过专用的 Boot Starters 和 MCP Java 注解，全面拥抱 MCP，使得构建能够无缝连接外部系统的复杂 AI 驱动应用程序变得前所未有的简单。这意味着 Spring 开发者可以参与 MCP 生态系统的两端——构建消费 MCP 服务器的 AI 应用程序，以及创建向更广泛的 AI 社区暴露基于 Spring 的服务的 MCP 服务器。使用 <a href="https://start.spring.io/" target="_blank" rel="noopener">Spring Initializer</a> 快速启动带有 MCP 支持的 AI 应用程序。</p>
-          <!--noindex-->
-          
-            <div class="post-button">
-              <a class="btn" href="/2026/07/02/SpringAI — MCP/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-          <div class="post-eof"></div>
-        
-      </footer>
-  </div>
-  
-  
-  
-  </article>
-
-    
   </div>
 
   
@@ -1259,7 +1261,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">131</span>
+          <span class="site-state-item-count">132</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
