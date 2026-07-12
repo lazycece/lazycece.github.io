@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":true,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="简介LangGraph4j 是一个用于在 Java 中构建有状态的、多智能体（Multi-Agent）应用程序的库，与大型语言模型（LLM）深度集成。它灵感来源于 Python 的 LangGraph 库，旨在与 LangChain4j 和 Spring AI 等主流 Java LLM 框架无缝协作。 从本质上讲，LangGraph4j 允许你定义循环图（Cyclical Graphs），让不同的">
+<meta name="keywords" content="langgraph4j">
+<meta property="og:type" content="article">
+<meta property="og:title" content="langgraph4j 介绍">
+<meta property="og:url" content="https://lazycece.github.io/2026/07/12/langgraph4j-介绍/index.html">
+<meta property="og:site_name" content="W  pit">
+<meta property="og:description" content="简介LangGraph4j 是一个用于在 Java 中构建有状态的、多智能体（Multi-Agent）应用程序的库，与大型语言模型（LLM）深度集成。它灵感来源于 Python 的 LangGraph 库，旨在与 LangChain4j 和 Spring AI 等主流 Java LLM 框架无缝协作。 从本质上讲，LangGraph4j 允许你定义循环图（Cyclical Graphs），让不同的">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2026-07-12T15:15:15.724Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="langgraph4j 介绍">
+<meta name="twitter:description" content="简介LangGraph4j 是一个用于在 Java 中构建有状态的、多智能体（Multi-Agent）应用程序的库，与大型语言模型（LLM）深度集成。它灵感来源于 Python 的 LangGraph 库，旨在与 LangChain4j 和 Spring AI 等主流 Java LLM 框架无缝协作。 从本质上讲，LangGraph4j 允许你定义循环图（Cyclical Graphs），让不同的">
+  <link rel="canonical" href="https://lazycece.github.io/2026/07/12/langgraph4j-介绍/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>langgraph4j 介绍 | W  pit</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">W  pit</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">A thousand miles begins with a single step .</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a class="book-mark-link book-mark-link-fixed" href="#"></a>
+
+  <a href="https://github.com/lazycece" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2026/07/12/langgraph4j-介绍/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="蝉">
+      <meta itemprop="description" content="Another way to laugh !">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="W  pit">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">langgraph4j 介绍
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2026-07-12 23:09:57 / Modified: 23:15:15" itemprop="dateCreated datePublished" datetime="2026-07-12T23:09:57+08:00">2026-07-12</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/langgraph4j/" itemprop="url" rel="index"><span itemprop="name">langgraph4j</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>LangGraph4j 是一个用于在 Java 中构建<strong>有状态的、多智能体（Multi-Agent）应用程序</strong>的库，与大型语言模型（LLM）深度集成。它灵感来源于 Python 的 LangGraph 库，旨在与 LangChain4j 和 Spring AI 等主流 Java LLM 框架无缝协作。</p>
+<p>从本质上讲，LangGraph4j 允许你定义<strong>循环图（Cyclical Graphs）</strong>，让不同的组件（智能体、工具或自定义逻辑）以有状态的方式进行交互。这对于构建需要记忆、上下文以及不同”智能体”之间协作或任务交接的复杂应用程序至关重要。</p>
+<a id="more"></a>
+
+<blockquote>
+<p>本文参考自官网：<a href="https://langgraph4j.github.io/langgraph4j/main/getting-started/" target="_blank" rel="noopener">https://langgraph4j.github.io/langgraph4j/main/getting-started/</a></p>
+</blockquote>
+<hr>
+<h2 id="核心特性与优势"><a href="#核心特性与优势" class="headerlink" title="核心特性与优势"></a>核心特性与优势</h2><p>LangGraph4j 提供了以下特性和优势：</p>
+<ul>
+<li><strong>有状态执行（Stateful Execution）</strong>：在图的节点之间管理和更新共享状态，实现记忆和上下文感知。</li>
+<li><strong>循环图（Cyclical Graphs）</strong>：与传统的有向无环图（DAG）不同，LangGraph4j 支持循环，这对于需要控制流回退的智能体架构至关重要（例如智能体重试任务或请求澄清）。</li>
+<li><strong>显式控制流（Explicit Control Flow）</strong>：明确定义图中节点之间的路径和转换条件。</li>
+<li><strong>模块化（Modularity）</strong>：使用更小、可复用的组件（节点）构建复杂系统。</li>
+<li><strong>灵活性（Flexibility）</strong>：可与各种 LLM 提供商和自定义 Java 逻辑集成。</li>
+<li><strong>可观测性与调试（Observability &amp; Debugging）</strong>：<ul>
+<li><strong>检查点（Checkpoints）</strong>：在任意时刻保存图的状态，并在后续进行回放或检查。这对于调试和理解复杂交互非常宝贵。</li>
+<li><strong>图可视化（Graph Visualization）</strong>：使用 PlantUML 或 Mermaid 生成图的可视化表示，以理解其结构。</li>
+</ul>
+</li>
+<li><strong>异步与流式支持（Asynchronous &amp; Streaming Support）</strong>：使用非阻塞操作和 LLM 流式输出构建响应式应用程序。</li>
+<li><strong>Playground &amp; Studio</strong>：一个 Web UI，用于可视化检查、运行和调试你的图。</li>
+</ul>
+<hr>
+<h2 id="核心概念详解"><a href="#核心概念详解" class="headerlink" title="核心概念详解"></a>核心概念详解</h2><p>有效使用 LangGraph4j 的关键在于理解以下概念：</p>
+<h3 id="StateGraph-lt-S-extends-AgentState-gt"><a href="#StateGraph-lt-S-extends-AgentState-gt" class="headerlink" title="StateGraph&lt;S extends AgentState&gt;"></a>StateGraph&lt;S extends AgentState&gt;</h3><p><code>StateGraph</code> 是你用来定义应用程序结构的<strong>主要类</strong>。你可以在其中添加节点和边来创建图。它由 <code>AgentState</code> 参数化。</p>
+<h3 id="AgentState"><a href="#AgentState" class="headerlink" title="AgentState"></a>AgentState</h3><p><code>AgentState</code>（或其子类）代表图的<strong>共享状态</strong>。它本质上是一个 <code>Map&lt;String, Object&gt;</code>，在节点之间传递。每个节点都可以读取此状态并返回对其的更新。</p>
+<ul>
+<li><strong>Schema（模式）</strong>：状态的结构由一个”schema”定义，即一个 <code>Map&lt;String, Channel.Reducer&gt;</code>。映射中的每个键对应状态中的一个属性。</li>
+<li><strong>Channel.Reducer（归约器）</strong>：Reducer 定义了如何处���状态属性的更新。例如，新值可能会覆盖旧值，也可能会被添加到现有值的列表中。</li>
+<li><strong>Channel.Default&lt;T&gt;</strong>：为状态属性提供默认值（如果尚未设置）。</li>
+<li><strong>Channel.Appender&lt;T&gt; / MessageChannel.Appender&lt;M&gt;</strong>：一种常见的 Reducer 类型，将新值追加到与状态属性关联的列表中。这对于累积消息、工具调用或其他数据序列非常有用。<code>MessageChannel.Appender</code> 专为聊天消息设计，还支持按 ID 删除消息。</li>
+</ul>
+<h3 id="节点（Nodes）"><a href="#节点（Nodes）" class="headerlink" title="节点（Nodes）"></a>节点（Nodes）</h3><p>节点是执行操作的图的基本构建块。节点通常是一个函数（或实现 <code>NodeAction&lt;S&gt;</code> 或 <code>AsyncNodeAction&lt;S&gt;</code> 的类），它：</p>
+<ol>
+<li>接收当前的 <code>AgentState</code> 作为输入。</li>
+<li>执行一些计算（例如调用 LLM、执行工具、运行自定义业务逻辑）。</li>
+<li>返回一个 <code>Map&lt;String, Object&gt;</code> 表示对状态的更新。然后根据 schema 的 Reducer 将这些更新应用到 <code>AgentState</code> 中。</li>
+</ol>
+<p>节点可以是同步的，也可以是异步的（<code>CompletableFuture</code>）。</p>
+<h3 id="边（Edges）"><a href="#边（Edges）" class="headerlink" title="边（Edges）"></a>边（Edges）</h3><p>边定义了节点之间的控制流。</p>
+<ul>
+<li><strong>普通边（Normal Edges）</strong>：从一个节点到另一个节点的无条件转换。节点 A 完成后，控制流始终传递给节点 B。使用 <code>addEdge(sourceNodeName, destinationNodeName)</code> 定义。</li>
+<li><strong>条件边（Conditional Edges）</strong>：下一个节点根据当前 <code>AgentState</code> 动态确定。源节点完成后，会执行一个 <code>EdgeAction&lt;S&gt;</code>（或 <code>AsyncEdgeAction&lt;S&gt;</code>）函数。该函数接收当前状态并返回要执行的下一个节点的名称。这允许分支逻辑（例如，如果智能体决定使用工具，则转到”execute_tool”节点；否则转到”respond_to_user”节点）。使用 <code>addConditionalEdges(...)</code> 定义条件边。</li>
+<li><strong>入口点（Entry Points）</strong>：你还可以使用 <code>addConditionalEntryPoint(...)</code> 定义图的条件入口点。</li>
+</ul>
+<h3 id="编译（Compilation）"><a href="#编译（Compilation）" class="headerlink" title="编译（Compilation）"></a>编译（Compilation）</h3><p>在 <code>StateGraph</code> 中定义完所有节点和边后，你可以通过 <code>compile()</code> 将其编译为 <code>CompiledGraph&lt;S extends AgentState&gt;</code>。这个编译后的图是你的逻辑的<strong>不可变、可运行</strong>的表示。编译过程会验证图的结构（例如检查是否有孤立节点）。</p>
+<h3 id="检查点（Checkpoints-持久化）"><a href="#检查点（Checkpoints-持久化）" class="headerlink" title="检查点（Checkpoints / 持久化）"></a>检查点（Checkpoints / 持久化）</h3><p>LangGraph4j 允许你在任意步骤保存图的<strong>状态（Checkpoint）</strong>。这对于以下场景非常有用：</p>
+<ul>
+<li><strong>调试</strong>：检查各个时间点的状态以了解发生了什么。</li>
+<li><strong>恢复</strong>：将图恢复到先前的状态并继续执行。</li>
+<li><strong>长时间运行的进程</strong>：持久化长时间运行的智能体交互的状态。</li>
+</ul>
+<p>通常你会使用 <code>CheckpointSaver</code> 的实现（例如用于内存存储的 <code>MemorySaver</code>，或自己实现持久化存储）。</p>
+<hr>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>要在项目中使用 LangGraph4j，你需要将其添加为依赖。</p>
+<h3 id="Maven"><a href="#Maven" class="headerlink" title="Maven"></a>Maven</h3><p>确保你使用的是 <strong>Java 17 或更高版本</strong>。</p>
+<p><strong>最新稳定版本（推荐）</strong>：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">langgraph4j.version</span>&gt;</span>1.8.20<span class="tag">&lt;/<span class="name">langgraph4j.version</span>&gt;</span> <span class="comment">&lt;!-- 请检查实际最新版本 --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 可选：添加 Bill of Materials (BOM) 来管理 langgraph4j 模块版本 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependencyManagement</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.bsc.langgraph4j<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>langgraph4j-bom<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;langgraph4j.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">type</span>&gt;</span>pom<span class="tag">&lt;/<span class="name">type</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">scope</span>&gt;</span>import<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencyManagement</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.bsc.langgraph4j<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>langgraph4j-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 根据需要添加其他 langgraph4j 模块，例如 langgraph4j-langchain4j --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>💡 请始终在 Maven Central 仓库中检查最新版本号。</p>
+</blockquote>
+<p><strong>开发快照版本</strong>：</p>
+<p>如果你想使用最新的未发布功能，可以使用快照版本：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.bsc.langgraph4j<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>langgraph4j-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.8.20<span class="tag">&lt;/<span class="name">version</span>&gt;</span> <span class="comment">&lt;!-- 或当前的快照版本 --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>你可能需要配置 <code>settings.xml</code> 或 <code>pom.xml</code> 以包含 Sonatype OSS 快照仓库：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">repositories</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">repository</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">id</span>&gt;</span>sonatype-oss-snapshots<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">url</span>&gt;</span>https://central.sonatype.com/repository/maven-snapshots<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">snapshots</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">enabled</span>&gt;</span>true<span class="tag">&lt;/<span class="name">enabled</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">snapshots</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">repository</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">repositories</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="你的第一个图-—-简单示例"><a href="#你的第一个图-—-简单示例" class="headerlink" title="你的第一个图 — 简单示例"></a>你的第一个图 — 简单示例</h2><p>让我们创建一个非常简单的图，它包含两个节点：<code>greeter</code> 和 <code>responder</code>。</p>
+<ul>
+<li><code>greeter</code> 节点将向状态中添加一个问候消息。</li>
+<li><code>responder</code> 节点将根据问候语添加一条响应消息。</li>
+</ul>
+<h3 id="1-定义状态"><a href="#1-定义状态" class="headerlink" title="1. 定义状态"></a>1. 定义状态</h3><p>我们的状态将保存一个消息列表。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.bsc.langgraph4j.state.AgentState;</span><br><span class="line"><span class="keyword">import</span> org.bsc.langgraph4j.state.Channels;</span><br><span class="line"><span class="keyword">import</span> org.bsc.langgraph4j.state.Channel;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"><span class="keyword">import</span> java.util.Optional;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 为我们的图定义状态</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SimpleState</span> <span class="keyword">extends</span> <span class="title">AgentState</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String MESSAGES_KEY = <span class="string">"messages"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 定义状态的 schema</span></span><br><span class="line">    <span class="comment">// MESSAGES_KEY 将保存一个字符串列表，新消息会被追加到列表中</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Map&lt;String, Channel&lt;?&gt;&gt; SCHEMA = Map.of(</span><br><span class="line">        MESSAGES_KEY, Channels.appender(ArrayList::<span class="keyword">new</span>)</span><br><span class="line">    );</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">SimpleState</span><span class="params">(Map&lt;String, Object&gt; initData)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(initData);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;String&gt; <span class="title">messages</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.&lt;List&lt;String&gt;&gt;value(<span class="string">"messages"</span>)</span><br><span class="line">            .orElse(List.of());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-定义节点"><a href="#2-定义节点" class="headerlink" title="2. 定义节点"></a>2. 定义节点</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.bsc.langgraph4j.action.NodeAction;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 添加问候语的节点</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">GreeterNode</span> <span class="keyword">implements</span> <span class="title">NodeAction</span>&lt;<span class="title">SimpleState</span>&gt; </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Map&lt;String, Object&gt; <span class="title">apply</span><span class="params">(SimpleState state)</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"GreeterNode 正在执行。当前消息: "</span> + state.messages());</span><br><span class="line">        <span class="keyword">return</span> Map.of(SimpleState.MESSAGES_KEY, <span class="string">"Hello from GreeterNode!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 添加响应的节点</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ResponderNode</span> <span class="keyword">implements</span> <span class="title">NodeAction</span>&lt;<span class="title">SimpleState</span>&gt; </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Map&lt;String, Object&gt; <span class="title">apply</span><span class="params">(SimpleState state)</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"ResponderNode 正在执行。当前消息: "</span> + state.messages());</span><br><span class="line">        List&lt;String&gt; currentMessages = state.messages();</span><br><span class="line">        <span class="keyword">if</span> (currentMessages.contains(<span class="string">"Hello from GreeterNode!"</span>)) &#123;</span><br><span class="line">            <span class="keyword">return</span> Map.of(SimpleState.MESSAGES_KEY, <span class="string">"Acknowledged greeting!"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> Map.of(SimpleState.MESSAGES_KEY, <span class="string">"No greeting found."</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-定义并编译图"><a href="#3-定义并编译图" class="headerlink" title="3. 定义并编译图"></a>3. 定义并编译图</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.bsc.langgraph4j.StateGraph;</span><br><span class="line"><span class="keyword">import</span> org.bsc.langgraph4j.GraphStateException;</span><br><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> org.bsc.langgraph4j.action.AsyncNodeAction.node_async;</span><br><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> org.bsc.langgraph4j.StateGraph.START;</span><br><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> org.bsc.langgraph4j.StateGraph.END;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SimpleGraphApp</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> GraphStateException </span>&#123;</span><br><span class="line">        <span class="comment">// 初始化节点</span></span><br><span class="line">        GreeterNode greeterNode = <span class="keyword">new</span> GreeterNode();</span><br><span class="line">        ResponderNode responderNode = <span class="keyword">new</span> ResponderNode();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 定义图结构</span></span><br><span class="line">        <span class="keyword">var</span> stateGraph = <span class="keyword">new</span> StateGraph&lt;&gt;(SimpleState.SCHEMA, initData -&gt; <span class="keyword">new</span> SimpleState(initData))</span><br><span class="line">            .addNode(<span class="string">"greeter"</span>, node_async(greeterNode))</span><br><span class="line">            .addNode(<span class="string">"responder"</span>, node_async(responderNode))</span><br><span class="line">            <span class="comment">// 定义边</span></span><br><span class="line">            .addEdge(START, <span class="string">"greeter"</span>)       <span class="comment">// 从 greeter 节点开始</span></span><br><span class="line">            .addEdge(<span class="string">"greeter"</span>, <span class="string">"responder"</span>)  <span class="comment">// greeter → responder</span></span><br><span class="line">            .addEdge(<span class="string">"responder"</span>, END)        <span class="comment">// responder 之后结束</span></span><br><span class="line">        ;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 编译图</span></span><br><span class="line">        <span class="keyword">var</span> compiledGraph = stateGraph.compile();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 运行图</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">var</span> item : compiledGraph.stream(</span><br><span class="line">                Map.of(SimpleState.MESSAGES_KEY, <span class="string">"Let's begin!"</span>))) &#123;</span><br><span class="line">            System.out.println(item);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h3><ul>
+<li>我们定义了 <code>SimpleState</code>，其中 <code>MESSAGES_KEY</code> 使用 <code>AppenderChannel</code> 来累积字符串。</li>
+<li><code>GreeterNode</code> 添加一条”Hello”消息。</li>
+<li><code>ResponderNode</code> 检查问候语并添加确认消息。</li>
+<li><code>StateGraph</code> 定义了节点，边指定了流程：<code>START → greeter → responder → END</code>。</li>
+<li><code>stateGraph.compile()</code> 创建可运行的 <code>CompiledGraph</code>。</li>
+<li><code>compiledGraph.stream(initialState)</code> 执行图。我们遍历流以获取最终状态。流中的每一项代表节点执行后的状态。</li>
+</ul>
+<p>这个示例演示了基本工作流程：<strong>定义状态 → 定义节点 → 用边连接 → 编译 → 运行</strong>。</p>
+<hr>
+<h2 id="运行你的图"><a href="#运行你的图" class="headerlink" title="运行你的图"></a>运行你的图</h2><p>如示例所示，通常使用以下执行方法之一来运行编译后的图：</p>
+<ul>
+<li><strong><code>stream(S initialState, RunnableConfig config)</code></strong>：执行图并返回一个 <code>AsyncGenerator&lt;S&gt;</code>。每个产出项是节点完成后的状态 <code>S</code>。这对于观察每个步骤的状态或流式传输部分结果非常有用。</li>
+<li><strong><code>invoke(S initialState, RunnableConfig config)</code></strong>：执行图并返回一个 <code>CompletableFuture&lt;S&gt;</code>，在图到达 <code>END</code> 节点后以最终状态完成。</li>
+</ul>
+<p><code>RunnableConfig</code> 可用于传递运行时配置。</p>
+<hr>
+<h2 id="Studio-🤩-—-可视化运行你的图"><a href="#Studio-🤩-—-可视化运行你的图" class="headerlink" title="Studio 🤩 — 可视化运行你的图"></a>Studio 🤩 — 可视化运行你的图</h2><p>LangGraph4j Studio 是一个<strong>可嵌入的 Web 应用程序</strong>，用于可视化和实验你的图：</p>
+<ul>
+<li><strong>实时监控</strong>：查看节点执行状态和状态变更过程</li>
+<li><strong>断点调试</strong>：在任意节点设置断点，检查中间状态</li>
+<li><strong>流程回放</strong>：通过时间旅行功能回溯任意执行步骤</li>
+</ul>
+<p>前往 <a href="https://langgraph4j.github.io/langgraph4j/main/studio/" target="_blank" rel="noopener">Studio</a> 探索 LangGraph4j Studio。</p>
+<hr>
+<h2 id="内置集成"><a href="#内置集成" class="headerlink" title="内置集成"></a>内置集成</h2><h3 id="LangChain4j"><a href="#LangChain4j" class="headerlink" title="LangChain4j"></a>LangChain4j</h3><p>作为 LangChain4j 集成的默认用例，我们使用 LangGraph4j 实现了 <code>AgentExecutor</code>（也称为 ReACT Agent）。在项目的模块中，你可以找到完整的工作代码和测试。欢迎参考使用。</p>
+<h4 id="定义工具"><a href="#定义工具" class="headerlink" title="定义工具"></a>定义工具</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestTool</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Tool</span>(<span class="string">"tool for test AI agent executor"</span>)</span><br><span class="line">    <span class="function">String <span class="title">execTest</span><span class="params">(@P(<span class="string">"test message"</span>)</span> String message) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> String.format(<span class="string">"test tool ('%s') executed with result 'OK'"</span>, message);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Tool</span>(<span class="string">"return current number of system thread allocated by application"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">threadCount</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> Thread.getAllStackTraces().size();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="运行智能体"><a href="#运行智能体" class="headerlink" title="运行智能体"></a>运行智能体</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> model = OllamaChatModel.builder()</span><br><span class="line">    .modelName(<span class="string">"qwen2.5:7b"</span>)</span><br><span class="line">    .baseUrl(<span class="string">"http://localhost:11434"</span>)</span><br><span class="line">    .supportedCapabilities(Capability.RESPONSE_FORMAT_JSON_SCHEMA)</span><br><span class="line">    .logRequests(<span class="keyword">true</span>)</span><br><span class="line">    .logResponses(<span class="keyword">true</span>)</span><br><span class="line">    .maxRetries(<span class="number">2</span>)</span><br><span class="line">    .temperature(<span class="number">0.0</span>)</span><br><span class="line">    .build();</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> agent = AgentExecutor.builder()</span><br><span class="line">    .chatModel(model)</span><br><span class="line">    .toolsFromObject(<span class="keyword">new</span> TestTool())</span><br><span class="line">    .build()</span><br><span class="line">    .compile();</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> item : agent.stream(Map.of(<span class="string">"messages"</span>,</span><br><span class="line">        <span class="string">"perform test twice and return number of current active threads"</span>))) &#123;</span><br><span class="line">    System.out.println(item);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Spring-AI"><a href="#Spring-AI" class="headerlink" title="Spring AI"></a>Spring AI</h3><p>作为 Spring AI 集成的默认用例，我们同样使用 LangGraph4j 实现了 <code>AgentExecutor</code>（ReACT Agent）。</p>
+<h4 id="定义工具-1"><a href="#定义工具-1" class="headerlink" title="定义工具"></a>定义工具</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestTool</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Tool</span>(description = <span class="string">"tool for test AI agent executor"</span>)</span><br><span class="line">    <span class="function">String <span class="title">execTest</span><span class="params">(@ToolParam(description = <span class="string">"test message"</span>)</span> String message) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> String.format(<span class="string">"test tool ('%s') executed with result 'OK'"</span>, message);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Tool</span>(description = <span class="string">"return current number of system thread allocated by application"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">threadCount</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> Thread.getAllStackTraces().size();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="运行智能体-1"><a href="#运行智能体-1" class="headerlink" title="运行智能体"></a>运行智能体</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> model = OllamaChatModel.builder()</span><br><span class="line">    .ollamaApi(OllamaApi.builder().baseUrl(<span class="string">"http://localhost:11434"</span>).build())</span><br><span class="line">    .defaultOptions(OllamaOptions.builder()</span><br><span class="line">        .model(<span class="string">"qwen2.5:7b"</span>)</span><br><span class="line">        .temperature(<span class="number">0.1</span>)</span><br><span class="line">        .build())</span><br><span class="line">    .build();</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> agent = AgentExecutor.builder()</span><br><span class="line">    .chatModel(model)</span><br><span class="line">    .toolsFromObject(<span class="keyword">new</span> TestTool())</span><br><span class="line">    .build()</span><br><span class="line">    .compile();</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> item : agent.stream(Map.of(<span class="string">"messages"</span>,</span><br><span class="line">        <span class="string">"perform test twice and return number of current active threads"</span>))) &#123;</span><br><span class="line">    System.out.println(item);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="核心能力概览"><a href="#核心能力概览" class="headerlink" title="核心能力概览"></a>核心能力概览</h2><p>LangGraph4j 配备了构建复杂智能体应用程序的丰富功能：</p>
+<table>
+<thead>
+<tr>
+<th>能力</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>异步操作</strong></td>
+<td>节点和边可以是异步的（返回 <code>CompletableFuture</code>），支持非阻塞 I/O 操作，尤其适用于 LLM 调用场景</td>
+</tr>
+<tr>
+<td><strong>流式传输</strong></td>
+<td>原生支持通过节点从 LLM 流式传输响应，实现实时输出</td>
+</tr>
+<tr>
+<td><strong>检查点（持久化与时间旅行）</strong></td>
+<td>保存和加载图的状态，支持恢复长时间运行的任务、通过检查中间状态进行调试，甚至”时间旅行”到先前的状态</td>
+</tr>
+<tr>
+<td><strong>图可视化</strong></td>
+<td>生成图的 PlantUML 或 Mermaid 图表，可视化其结构，有助于理解和调试</td>
+</tr>
+<tr>
+<td><strong>Playground &amp; Studio</strong></td>
+<td>LangGraph4j 附带一个可嵌入的 Web UI（Studio），允许你实时可视化、运行和与图进行交互</td>
+</tr>
+<tr>
+<td><strong>子图（Subgraphs）</strong></td>
+<td>通过在父图节点中嵌套更小、可复用的图来组合复杂图，促进模块化和可复用性</td>
+</tr>
+<tr>
+<td><strong>并行执行</strong></td>
+<td>配置图的部分以并行执行多个节点，提升可并发运行任务的性能</td>
+</tr>
+<tr>
+<td><strong>线程（多轮对话）</strong></td>
+<td>在单个图实例中管理不同的并行执行线程，每个线程都有自己的检查点历史。这对于同时处理多个用户会话或对话至关重要</td>
+</tr>
+</tbody></table>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/langgraph4j/" rel="tag"># langgraph4j</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2026/07/12/langchain4j-Skills支持/" rel="next" title="langchain4j Skills支持">
+                  <i class="fa fa-chevron-left"></i> langchain4j Skills支持
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#核心特性与优势"><span class="nav-number">2.</span> <span class="nav-text">核心特性与优势</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#核心概念详解"><span class="nav-number">3.</span> <span class="nav-text">核心概念详解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#StateGraph-lt-S-extends-AgentState-gt"><span class="nav-number">3.1.</span> <span class="nav-text">StateGraph&lt;S extends AgentState&gt;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AgentState"><span class="nav-number">3.2.</span> <span class="nav-text">AgentState</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#节点（Nodes）"><span class="nav-number">3.3.</span> <span class="nav-text">节点（Nodes）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#边（Edges）"><span class="nav-number">3.4.</span> <span class="nav-text">边（Edges）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译（Compilation）"><span class="nav-number">3.5.</span> <span class="nav-text">编译（Compilation）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#检查点（Checkpoints-持久化）"><span class="nav-number">3.6.</span> <span class="nav-text">检查点（Checkpoints / 持久化）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装"><span class="nav-number">4.</span> <span class="nav-text">安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Maven"><span class="nav-number">4.1.</span> <span class="nav-text">Maven</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#你的第一个图-—-简单示例"><span class="nav-number">5.</span> <span class="nav-text">你的第一个图 — 简单示例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-定义状态"><span class="nav-number">5.1.</span> <span class="nav-text">1. 定义状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-定义节点"><span class="nav-number">5.2.</span> <span class="nav-text">2. 定义节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-定义并编译图"><span class="nav-number">5.3.</span> <span class="nav-text">3. 定义并编译图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#说明"><span class="nav-number">5.4.</span> <span class="nav-text">说明</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#运行你的图"><span class="nav-number">6.</span> <span class="nav-text">运行你的图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Studio-🤩-—-可视化运行你的图"><span class="nav-number">7.</span> <span class="nav-text">Studio 🤩 — 可视化运行你的图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内置集成"><span class="nav-number">8.</span> <span class="nav-text">内置集成</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#LangChain4j"><span class="nav-number">8.1.</span> <span class="nav-text">LangChain4j</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#定义工具"><span class="nav-number">8.1.1.</span> <span class="nav-text">定义工具</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#运行智能体"><span class="nav-number">8.1.2.</span> <span class="nav-text">运行智能体</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spring-AI"><span class="nav-number">8.2.</span> <span class="nav-text">Spring AI</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#定义工具-1"><span class="nav-number">8.2.1.</span> <span class="nav-text">定义工具</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#运行智能体-1"><span class="nav-number">8.2.2.</span> <span class="nav-text">运行智能体</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#核心能力概览"><span class="nav-number">9.</span> <span class="nav-text">核心能力概览</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar.jpg"
+      alt="蝉">
+  <p class="site-author-name" itemprop="name">蝉</p>
+  <div class="site-description" itemprop="description">Another way to laugh !</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">138</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">34</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">79</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/lazycece" title="GitHub &rarr; https://github.com/lazycece" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:lazycece@qq.com" title="E-Mail &rarr; mailto:lazycece@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://blog.csdn.net/qq_28851503" title="CSDN &rarr; https://blog.csdn.net/qq_28851503" rel="noopener" target="_blank"><i class="fa fa-fw fa-vk"></i>CSDN</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://leetcode-cn.com/u/lazycece" title="LeetCode &rarr; https://leetcode-cn.com/u/lazycece" rel="noopener" target="_blank"><i class="fa fa-fw fa-vk"></i>LeetCode</a>
+      </span>
+    
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2026</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">蝉</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script><script src="/js/bookmark.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
