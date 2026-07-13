@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":true,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="1. 概览本文是对开源项目 agentscope-java 进行的项目架构分析，以便帮助对该项目进行结构化理解与记忆。  项目开源地址：https://github.com/agentscope-ai/agentscope-java 项目官网地址：https://java.agentscope.io/v2/zh/docs/index.html  2. 顶层目录结构123456789agentsco">
+<meta name="keywords" content="AgentScopeJava">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AgentScopeJava 项目架构分析">
+<meta property="og:url" content="https://lazycece.github.io/2026/07/13/AgentScopeJava-项目架构分析/index.html">
+<meta property="og:site_name" content="W  pit">
+<meta property="og:description" content="1. 概览本文是对开源项目 agentscope-java 进行的项目架构分析，以便帮助对该项目进行结构化理解与记忆。  项目开源地址：https://github.com/agentscope-ai/agentscope-java 项目官网地址：https://java.agentscope.io/v2/zh/docs/index.html  2. 顶层目录结构123456789agentsco">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2026-07-13T07:20:10.083Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="AgentScopeJava 项目架构分析">
+<meta name="twitter:description" content="1. 概览本文是对开源项目 agentscope-java 进行的项目架构分析，以便帮助对该项目进行结构化理解与记忆。  项目开源地址：https://github.com/agentscope-ai/agentscope-java 项目官网地址：https://java.agentscope.io/v2/zh/docs/index.html  2. 顶层目录结构123456789agentsco">
+  <link rel="canonical" href="https://lazycece.github.io/2026/07/13/AgentScopeJava-项目架构分析/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>AgentScopeJava 项目架构分析 | W  pit</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">W  pit</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">A thousand miles begins with a single step .</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a class="book-mark-link book-mark-link-fixed" href="#"></a>
+
+  <a href="https://github.com/lazycece" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2026/07/13/AgentScopeJava-项目架构分析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="蝉">
+      <meta itemprop="description" content="Another way to laugh !">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="W  pit">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">AgentScopeJava 项目架构分析
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2026-07-13 15:15:05 / Modified: 15:20:10" itemprop="dateCreated datePublished" datetime="2026-07-13T15:15:05+08:00">2026-07-13</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/AgentScopeJava/" itemprop="url" rel="index"><span itemprop="name">AgentScopeJava</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="1-概览"><a href="#1-概览" class="headerlink" title="1. 概览"></a>1. 概览</h2><p>本文是对开源项目 <code>agentscope-java</code> 进行的项目架构分析，以便帮助对该项目进行结构化理解与记忆。</p>
+<ul>
+<li>项目开源地址：<a href="https://github.com/agentscope-ai/agentscope-java" target="_blank" rel="noopener">https://github.com/agentscope-ai/agentscope-java</a></li>
+<li>项目官网地址：<a href="https://java.agentscope.io/v2/zh/docs/index.html" target="_blank" rel="noopener">https://java.agentscope.io/v2/zh/docs/index.html</a></li>
+</ul>
+<h2 id="2-顶层目录结构"><a href="#2-顶层目录结构" class="headerlink" title="2. 顶层目录结构"></a>2. 顶层目录结构</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">agentscope-java/</span><br><span class="line">├── pom.xml                          # 根 POM (agentscope-parent)</span><br><span class="line">├── agentscope-core/                 # 核心库</span><br><span class="line">├── agentscope-harness/              # 增强 Agent 运行时</span><br><span class="line">├── agentscope-extensions/           # 所有可选扩展 (27 个子模块)</span><br><span class="line">├── agentscope-dependencies-bom/     # 外部依赖 BOM</span><br><span class="line">├── agentscope-distribution/         # 打包分发 (shaded JAR + BOM)</span><br><span class="line">├── agentscope-examples/             # 示例项目</span><br><span class="line">└── docs/                            # 文档</span><br></pre></td></tr></table></figure>
+
+<a id="more"></a>
+
+<hr>
+<h2 id="3-整体分层架构"><a href="#3-整体分层架构" class="headerlink" title="3. 整体分层架构"></a>3. 整体分层架构</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">agentscope-dependencies-bom      ← 统一管理所有第三方库版本</span><br><span class="line">        │</span><br><span class="line">agentscope-parent (root POM)     ← Java 17, Maven Central 发布</span><br><span class="line">        │</span><br><span class="line">        ├── agentscope-core              ← ★ 核心层，零内部依赖</span><br><span class="line">        │     ├── agentscope-harness     ← 增强运行时（沙箱/工作区/子Agent）</span><br><span class="line">        │     └── agentscope-extensions  ← 所有可选扩展</span><br><span class="line">        │           └── Spring Boot / Micronaut / Quarkus Starters</span><br><span class="line">        │</span><br><span class="line">        ├── agentscope-distribution      ← 打包分发（shaded JAR + BOM）</span><br><span class="line">        └── agentscope-examples          ← 示例项目</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="4-模块职责速览"><a href="#4-模块职责速览" class="headerlink" title="4. 模块职责速览"></a>4. 模块职责速览</h2><table>
+<thead>
+<tr>
+<th>模块</th>
+<th>定位</th>
+<th>核心能力</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>agentscope-core</strong></td>
+<td>框架基石</td>
+<td>Agent 模型、LLM 集成 (OpenAI/DashScope/Gemini/Anthropic/Ollama)、Tool 系统、MCP 协议、消息管道、RAG 框架、规划系统、技能系统、会话管理、链路追踪</td>
+</tr>
+<tr>
+<td><strong>agentscope-harness</strong></td>
+<td>增强运行时</td>
+<td>沙箱执行 (Docker/K8s/E2B/Daytona)、工作区管理、子 Agent 编排、文件系统管理、内存压缩、快照 (Redis/OSS)</td>
+</tr>
+<tr>
+<td><strong>agentscope-extensions</strong></td>
+<td>可选扩展集</td>
+<td>A2A 协议、AG-UI、多种记忆后端、多种 RAG 后端、调度器、会话存储、技能仓库、服务发现、消息队列、训练数据、Kotlin 协程桥接</td>
+</tr>
+<tr>
+<td><strong>agentscope-distribution</strong></td>
+<td>分发打包</td>
+<td><code>agentscope-all</code> (shaded uber-JAR) + <code>agentscope-bom</code> (版本 BOM)</td>
+</tr>
+<tr>
+<td><strong>agentscope-examples</strong></td>
+<td>示例项目</td>
+<td>多种 Agent 模式示例、框架集成示例</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="5-核心依赖关系图"><a href="#5-核心依赖关系图" class="headerlink" title="5. 核心依赖关系图"></a>5. 核心依赖关系图</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">          agentscope-core (零内部依赖)</span><br><span class="line">          /        |        \</span><br><span class="line">         /         |         \</span><br><span class="line">harness        extensions     framework-starters</span><br><span class="line">(增强运行时)    (27个可选模块)   (Spring/Micronaut/Quarkus)</span><br><span class="line">    |</span><br><span class="line">    └── agentscope-extensions-agent-protocol</span><br></pre></td></tr></table></figure>
+
+<p><strong>关键设计原则：</strong></p>
+<ul>
+<li><strong>core 是唯一的基础</strong>：所有模块最终都依赖 <code>agentscope-core</code>，core 本身零内部依赖</li>
+<li><strong>扩展模块声明为 optional</strong>：大部分扩展使用 <code>&lt;optional&gt;true&lt;/optional&gt;</code> + <code>&lt;scope&gt;provided&lt;/scope&gt;</code>，消费者按需引入</li>
+<li><strong>技术栈</strong>：Java 17 + Reactor (响应式) + Jackson + OkHttp + SLF4J</li>
+</ul>
+<hr>
+<h2 id="6-模块详细分析"><a href="#6-模块详细分析" class="headerlink" title="6. 模块详细分析"></a>6. 模块详细分析</h2><h3 id="6-1-agentscope-core-—-核心层"><a href="#6-1-agentscope-core-—-核心层" class="headerlink" title="6.1 agentscope-core — 核心层"></a>6.1 agentscope-core — 核心层</h3><p><strong>内部依赖</strong>: 无</p>
+<p><strong>核心外部依赖</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>依赖</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>io.projectreactor:reactor-core</code></td>
+<td>响应式流 (Flux/Mono)，用于流式 Agent 响应</td>
+</tr>
+<tr>
+<td><code>com.fasterxml.jackson.core:jackson-databind</code></td>
+<td>JSON 序列化/反序列化</td>
+</tr>
+<tr>
+<td><code>com.fasterxml.jackson.core:jackson-annotations</code></td>
+<td>Jackson 注解</td>
+</tr>
+<tr>
+<td><code>com.fasterxml.jackson.datatype:jackson-datatype-jsr310</code></td>
+<td>Java 8 日期时间支持</td>
+</tr>
+<tr>
+<td><code>com.github.victools:jsonschema-generator</code></td>
+<td>JSON Schema 生成（结构化输出）</td>
+</tr>
+<tr>
+<td><code>com.github.victools:jsonschema-module-jackson</code></td>
+<td>Jackson 注解的 Schema 生成</td>
+</tr>
+<tr>
+<td><code>org.slf4j:slf4j-api</code></td>
+<td>日志门面</td>
+</tr>
+<tr>
+<td><code>com.alibaba:dashscope-sdk-java</code> (optional)</td>
+<td>阿里 DashScope LLM API</td>
+</tr>
+<tr>
+<td><code>com.google.genai:google-genai</code></td>
+<td>Google Gemini API</td>
+</tr>
+<tr>
+<td><code>com.anthropic:anthropic-java</code></td>
+<td>Anthropic Claude API</td>
+</tr>
+<tr>
+<td><code>com.squareup.okhttp3:okhttp</code></td>
+<td>HTTP 客户端</td>
+</tr>
+<tr>
+<td><code>com.squareup.okhttp3:okhttp-jvm</code></td>
+<td>JVM 平台 OkHttp</td>
+</tr>
+<tr>
+<td><code>io.modelcontextprotocol.sdk:mcp</code></td>
+<td>MCP 协议 SDK</td>
+</tr>
+<tr>
+<td><code>com.networknt:json-schema-validator</code></td>
+<td>JSON Schema 校验（工具输入）</td>
+</tr>
+<tr>
+<td><code>org.yaml:snakeyaml</code></td>
+<td>YAML 解析（Agent 配置）</td>
+</tr>
+</tbody></table>
+<p><strong>包结构</strong> (<code>io.agentscope.core</code>):</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">agent/               Agent, AgentBase, CallableAgent, ReActAgent, Event, EventSource, StreamableAgent</span><br><span class="line">  accumulator/       消息累积策略</span><br><span class="line">  user/              用户 Agent (HITL)</span><br><span class="line">exception/           核心异常</span><br><span class="line">formatter/           模型响应格式化 (OpenAI/DashScope/Gemini/Anthropic/Ollama)</span><br><span class="line">  anthropic/</span><br><span class="line">  dashscope/</span><br><span class="line">  gemini/</span><br><span class="line">  ollama/</span><br><span class="line">  openai/</span><br><span class="line">hook/                生命周期钩子</span><br><span class="line">  recorder/          录制钩子</span><br><span class="line">interruption/        中断机制 (HITL)</span><br><span class="line">memory/              记忆抽象 (InMemoryMemory, LongTermMemory)</span><br><span class="line">message/             消息模型</span><br><span class="line">model/               LLM 模型集成 (ChatModelBase, OpenAI, DashScope, Gemini, Anthropic, Ollama)</span><br><span class="line">  exception/         模型异常</span><br><span class="line">  ollama/            Ollama 专用</span><br><span class="line">  transport/         传输层 (WebSocket)</span><br><span class="line">  tts/               文本转语音</span><br><span class="line">pipeline/            管道编排 (FanoutPipeline, SequentialPipeline, MsgHub)</span><br><span class="line">plan/                规划系统 (PlanNotebook)</span><br><span class="line">  hint/</span><br><span class="line">  model/</span><br><span class="line">  storage/</span><br><span class="line">rag/                 RAG 框架 (GenericRAGHook, Knowledge)</span><br><span class="line">  model/</span><br><span class="line">session/             会话管理</span><br><span class="line">shutdown/            优雅停机</span><br><span class="line">skill/               技能注册与执行</span><br><span class="line">  repository/</span><br><span class="line">  util/</span><br><span class="line">state/               Agent 状态管理</span><br><span class="line">tool/                工具系统 (ToolRegistry, ToolGroup, ToolExecutor, MCP)</span><br><span class="line">  coding/            代码执行工具</span><br><span class="line">  file/              文件操作工具</span><br><span class="line">  mcp/               MCP 客户端</span><br><span class="line">  multimodal/        多模态工具</span><br><span class="line">  subagent/          子 Agent 工具</span><br><span class="line">tracing/             链路追踪</span><br><span class="line">util/                通用工具</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="6-2-agentscope-harness-—-增强运行时"><a href="#6-2-agentscope-harness-—-增强运行时" class="headerlink" title="6.2 agentscope-harness — 增强运行时"></a>6.2 agentscope-harness — 增强运行时</h3><p><strong>内部依赖</strong>: <code>agentscope-core</code> (compile)</p>
+<p><strong>核心外部依赖</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>依赖</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>com.fasterxml.jackson.dataformat:jackson-dataformat-yaml</code></td>
+<td>子 Agent YAML 配置</td>
+</tr>
+<tr>
+<td><code>org.apache.commons:commons-compress</code></td>
+<td>Tar 解压 (沙箱)</td>
+</tr>
+<tr>
+<td><code>redis.clients:jedis</code></td>
+<td>Redis 快照后端</td>
+</tr>
+<tr>
+<td><code>com.aliyun.oss:aliyun-sdk-oss</code></td>
+<td>阿里云 OSS 快照后端</td>
+</tr>
+<tr>
+<td><code>io.fabric8:kubernetes-client</code></td>
+<td>K8s 沙箱后端</td>
+</tr>
+<tr>
+<td><code>com.google.protobuf:protobuf-java</code></td>
+<td>K8s 沙箱 Protobuf</td>
+</tr>
+<tr>
+<td><code>org.xerial:sqlite-jdbc</code></td>
+<td>本地工作区索引</td>
+</tr>
+</tbody></table>
+<p><strong>包结构</strong> (<code>io.agentscope.harness</code>):</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">agent/               HarnessAgent, IsolationScope</span><br><span class="line">  filesystem/        文件系统管理 (local/remote/sandbox)</span><br><span class="line">  hook/              生命周期钩子</span><br><span class="line">  memory/            内存管理 (compaction/session)</span><br><span class="line">  sandbox/           沙箱实现 (Docker/K8s/E2B/Daytona/AgentRun)</span><br><span class="line">  session/           会话管理</span><br><span class="line">  skill/             技能编排</span><br><span class="line">  store/             Agent 存储 (JDBC)</span><br><span class="line">  subagent/          子 Agent 编排 (task)</span><br><span class="line">  tool/              工具集成</span><br><span class="line">  tools/             内置工具</span><br><span class="line">  workspace/         工作区管理</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="6-3-agentscope-extensions-—-扩展模块"><a href="#6-3-agentscope-extensions-—-扩展模块" class="headerlink" title="6.3 agentscope-extensions — 扩展模块"></a>6.3 agentscope-extensions — 扩展模块</h3><h4 id="6-3-1-A2A-Agent-to-Agent-协议"><a href="#6-3-1-A2A-Agent-to-Agent-协议" class="headerlink" title="6.3.1 A2A (Agent-to-Agent) 协议"></a>6.3.1 A2A (Agent-to-Agent) 协议</h4><table>
+<thead>
+<tr>
+<th>模块</th>
+<th>内部依赖</th>
+<th>外部依赖</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>agentscope-extensions-a2a-client</code></td>
+<td>core (provided)</td>
+<td>a2a-java-sdk-client</td>
+<td>A2A 客户端</td>
+</tr>
+<tr>
+<td><code>agentscope-extensions-a2a-server</code></td>
+<td>core, a2a-client (provided)</td>
+<td>a2a-sdk-server-common, transport-jsonrpc</td>
+<td>A2A 服务端</td>
+</tr>
+</tbody></table>
+<h4 id="6-3-2-UI-协议扩展"><a href="#6-3-2-UI-协议扩展" class="headerlink" title="6.3.2 UI 协议扩展"></a>6.3.2 UI 协议扩展</h4><table>
+<thead>
+<tr>
+<th>模块</th>
+<th>内部依赖</th>
+<th>外部依赖</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>agentscope-extensions-agui</code></td>
+<td>core (provided)</td>
+<td>—</td>
+<td>AG-UI 协议</td>
+</tr>
+<tr>
+<td><code>agentscope-extensions-chat-completions-web</code></td>
+<td>core, reactor-core (provided)</td>
+<td>—</td>
+<td>Chat Completions Web</td>
+</tr>
+<tr>
+<td><code>agentscope-extensions-agent-protocol</code></td>
+<td>harness</td>
+<td>spring-boot-starter-web, spring-boot-autoconfigure</td>
+<td>Agent 协议</td>
+</tr>
+<tr>
+<td><code>agentscope-extensions-studio</code></td>
+<td>core (provided)</td>
+<td>okhttp, socket.io-client, opentelemetry</td>
+<td>Studio 追踪</td>
+</tr>
+</tbody></table>
+<h4 id="6-3-3-记忆扩展"><a href="#6-3-3-记忆扩展" class="headerlink" title="6.3.3 记忆扩展"></a>6.3.3 记忆扩展</h4><table>
+<thead>
+<tr>
+<th>模块</th>
+<th>内部依赖</th>
+<th>外部依赖</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>agentscope-extensions-autocontext-memory</code></td>
+<td>core</td>
+<td>—</td>
+<td>AutoContext 记忆</td>
+</tr>
+<tr>
+<td><code>agentscope-extensions-mem0</code></td>
+<td>core (provided)</td>
+<td>okhttp</td>
+<td>Mem0 记忆</td>
+</tr>
+<tr>
+<td><code>agentscope-extensions-reme</code></td>
+<td>core (provided)</td>
+<td>okhttp</td>
+<td>ReMe 记忆</td>
+</tr>
+<tr>
+<td><code>agentscope-extensions-memory-bailian</code></td>
+<td>core (provided)</td>
+<td>Bailian SDK (传递)</td>
+<td>百炼长期记忆</td>
+</tr>
+</tbody></table>
+<h4 id="6-3-4-RAG-扩展"><a href="#6-3-4-RAG-扩展" class="headerlink" title="6.3.4 RAG 扩展"></a>6.3.4 RAG 扩展</h4><table>
+<thead>
+<tr>
+<th>模块</th>
+<th>内部依赖</th>
+<th>外部依赖</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>agentscope-extensions-rag-bailian</code></td>
+<td>core (provided)</td>
+<td>Bailian SDK</td>
+<td>百炼 RAG</td>
+</tr>
+<tr>
+<td><code>agentscope-extensions-rag-dify</code></td>
+<td>core (provided)</td>
+<td>okhttp, jackson, reactor</td>
+<td>Dify 知识库</td>
+</tr>
+<tr>
+<td><code>agentscope-extensions-rag-ragflow</code></td>
+<td>core (provided)</td>
+<td>okhttp, jackson, reactor</td>
+<td>RAGFlow 知识库</td>
+</tr>
+<tr>
+<td><code>agentscope-extensions-rag-haystack</code></td>
+<td>core (provided)</td>
+<td>okhttp, jackson, reactor</td>
+<td>HayStack 知识库</td>
+</tr>
+<tr>
+<td><code>agentscope-extensions-rag-simple</code></td>
+<td>core</td>
+<td>dashscope, openai, qdrant, milvus, elasticsearch, postgresql, pgvector, pdfbox, poi, tika</td>
+<td>最完整的 RAG 实现</td>
+</tr>
+</tbody></table>
+<h4 id="6-3-5-调度器扩展"><a href="#6-3-5-调度器扩展" class="headerlink" title="6.3.5 调度器扩展"></a>6.3.5 调度器扩展</h4><table>
+<thead>
+<tr>
+<th>模块</th>
+<th>内部依赖</th>
+<th>外部依赖</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>agentscope-extensions-scheduler-common</code></td>
+<td>core (provided)</td>
+<td>—</td>
+<td>调度 SPI</td>
+</tr>
+<tr>
+<td><code>agentscope-extensions-scheduler-quartz</code></td>
+<td>core, scheduler-common (provided)</td>
+<td>quartz</td>
+<td>Quartz 调度</td>
+</tr>
+<tr>
+<td><code>agentscope-extensions-scheduler-xxl-job</code></td>
+<td>core, scheduler-common (provided)</td>
+<td>xxl-job-core</td>
+<td>XXL-JOB 调度</td>
+</tr>
+</tbody></table>
+<h4 id="6-3-6-会话存储扩展"><a href="#6-3-6-会话存储扩展" class="headerlink" title="6.3.6 会话存储扩展"></a>6.3.6 会话存储扩展</h4><table>
+<thead>
+<tr>
+<th>模块</th>
+<th>内部依赖</th>
+<th>外部依赖</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>agentscope-extensions-session-redis</code></td>
+<td>core (provided)</td>
+<td>redisson, jedis, lettuce-core</td>
+<td>Redis 会话</td>
+</tr>
+<tr>
+<td><code>agentscope-extensions-session-mysql</code></td>
+<td>core (provided)</td>
+<td>mysql-connector-j</td>
+<td>MySQL 会话</td>
+</tr>
+</tbody></table>
+<h4 id="6-3-7-技能仓库扩展"><a href="#6-3-7-技能仓库扩展" class="headerlink" title="6.3.7 技能仓库扩展"></a>6.3.7 技能仓库扩展</h4><table>
+<thead>
+<tr>
+<th>模块</th>
+<th>内部依赖</th>
+<th>外部依赖</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>agentscope-extensions-skill-git-repository</code></td>
+<td>core (provided)</td>
+<td>org.eclipse.jgit</td>
+<td>Git 技能仓库</td>
+</tr>
+<tr>
+<td><code>agentscope-extensions-skill-mysql-repository</code></td>
+<td>core (provided)</td>
+<td>mysql-connector-j</td>
+<td>MySQL 技能仓库</td>
+</tr>
+</tbody></table>
+<h4 id="6-3-8-服务发现-消息"><a href="#6-3-8-服务发现-消息" class="headerlink" title="6.3.8 服务发现/消息"></a>6.3.8 服务发现/消息</h4><table>
+<thead>
+<tr>
+<th>模块</th>
+<th>内部依赖</th>
+<th>外部依赖</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>agentscope-extensions-nacos-a2a</code></td>
+<td>a2a-client, a2a-server</td>
+<td>nacos-client</td>
+<td>Nacos A2A 注册</td>
+</tr>
+<tr>
+<td><code>agentscope-extensions-nacos-prompt</code></td>
+<td>—</td>
+<td>nacos-client</td>
+<td>Nacos Prompt</td>
+</tr>
+<tr>
+<td><code>agentscope-extensions-nacos-skill</code></td>
+<td>core</td>
+<td>nacos-client</td>
+<td>Nacos 技能注册</td>
+</tr>
+<tr>
+<td><code>agentscope-extensions-rocketmq</code></td>
+<td>a2a-server</td>
+<td>rocketmq-client-java, fastjson, rocketmq-a2a</td>
+<td>RocketMQ + A2A</td>
+</tr>
+</tbody></table>
+<h4 id="6-3-9-其他扩展"><a href="#6-3-9-其他扩展" class="headerlink" title="6.3.9 其他扩展"></a>6.3.9 其他扩展</h4><table>
+<thead>
+<tr>
+<th>模块</th>
+<th>内部依赖</th>
+<th>外部依赖</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>agentscope-extensions-training</code></td>
+<td>core</td>
+<td>jackson, parquet-avro (optional), hadoop-client (optional)</td>
+<td>训练数据</td>
+</tr>
+<tr>
+<td><code>agentscope-extensions-kotlin</code></td>
+<td>core</td>
+<td>kotlinx-coroutines-core, kotlinx-coroutines-reactor</td>
+<td>Kotlin 协程支持</td>
+</tr>
+<tr>
+<td><code>agentscope-extensions-higress</code></td>
+<td>core</td>
+<td>mcp (MCP SDK)</td>
+<td>Higress 网关</td>
+</tr>
+</tbody></table>
+<h4 id="6-3-10-框架集成-Starters"><a href="#6-3-10-框架集成-Starters" class="headerlink" title="6.3.10 框架集成 Starters"></a>6.3.10 框架集成 Starters</h4><p><strong>Spring Boot Starters</strong> (Spring Boot 4.0.4):</p>
+<table>
+<thead>
+<tr>
+<th>模块</th>
+<th>内部依赖</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>agentscope-spring-boot-starter</code></td>
+<td>core, agentscope-all</td>
+<td>基础自动配置</td>
+</tr>
+<tr>
+<td><code>agentscope-a2a-spring-boot-starter</code></td>
+<td>starter, a2a-client, a2a-server, rocketmq</td>
+<td>A2A 自动配置</td>
+</tr>
+<tr>
+<td><code>agentscope-agui-spring-boot-starter</code></td>
+<td>starter, agui</td>
+<td>AG-UI 自动配置</td>
+</tr>
+<tr>
+<td><code>agentscope-chat-completions-web-starter</code></td>
+<td>starter, chat-completions-web</td>
+<td>Chat Web 自动配置</td>
+</tr>
+<tr>
+<td><code>agentscope-nacos-spring-boot-starter</code></td>
+<td>a2a-starter, nacos-a2a, nacos-prompt</td>
+<td>Nacos 自动配置</td>
+</tr>
+</tbody></table>
+<p><strong>Micronaut 扩展</strong>: <code>agentscope-micronaut-extension</code> — core + agentscope-all + micronaut-inject</p>
+<p><strong>Quarkus 扩展</strong>: <code>agentscope-quarkus-extension</code> (runtime + deployment) — core + agentscope-all + quarkus-core</p>
+<hr>
+<h3 id="6-4-agentscope-dependencies-bom-—-外部依赖版本管理"><a href="#6-4-agentscope-dependencies-bom-—-外部依赖版本管理" class="headerlink" title="6.4 agentscope-dependencies-bom — 外部依赖版本管理"></a>6.4 agentscope-dependencies-bom — 外部依赖版本管理</h3><p>集中管理所有第三方库版本的关键依赖：</p>
+<table>
+<thead>
+<tr>
+<th>类别</th>
+<th>核心库</th>
+<th>版本</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>LLM SDK</strong></td>
+<td>DashScope SDK, OpenAI Java, Google GenAI, Anthropic Java</td>
+<td>2.22.9 / 4.28.0 / 1.45.0 / 2.14.0</td>
+</tr>
+<tr>
+<td><strong>AI 协议</strong></td>
+<td>MCP SDK, A2A SDK</td>
+<td>0.17.0 / 0.3.3.Final</td>
+</tr>
+<tr>
+<td><strong>响应式</strong></td>
+<td>Reactor BOM</td>
+<td>2025.0.2</td>
+</tr>
+<tr>
+<td><strong>序列化</strong></td>
+<td>Jackson, SnakeYAML</td>
+<td>2.21.1 / 2.6</td>
+</tr>
+<tr>
+<td><strong>HTTP</strong></td>
+<td>OkHttp, Apache HttpClient5</td>
+<td>5.3.2 / 5.6.1</td>
+</tr>
+<tr>
+<td><strong>向量数据库</strong></td>
+<td>Qdrant, Milvus, Elasticsearch, pgvector</td>
+<td>1.17.0 / 2.6.17 / 9.3.3 / 0.1.6</td>
+</tr>
+<tr>
+<td><strong>数据库</strong></td>
+<td>MySQL Connector, PostgreSQL</td>
+<td>9.6.0 / 42.7.11</td>
+</tr>
+<tr>
+<td><strong>缓存/会话</strong></td>
+<td>Redisson, Jedis, Lettuce</td>
+<td>4.2.0 / 7.4.1 / 6.4.2</td>
+</tr>
+<tr>
+<td><strong>调度</strong></td>
+<td>Quartz, XXL-JOB</td>
+<td>2.5.2 / 3.3.2</td>
+</tr>
+<tr>
+<td><strong>Spring</strong></td>
+<td>Spring Framework, Spring Boot</td>
+<td>7.0.7 / 4.0.4</td>
+</tr>
+<tr>
+<td><strong>文档处理</strong></td>
+<td>PDFBox, POI, Tika</td>
+<td>3.0.7 / 5.5.1 / 3.3.0</td>
+</tr>
+<tr>
+<td><strong>可观测性</strong></td>
+<td>OpenTelemetry</td>
+<td>1.61.0</td>
+</tr>
+<tr>
+<td><strong>基础设施</strong></td>
+<td>Kubernetes Client, Protobuf, Nacos Client</td>
+<td>6.13.4 / 4.29.3 / 3.2.1</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="6-5-agentscope-distribution-—-打包分发"><a href="#6-5-agentscope-distribution-—-打包分发" class="headerlink" title="6.5 agentscope-distribution — 打包分发"></a>6.5 agentscope-distribution — 打包分发</h3><table>
+<thead>
+<tr>
+<th>子模块</th>
+<th>Artifact</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>agentscope-all</code></td>
+<td><code>agentscope</code></td>
+<td>Shaded uber-JAR，通过 maven-shade-plugin 将 core + 全部 extensions 合并到一个 JAR</td>
+</tr>
+<tr>
+<td><code>agentscope-bom</code></td>
+<td><code>agentscope-bom</code></td>
+<td>BOM POM，列出所有内部模块版本，下游消费者统一管理版本</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="7-完整依赖图"><a href="#7-完整依赖图" class="headerlink" title="7. 完整依赖图"></a>7. 完整依赖图</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line">agentscope-dependencies-bom (外部版本)</span><br><span class="line">       │</span><br><span class="line">       v</span><br><span class="line">   agentscope-parent (根)</span><br><span class="line">      │</span><br><span class="line">      ├── agentscope-core (零内部依赖)</span><br><span class="line">      │     │</span><br><span class="line">      │     ├── agentscope-harness</span><br><span class="line">      │     │     │</span><br><span class="line">      │     │     └── agentscope-extensions-agent-protocol</span><br><span class="line">      │     │</span><br><span class="line">      │     ├── [所有依赖 core 的扩展]</span><br><span class="line">      │     │     ├── agentscope-extensions-a2a-client</span><br><span class="line">      │     │     │     └── agentscope-extensions-a2a-server</span><br><span class="line">      │     │     │           └── agentscope-extensions-rocketmq</span><br><span class="line">      │     │     ├── agentscope-extensions-agui</span><br><span class="line">      │     │     ├── agentscope-extensions-chat-completions-web</span><br><span class="line">      │     │     ├── agentscope-extensions-autocontext-memory</span><br><span class="line">      │     │     ├── agentscope-extensions-mem0</span><br><span class="line">      │     │     ├── agentscope-extensions-reme</span><br><span class="line">      │     │     ├── agentscope-extensions-memory-bailian</span><br><span class="line">      │     │     ├── agentscope-extensions-rag-&#123;bailian,dify,ragflow,haystack,simple&#125;</span><br><span class="line">      │     │     ├── agentscope-extensions-studio</span><br><span class="line">      │     │     ├── agentscope-extensions-training</span><br><span class="line">      │     │     ├── agentscope-extensions-kotlin</span><br><span class="line">      │     │     ├── agentscope-extensions-higress</span><br><span class="line">      │     │     ├── agentscope-extensions-scheduler-common</span><br><span class="line">      │     │     ├── agentscope-extensions-session-&#123;redis,mysql&#125;</span><br><span class="line">      │     │     ├── agentscope-extensions-skill-&#123;git,mysql&#125;-repository</span><br><span class="line">      │     │     ├── agentscope-extensions-nacos-skill</span><br><span class="line">      │     │     └── agentscope-extensions-nacos-a2a</span><br><span class="line">      │     │</span><br><span class="line">      │     ├── agentscope-spring-boot-starter</span><br><span class="line">      │     ├── agentscope-micronaut-extension</span><br><span class="line">      │     └── agentscope-quarkus-extension</span><br><span class="line">      │</span><br><span class="line">      ├── agentscope-harness</span><br><span class="line">      │     └── agentscope-extensions-agent-protocol</span><br><span class="line">      │</span><br><span class="line">      ├── agentscope-extensions (聚合模块，无代码)</span><br><span class="line">      │     │</span><br><span class="line">      │     ├── A2A 协议</span><br><span class="line">      │     │     ├── agentscope-extensions-a2a-client</span><br><span class="line">      │     │     └── agentscope-extensions-a2a-server (依赖 client)</span><br><span class="line">      │     │</span><br><span class="line">      │     ├── agentscope-extensions-nacos-a2a (依赖 a2a-client + a2a-server)</span><br><span class="line">      │     ├── agentscope-extensions-rocketmq (依赖 a2a-server)</span><br><span class="line">      │     │</span><br><span class="line">      │     └── agentscope-spring-boot-starters (聚合)</span><br><span class="line">      │           ├── agentscope-spring-boot-starter (依赖 agentscope-all + core)</span><br><span class="line">      │           ├── agentscope-a2a-spring-boot-starter (依赖 starter + a2a)</span><br><span class="line">      │           ├── agentscope-agui-spring-boot-starter (依赖 starter + agui)</span><br><span class="line">      │           ├── agentscope-chat-completions-web-starter (依赖 starter + chat-web)</span><br><span class="line">      │           └── agentscope-nacos-spring-boot-starter (依赖 a2a-starter + nacos)</span><br><span class="line">      │</span><br><span class="line">      ├── agentscope-distribution</span><br><span class="line">      │     ├── agentscope-all (shaded JAR)</span><br><span class="line">      │     └── agentscope-bom (版本管理)</span><br><span class="line">      │</span><br><span class="line">      └── agentscope-examples</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="8-架构设计要点总结"><a href="#8-架构设计要点总结" class="headerlink" title="8. 架构设计要点总结"></a>8. 架构设计要点总结</h2><ol>
+<li><strong>Core 是纯粹的核心抽象</strong>：Agent 模型、LLM 集成、工具体系、消息管道，零内部依赖，是整个框架唯一的基础</li>
+<li><strong>Harness 补充运行态能力</strong>：构建在 Core 之上的增强层，提供沙箱执行、工作区管理、子 Agent 编排等生产级能力</li>
+<li><strong>Extensions 插件化按需扩展</strong>：27 个子模块覆盖记忆、RAG、调度、会话、技能仓库、服务发现、消息队列等，全部通过 optional + provided 机制由消费者按需引入</li>
+<li><strong>agentscope-all 提供一站式依赖</strong>：Shaded uber-JAR 让不想管理多模块依赖的用户只需引入一个 artifact</li>
+<li><strong>多框架集成</strong>：Spring Boot、Micronaut、Quarkus 三大 DI 框架的自动配置 Starters</li>
+<li><strong>多 LLM 厂商支持</strong>：OpenAI、DashScope (阿里)、Gemini (Google)、Anthropic (Claude)、Ollama</li>
+<li><strong>A2A 协议是核心集成模式</strong>：Google Agent-to-Agent 协议深度集成（客户端/服务端/RocketMQ 传输/Nacos 服务发现/Spring Boot 自动配置）</li>
+<li><strong>阿里云生态</strong>：DashScope、百炼、Nacos、OSS、RocketMQ 等阿里云服务有多项集成</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/AgentScopeJava/" rel="tag"># AgentScopeJava</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2026/07/12/langgraph4j-介绍/" rel="next" title="langgraph4j 介绍">
+                  <i class="fa fa-chevron-left"></i> langgraph4j 介绍
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-概览"><span class="nav-number">1.</span> <span class="nav-text">1. 概览</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-顶层目录结构"><span class="nav-number">2.</span> <span class="nav-text">2. 顶层目录结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-整体分层架构"><span class="nav-number">3.</span> <span class="nav-text">3. 整体分层架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-模块职责速览"><span class="nav-number">4.</span> <span class="nav-text">4. 模块职责速览</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-核心依赖关系图"><span class="nav-number">5.</span> <span class="nav-text">5. 核心依赖关系图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-模块详细分析"><span class="nav-number">6.</span> <span class="nav-text">6. 模块详细分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-1-agentscope-core-—-核心层"><span class="nav-number">6.1.</span> <span class="nav-text">6.1 agentscope-core — 核心层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-agentscope-harness-—-增强运行时"><span class="nav-number">6.2.</span> <span class="nav-text">6.2 agentscope-harness — 增强运行时</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-3-agentscope-extensions-—-扩展模块"><span class="nav-number">6.3.</span> <span class="nav-text">6.3 agentscope-extensions — 扩展模块</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#6-3-1-A2A-Agent-to-Agent-协议"><span class="nav-number">6.3.1.</span> <span class="nav-text">6.3.1 A2A (Agent-to-Agent) 协议</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-3-2-UI-协议扩展"><span class="nav-number">6.3.2.</span> <span class="nav-text">6.3.2 UI 协议扩展</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-3-3-记忆扩展"><span class="nav-number">6.3.3.</span> <span class="nav-text">6.3.3 记忆扩展</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-3-4-RAG-扩展"><span class="nav-number">6.3.4.</span> <span class="nav-text">6.3.4 RAG 扩展</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-3-5-调度器扩展"><span class="nav-number">6.3.5.</span> <span class="nav-text">6.3.5 调度器扩展</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-3-6-会话存储扩展"><span class="nav-number">6.3.6.</span> <span class="nav-text">6.3.6 会话存储扩展</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-3-7-技能仓库扩展"><span class="nav-number">6.3.7.</span> <span class="nav-text">6.3.7 技能仓库扩展</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-3-8-服务发现-消息"><span class="nav-number">6.3.8.</span> <span class="nav-text">6.3.8 服务发现/消息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-3-9-其他扩展"><span class="nav-number">6.3.9.</span> <span class="nav-text">6.3.9 其他扩展</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-3-10-框架集成-Starters"><span class="nav-number">6.3.10.</span> <span class="nav-text">6.3.10 框架集成 Starters</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-4-agentscope-dependencies-bom-—-外部依赖版本管理"><span class="nav-number">6.4.</span> <span class="nav-text">6.4 agentscope-dependencies-bom — 外部依赖版本管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-5-agentscope-distribution-—-打包分发"><span class="nav-number">6.5.</span> <span class="nav-text">6.5 agentscope-distribution — 打包分发</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-完整依赖图"><span class="nav-number">7.</span> <span class="nav-text">7. 完整依赖图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-架构设计要点总结"><span class="nav-number">8.</span> <span class="nav-text">8. 架构设计要点总结</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar.jpg"
+      alt="蝉">
+  <p class="site-author-name" itemprop="name">蝉</p>
+  <div class="site-description" itemprop="description">Another way to laugh !</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">139</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">80</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/lazycece" title="GitHub &rarr; https://github.com/lazycece" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:lazycece@qq.com" title="E-Mail &rarr; mailto:lazycece@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://blog.csdn.net/qq_28851503" title="CSDN &rarr; https://blog.csdn.net/qq_28851503" rel="noopener" target="_blank"><i class="fa fa-fw fa-vk"></i>CSDN</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://leetcode-cn.com/u/lazycece" title="LeetCode &rarr; https://leetcode-cn.com/u/lazycece" rel="noopener" target="_blank"><i class="fa fa-fw fa-vk"></i>LeetCode</a>
+      </span>
+    
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2026</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">蝉</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script><script src="/js/bookmark.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
