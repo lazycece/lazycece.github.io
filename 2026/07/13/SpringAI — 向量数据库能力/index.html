@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":true,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="概述向量数据库是一种特殊类型的数据库，在 AI 应用中扮演着至关重要的角色。在向量数据库中，查询方式与传统关系型数据库不同，向量数据库执行的是相似度搜索，而非精确匹配。当给定一个向量作为查询时，向量数据库会返回与查询向量”相似”的向量。 向量数据库用于将您的数据与 AI 模型集成，其使用步骤如下：  首先将您的数据加载到向量数据库中。 当用户查询需要发送给 AI 模型时，先检索一组相似的文档。 这">
+<meta name="keywords" content="springai">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringAI — 向量数据库能力">
+<meta property="og:url" content="https://lazycece.github.io/2026/07/13/SpringAI — 向量数据库能力/index.html">
+<meta property="og:site_name" content="W  pit">
+<meta property="og:description" content="概述向量数据库是一种特殊类型的数据库，在 AI 应用中扮演着至关重要的角色。在向量数据库中，查询方式与传统关系型数据库不同，向量数据库执行的是相似度搜索，而非精确匹配。当给定一个向量作为查询时，向量数据库会返回与查询向量”相似”的向量。 向量数据库用于将您的数据与 AI 模型集成，其使用步骤如下：  首先将您的数据加载到向量数据库中。 当用户查询需要发送给 AI 模型时，先检索一组相似的文档。 这">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2026-07-13T09:54:16.984Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SpringAI — 向量数据库能力">
+<meta name="twitter:description" content="概述向量数据库是一种特殊类型的数据库，在 AI 应用中扮演着至关重要的角色。在向量数据库中，查询方式与传统关系型数据库不同，向量数据库执行的是相似度搜索，而非精确匹配。当给定一个向量作为查询时，向量数据库会返回与查询向量”相似”的向量。 向量数据库用于将您的数据与 AI 模型集成，其使用步骤如下：  首先将您的数据加载到向量数据库中。 当用户查询需要发送给 AI 模型时，先检索一组相似的文档。 这">
+  <link rel="canonical" href="https://lazycece.github.io/2026/07/13/SpringAI — 向量数据库能力/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>SpringAI — 向量数据库能力 | W  pit</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">W  pit</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">A thousand miles begins with a single step .</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a class="book-mark-link book-mark-link-fixed" href="#"></a>
+
+  <a href="https://github.com/lazycece" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="https://lazycece.github.io/2026/07/13/SpringAI — 向量数据库能力/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="蝉">
+      <meta itemprop="description" content="Another way to laugh !">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="W  pit">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">SpringAI — 向量数据库能力
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2026-07-13 17:24:29 / Modified: 17:54:16" itemprop="dateCreated datePublished" datetime="2026-07-13T17:24:29+08:00">2026-07-13</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/springai/" itemprop="url" rel="index"><span itemprop="name">springai</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>向量数据库是一种特殊类型的数据库，在 AI 应用中扮演着至关重要的角色。在向量数据库中，查询方式与传统关系型数据库不同，向量数据库执行的是<strong>相似度搜索</strong>，而非精确匹配。当给定一个向量作为查询时，向量数据库会返回与查询向量”相似”的向量。</p>
+<p>向量数据库用于将您的数据与 AI 模型集成，其使用步骤如下：</p>
+<ol>
+<li>首先将您的数据加载到向量数据库中。</li>
+<li>当用户查询需要发送给 AI 模型时，先检索一组相似的文档。</li>
+<li>这些文档随后作为用户问题的上下文，与用户查询一起发送给 AI 模型。</li>
+</ol>
+<p>这种技术被称为<strong>检索增强生成（Retrieval Augmented Generation，RAG）</strong>。</p>
+<p>本文将介绍 Spring AI 中使用多种向量数据库实现的接口，以及一些高层级的使用示例。最后一节旨在揭开向量数据库中相似度搜索底层方法的神秘面纱。</p>
+<a id="more"></a>
+
+<hr>
+<h2 id="VectorStore-接口"><a href="#VectorStore-接口" class="headerlink" title="VectorStore 接口"></a>VectorStore 接口</h2><p>Spring AI 通过 <code>VectorStore</code> 接口及其只读对应接口 <code>VectorStoreRetriever</code>，提供了与向量数据库交互的抽象 API。</p>
+<h3 id="VectorStoreRetriever-—-只读接口"><a href="#VectorStoreRetriever-—-只读接口" class="headerlink" title="VectorStoreRetriever — 只读接口"></a>VectorStoreRetriever — 只读接口</h3><p>Spring AI 提供名为 <code>VectorStoreRetriever</code> 的只读接口，仅暴露文档检索功能：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">VectorStoreRetriever</span> </span>&#123;</span><br><span class="line">    <span class="function">List&lt;Document&gt; <span class="title">similaritySearch</span><span class="params">(String query)</span></span>;</span><br><span class="line">    <span class="function">List&lt;Document&gt; <span class="title">similaritySearch</span><span class="params">(SearchRequest request)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个函数式接口专为只需要从向量存储中检索文档而无需执行任何变更操作的场景而设计，它通过仅暴露文档检索所需的功能，遵循了<strong>最小权限原则</strong>。</p>
+<h3 id="VectorStore-—-读写接口"><a href="#VectorStore-—-读写接口" class="headerlink" title="VectorStore — 读写接口"></a>VectorStore — 读写接口</h3><p><code>VectorStore</code> 接口扩展了 <code>VectorStoreRetriever</code>，并增加了变更操作的能力：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">VectorStore</span> <span class="keyword">extends</span> <span class="title">VectorStoreRetriever</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">add</span><span class="params">(List&lt;Document&gt; documents)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">delete</span><span class="params">(List&lt;String&gt; idList)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">delete</span><span class="params">(Filter.Expression filterExpression)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>VectorStore</code> 接口结合了读取和写入操作，允许您在向量数据库中添加、删除和搜索文档。</p>
+<h3 id="插入数据"><a href="#插入数据" class="headerlink" title="插入数据"></a>插入数据</h3><p>要向向量数据库插入数据，需要将其封装在 <code>Document</code> 对象中。<code>Document</code> 类封装了来自数据源（如 PDF 或 Word 文档）的内容，包含以字符串形式表示的文本，同时还包含以键值对形式存储的元数据，包括文件名等详细信息。</p>
+<p>插入向量数据库后，文本内容会使用嵌入模型转换为数值数组（即 <code>float[]</code>），称为<strong>向量嵌入（vector embeddings）</strong>。嵌入模型（如 Word2Vec、GLoVE、BERT 或 OpenAI 的 text-embedding-ada-002）用于将单词、句子或段落转换为这些向量嵌入。</p>
+<p>向量数据库的作用是存储这些嵌入并执行相似度搜索，它本身<strong>不生成</strong>嵌入，要创建向量嵌入，应使用 <code>EmbeddingModel</code>。</p>
+<h3 id="相似度搜索参数"><a href="#相似度搜索参数" class="headerlink" title="相似度搜索参数"></a>相似度搜索参数</h3><p>接口中的 <code>similaritySearch</code> 方法允许检索与给定查询字符串相似的文档。这些方法可以通过以下参数进行微调：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>k</strong></td>
+<td>一个整数，指定要返回的最大相似文档数量。这通常被称为”top K”搜索或”K 近邻”（KNN）搜索。</td>
+</tr>
+<tr>
+<td><strong>threshold</strong></td>
+<td>一个介于 0 到 1 之间的双精度值，值越接近 1 表示相似度越高。例如，如果设置阈值为 0.75，则仅返回相似度高于此值的文档。</td>
+</tr>
+<tr>
+<td><strong>Filter.Expression</strong></td>
+<td>一个用于传递流畅 DSL（领域特定语言）表达式的类，功能类似于 SQL 中的 <code>WHERE</code> 子句，但仅适用于 <code>Document</code> 的元数据键值对。</td>
+</tr>
+<tr>
+<td><strong>filterExpression</strong></td>
+<td>基于 ANTLR4 的外部 DSL，接受字符串形式的过滤表达式。例如，对于 <code>country</code>、<code>year</code> 和 <code>isActive</code> 等元数据键，可以使用如下表达式：<code>country == &#39;UK&#39; &amp;&amp; year &gt;= 2020 &amp;&amp; isActive == true</code>。</td>
+</tr>
+</tbody></table>
+<h3 id="模式初始化"><a href="#模式初始化" class="headerlink" title="模式初始化"></a>模式初始化</h3><p>某些向量存储在使用前需要初始化其后端模式，默认情况下<strong>不会</strong>自动为您初始化。您必须选择启用——通过向适当的构造函数参数传递一个布尔值，或者如果使用的是 Spring Boot，则在 <code>application.properties</code> 或 <code>application.yml</code> 中将相应的 <code>initialize-schema</code> 属性设置为 <code>true</code>。请查阅您所使用的向量存储的文档以获取具体的属性名称。</p>
+<hr>
+<h2 id="批处理策略（Batching-Strategy）"><a href="#批处理策略（Batching-Strategy）" class="headerlink" title="批处理策略（Batching Strategy）"></a>批处理策略（Batching Strategy）</h2><h3 id="为什么需要批处理？"><a href="#为什么需要批处理？" class="headerlink" title="为什么需要批处理？"></a>为什么需要批处理？</h3><p>在使用向量存储时，通常需要嵌入大量文档。虽然一次性调用嵌入所有文档看似简单，但这种方法可能会导致问题。嵌入模型以 token 为单位处理文本，并且有最大 token 限制（通常称为上下文窗口大小）。这个限制约束了单次嵌入请求中可以处理的文本量，尝试在一次调用中嵌入过多 token 可能会导致错误或截断嵌入。</p>
+<h3 id="TokenCountBatchingStrategy"><a href="#TokenCountBatchingStrategy" class="headerlink" title="TokenCountBatchingStrategy"></a>TokenCountBatchingStrategy</h3><p>为了解决上述问题，Spring AI 实现了批处理策略，这种方法将大批量文档拆分为符合嵌入模型最大上下文窗口的小批次。批处理不仅解决了 token 限制问题，还可以提高性能并更有效地利用 API 速率限制。</p>
+<p>Spring AI 通过 <code>BatchingStrategy</code> 接口提供此功能，允许根据 token 数量以子批次方式处理文档。</p>
+<p>核心 <code>BatchingStrategy</code> 接口定义如下：</p>
+<blockquote>
+<p>定义了一个单一方法 <code>batch</code>，它接受文档列表并返回文档批次列表</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">BatchingStrategy</span> </span>&#123;</span><br><span class="line">    List&lt;List&lt;Document&gt;&gt; batch(List&lt;Document&gt; documents);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Spring AI 提供了一个名为 <code>TokenCountBatchingStrategy</code> 的默认实现，该策略根据文档的 token 数量进行批处理，确保每个批次不超过计算出的最大输入 token 数量。</p>
+<p><strong>TokenCountBatchingStrategy 的关键特性：</strong></p>
+<ul>
+<li>包含预留百分比（默认 10%），为潜在的开销提供缓冲。</li>
+<li>实际最大输入 token 数量的计算公式为：<code>actualMaxInputTokenCount = originalMaxInputTokenCount * (1 - RESERVE_PERCENTAGE)</code></li>
+<li>该策略会估算每个文档的 token 数量，在不超过最大输入 token 数量的前提下将它们分组为批次；如果单个文档超过此限制，则抛出异常。</li>
+</ul>
+<h3 id="自定义-TokenCountBatchingStrategy"><a href="#自定义-TokenCountBatchingStrategy" class="headerlink" title="自定义 TokenCountBatchingStrategy"></a>自定义 TokenCountBatchingStrategy</h3><p>您也可以自定义 <code>TokenCountBatchingStrategy</code> 以更好地满足特定需求，可以在 Spring Boot 的 <code>@Configuration</code> 类中创建具有自定义参数的新实例。</p>
+<p>以下是创建自定义 <code>TokenCountBatchingStrategy</code> Bean 的示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BatchingConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> BatchingStrategy <span class="title">customBatchingStrategy</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> TokenCountBatchingStrategy(</span><br><span class="line">            EncodingType.CL100K_BASE,  <span class="comment">// 用于 token 化的编码类型</span></span><br><span class="line">            <span class="number">8000</span>,                       <span class="comment">// 最大输入 token 数量</span></span><br><span class="line">            <span class="number">0.1</span>                         <span class="comment">// 预留百分比</span></span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在此配置中：</p>
+<ul>
+<li><strong>EncodingType.CL100K_BASE</strong>：指定用于 token 化的编码类型。<code>JTokkitTokenCountEstimator</code> 使用此编码类型来准确估算 token 数量。</li>
+<li><strong>8000</strong>：设置最大输入 token 数量。此值应小于或等于嵌入模型的最大上下文窗口大小。</li>
+<li><strong>0.1</strong>：设置预留百分比。从最大输入 token 数量中预留的 token 百分比，为处理过程中潜在的 token 数量增加创建缓冲。</li>
+</ul>
+<p>默认情况下，此构造函数使用 <code>Document.DEFAULT_CONTENT_FORMATTER</code> 进行内容格式化，并使用 <code>MetadataMode.NONE</code> 进行元数据处理。如果需要自定义这些参数，可以使用带有额外参数的完整构造函数。定义后，此自定义 <code>TokenCountBatchingStrategy</code> Bean 将自动被应用程序中的 <code>EmbeddingModel</code> 实现使用，替换默认策略。</p>
+<p><code>TokenCountBatchingStrategy</code> 内部使用 <code>TokenCountEstimator</code>（具体为 <code>JTokkitTokenCountEstimator</code>）来计算 token 数量，以实现高效批处理。这确保了基于指定编码类型的准确 token 估算。此外，<code>TokenCountBatchingStrategy</code> 允许您传入自己实现的 <code>TokenCountEstimator</code> 接口，从而提供灵活性。此功能使您能够使用针对特定需求定制的自定义 token 计数策略。</p>
+<h3 id="自动截断（Auto-Truncation）场景"><a href="#自动截断（Auto-Truncation）场景" class="headerlink" title="自动截断（Auto-Truncation）场景"></a>自动截断（Auto-Truncation）场景</h3><p>某些嵌入模型（如 Vertex AI 文本嵌入）支持 <code>auto_truncate</code> 功能。启用后，模型会静默截断超过最大大小的文本输入并继续处理；禁用时，会对过大的输入抛出显式错误。</p>
+<p>当将批处理策略与自动截断功能结合使用时，<strong>必须</strong>将批处理策略配置为使用远高于模型实际最大值的输入 token 数量。这可以防止批处理策略对大文档引发异常，从而允许嵌入模型在内部处理截断。</p>
+<p>启用自动截断时，请将批处理策略的最大输入 token 数量设置为远高于模型实际限制的值。</p>
+<p>以下是一个在 PgVectorStore 中使用 Vertex AI 自动截断和自定义 <code>BatchingStrategy</code> 的配置示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">VectorStoreConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> EmbeddingModel <span class="title">embeddingModel</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 启用自动截断的 Vertex AI 嵌入模型</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> VertexAiEmbeddingModel(</span><br><span class="line">            <span class="string">"text-embedding-004"</span>,</span><br><span class="line">            <span class="keyword">true</span>  <span class="comment">// auto-truncate enabled</span></span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> BatchingStrategy <span class="title">customBatchingStrategy</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 使用远高于实际模型限制 (20,000) 的 token 限制 (132,900)</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> TokenCountBatchingStrategy(</span><br><span class="line">            EncodingType.CL100K_BASE,</span><br><span class="line">            <span class="number">132900</span>,</span><br><span class="line">            <span class="number">0.1</span></span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> VectorStore <span class="title">vectorStore</span><span class="params">(EmbeddingModel embeddingModel, BatchingStrategy batchingStrategy)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> PgVectorStore.builder(embeddingModel)</span><br><span class="line">            .batchingStrategy(batchingStrategy)</span><br><span class="line">            .build();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在此配置中：</p>
+<ul>
+<li>嵌入模型启用了自动截断，使其能够优雅地处理超大输入。</li>
+<li>批处理策略使用了人为调高的 token 限制（132,900），远高于实际模型限制（20,000）。</li>
+<li>向量存储使用配置好的嵌入模型和自定义 <code>BatchingStrategy</code> Bean。</li>
+</ul>
+<p>这种方法之所以有效，是因为：</p>
+<ol>
+<li><code>TokenCountBatchingStrategy</code> 检查是否有单个文档超过配置的最大值，如果有则抛出 <code>IllegalArgumentException</code>。</li>
+<li>通过在批处理策略中设置非常高的限制，我们确保此检查永远不会失败。</li>
+<li>超过模型限制的文档或批次会被嵌入模型的自动截断功能静默截断并处理。</li>
+</ol>
+<p><strong>使用自动截断时的注意事项：</strong></p>
+<ul>
+<li>将批处理策略的最大输入 token 数量设置为模型实际限制的至少 5-10 倍，以避免批处理策略过早抛出异常。</li>
+<li>监控日志中来自嵌入模型的截断警告（注意：并非所有模型都会记录截断事件）。</li>
+<li>考虑静默截断对嵌入质量的影响。</li>
+<li>使用样本文档进行测试，确保截断后的嵌入仍然满足您的需求。</li>
+<li>为未来的维护者记录此配置，因为这是非标准做法。</li>
+</ul>
+<h3 id="Spring-Boot-自动配置"><a href="#Spring-Boot-自动配置" class="headerlink" title="Spring Boot 自动配置"></a>Spring Boot 自动配置</h3><p>如果您使用的是 Spring Boot 自动配置，则必须提供一个自定义的 <code>BatchingStrategy</code> Bean 来覆盖 Spring AI 自带的默认策略：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BatchingConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> BatchingStrategy <span class="title">batchingStrategy</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> TokenCountBatchingStrategy(</span><br><span class="line">            EncodingType.CL100K_BASE,</span><br><span class="line">            <span class="number">8000</span>,</span><br><span class="line">            <span class="number">0.1</span></span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>此 Bean 存在于应用程序上下文中后，将自动替换所有向量存储使用的默认批处理策略。</p>
+<hr>
+<h2 id="VectorStore-实现"><a href="#VectorStore-实现" class="headerlink" title="VectorStore 实现"></a>VectorStore 实现</h2><p>以下是 <code>VectorStore</code> 接口的可用实现：</p>
+<table>
+<thead>
+<tr>
+<th>实现</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>SimpleVectorStore</strong></td>
+<td>一个简单的向量存储实现，<strong>仅适用于测试目的</strong>。</td>
+</tr>
+<tr>
+<td><em>更多实现</em></td>
+<td><a href="https://docs.spring.io/spring-ai/reference/api/vectordbs.html#_vectorstore_implementations" target="_blank" rel="noopener">点击查看</a></td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="使用示例"><a href="#使用示例" class="headerlink" title="使用示例"></a>使用示例</h2><h3 id="选择嵌入模型"><a href="#选择嵌入模型" class="headerlink" title="选择嵌入模型"></a>选择嵌入模型</h3><p>要为向量数据库计算嵌入，您需要选择与所使用的高层 AI 模型相匹配的嵌入模型。</p>
+<p>例如，使用 OpenAI 的 ChatGPT 时，我们使用 <code>OpenAiEmbeddingModel</code> 和名为 <code>text-embedding-ada-002</code> 的模型。</p>
+<p>OpenAI 的 Spring Boot Starter 自动配置使得 <code>EmbeddingModel</code> 的实现可在 Spring 应用程序上下文中进行依赖注入。</p>
+<h3 id="加载数据"><a href="#加载数据" class="headerlink" title="加载数据"></a>加载数据</h3><p>将数据加载到向量存储的一般用法类似于批处理作业：首先将数据加载到 Spring AI 的 <code>Document</code> 类中，然后调用 <code>VectorStore</code> 接口上的 <code>add</code> 方法。</p>
+<p>给定一个表示 JSON 文件的源文件 <code>String</code> 引用，我们使用 Spring AI 的 <code>JsonReader</code> 加载 JSON 中的特定字段，将其拆分为小块，然后将这些小块传递给向量存储实现。<code>VectorStore</code> 实现会计算嵌入并将 JSON 和嵌入一起存储在向量数据库中：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Autowired</span></span><br><span class="line"><span class="keyword">private</span> VectorStore vectorStore;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">loadData</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    JsonReader reader = <span class="keyword">new</span> JsonReader(<span class="string">"data.json"</span>, <span class="string">"content"</span>);</span><br><span class="line">    List&lt;Document&gt; documents = reader.get();</span><br><span class="line">    vectorStore.add(documents);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>随后，当用户的提问传递给 AI 模型时，会执行相似度搜索以检索相似的文档，然后这些文档被”填充”到提示中作为用户问题的上下文。</p>
+<h3 id="检索数据"><a href="#检索数据" class="headerlink" title="检索数据"></a>检索数据</h3><p>对于只读操作，您可以使用 <code>VectorStore</code> 接口或更专注的 <code>VectorStoreRetriever</code> 接口：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 使用 VectorStore 进行搜索</span></span><br><span class="line">List&lt;Document&gt; results = vectorStore.similaritySearch(<span class="string">"What is AI?"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用 VectorStoreRetriever 进行搜索（只读）</span></span><br><span class="line"><span class="meta">@Autowired</span></span><br><span class="line"><span class="keyword">private</span> VectorStoreRetriever vectorStoreRetriever;</span><br><span class="line"></span><br><span class="line">List&lt;Document&gt; results = vectorStoreRetriever.similaritySearch(<span class="string">"What is AI?"</span>);</span><br></pre></td></tr></table></figure>
+
+<p>可以向 <code>similaritySearch</code> 方法传递额外选项，以定义要检索的文档数量和相似度搜索的阈值：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">SearchRequest request = SearchRequest.builder()</span><br><span class="line">    .query(<span class="string">"What is AI?"</span>)</span><br><span class="line">    .topK(<span class="number">5</span>)</span><br><span class="line">    .similarityThreshold(<span class="number">0.75</span>)</span><br><span class="line">    .build();</span><br><span class="line"></span><br><span class="line">List&lt;Document&gt; results = vectorStore.similaritySearch(request);</span><br></pre></td></tr></table></figure>
+
+<p>使用单独的接口可以让您清晰地定义哪些组件需要写入权限，哪些只需要读取权限：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DocumentRetrievalService</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> VectorStoreRetriever retriever;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">DocumentRetrievalService</span><span class="params">(VectorStoreRetriever retriever)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.retriever = retriever;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;Document&gt; <span class="title">findRelevantDocs</span><span class="params">(String query)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> retriever.similaritySearch(query);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这种关注点分离通过仅向真正需要它们的组件开放变更操作，有助于创建更可维护和更安全的应用程序。</p>
+<h3 id="VectorStoreRetriever-的优势"><a href="#VectorStoreRetriever-的优势" class="headerlink" title="VectorStoreRetriever 的优势"></a>VectorStoreRetriever 的优势</h3><p><code>VectorStoreRetriever</code> 接口提供了向量存储的只读视图，仅暴露相似度搜索功能。它遵循最小权限原则，在只需要检索文档而无需修改底层数据的 RAG（检索增强生成）应用中特别有用。</p>
+<table>
+<thead>
+<tr>
+<th>优势</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>关注点分离</strong></td>
+<td>清晰地将读取操作与写入操作分离。</td>
+</tr>
+<tr>
+<td><strong>接口隔离</strong></td>
+<td>只需要检索功能的客户端不会暴露变更方法。</td>
+</tr>
+<tr>
+<td><strong>函数式接口</strong></td>
+<td>可以使用 lambda 表达式或方法引用实现简单用例。</td>
+</tr>
+<tr>
+<td><strong>减少依赖</strong></td>
+<td>只需要执行搜索的组件不需要依赖完整的 <code>VectorStore</code> 接口。</td>
+</tr>
+</tbody></table>
+<h3 id="RAG-应用中的使用"><a href="#RAG-应用中的使用" class="headerlink" title="RAG 应用中的使用"></a>RAG 应用中的使用</h3><p><code>VectorStoreRetriever</code> 接口在 RAG 应用中特别有用，您需要检索相关文档以为 AI 模型提供上下文：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RagService</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> VectorStoreRetriever retriever;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ChatModel chatModel;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">RagService</span><span class="params">(VectorStoreRetriever retriever, ChatModel chatModel)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.retriever = retriever;</span><br><span class="line">        <span class="keyword">this</span>.chatModel = chatModel;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">answer</span><span class="params">(String question)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 检索相关文档</span></span><br><span class="line">        List&lt;Document&gt; relevantDocs = retriever.similaritySearch(question);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 构建包含上下文的提示</span></span><br><span class="line">        String context = relevantDocs.stream()</span><br><span class="line">            .map(Document::getText)</span><br><span class="line">            .collect(Collectors.joining(<span class="string">"\n"</span>));</span><br><span class="line"></span><br><span class="line">        String prompt = <span class="string">"基于以下上下文回答问题：\n"</span> + context + <span class="string">"\n\n问题："</span> + question;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 生成回答</span></span><br><span class="line">        <span class="keyword">return</span> chatModel.call(prompt);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这种模式允许在 RAG 应用中清晰地分离检索组件和生成组件。</p>
+<hr>
+<h2 id="过滤表达式"><a href="#过滤表达式" class="headerlink" title="过滤表达式"></a>过滤表达式</h2><p>这里来介绍可用于查询结果的各类过滤器。您可以将类似 SQL 的过滤表达式作为 <code>String</code> 传递给 <code>similaritySearch</code> 的重载方法之一。</p>
+<h3 id="字符串过滤表达式示例"><a href="#字符串过滤表达式示例" class="headerlink" title="字符串过滤表达式示例"></a>字符串过滤表达式示例</h3><p>考虑以下示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"country == 'BG'"</span></span><br><span class="line"><span class="string">"genre == 'drama' &amp;&amp; year &gt;= 2020"</span></span><br><span class="line"><span class="string">"genre in ['comedy', 'documentary', 'drama']"</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="FilterExpressionBuilder-—-流畅-API"><a href="#FilterExpressionBuilder-—-流畅-API" class="headerlink" title="FilterExpressionBuilder — 流畅 API"></a>FilterExpressionBuilder — 流畅 API</h3><p>您可以使用 <code>FilterExpressionBuilder</code> 创建 <code>Filter.Expression</code> 的实例，它提供了一个流畅的 API。</p>
+<p>简单示例如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">FilterExpressionBuilder builder = <span class="keyword">new</span> FilterExpressionBuilder();</span><br><span class="line"></span><br><span class="line"><span class="comment">// country == 'BG'</span></span><br><span class="line">Filter.Expression expr1 = builder.eq(<span class="string">"country"</span>, <span class="string">"BG"</span>).build();</span><br><span class="line"></span><br><span class="line"><span class="comment">// genre == 'drama' &amp;&amp; year &gt;= 2020</span></span><br><span class="line">Filter.Expression expr2 = builder</span><br><span class="line">    .eq(<span class="string">"genre"</span>, <span class="string">"drama"</span>)</span><br><span class="line">    .and(builder.gte(<span class="string">"year"</span>, <span class="number">2020</span>))</span><br><span class="line">    .build();</span><br><span class="line"></span><br><span class="line"><span class="comment">// genre in ['comedy', 'documentary', 'drama']</span></span><br><span class="line">Filter.Expression expr3 = builder</span><br><span class="line">    .in(<span class="string">"genre"</span>, <span class="string">"comedy"</span>, <span class="string">"documentary"</span>, <span class="string">"drama"</span>)</span><br><span class="line">    .build();</span><br></pre></td></tr></table></figure>
+
+<h3 id="可用操作符"><a href="#可用操作符" class="headerlink" title="可用操作符"></a>可用操作符</h3><p>您可以使用以下操作符构建复杂的表达式：</p>
+<p><strong>比较操作符：</strong></p>
+<table>
+<thead>
+<tr>
+<th>操作符</th>
+<th>方法</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>==</code></td>
+<td><code>eq()</code></td>
+<td><code>builder.eq(&quot;country&quot;, &quot;UK&quot;)</code></td>
+</tr>
+<tr>
+<td><code>!=</code></td>
+<td><code>ne()</code></td>
+<td><code>builder.ne(&quot;status&quot;, &quot;inactive&quot;)</code></td>
+</tr>
+<tr>
+<td><code>&gt;</code></td>
+<td><code>gt()</code></td>
+<td><code>builder.gt(&quot;year&quot;, 2020)</code></td>
+</tr>
+<tr>
+<td><code>&gt;=</code></td>
+<td><code>gte()</code></td>
+<td><code>builder.gte(&quot;year&quot;, 2020)</code></td>
+</tr>
+<tr>
+<td><code>&lt;</code></td>
+<td><code>lt()</code></td>
+<td><code>builder.lt(&quot;price&quot;, 100)</code></td>
+</tr>
+<tr>
+<td><code>&lt;=</code></td>
+<td><code>lte()</code></td>
+<td><code>builder.lte(&quot;price&quot;, 100)</code></td>
+</tr>
+<tr>
+<td><code>in</code></td>
+<td><code>in()</code></td>
+<td><code>builder.in(&quot;genre&quot;, &quot;comedy&quot;, &quot;drama&quot;)</code></td>
+</tr>
+</tbody></table>
+<p><strong>逻辑操作符：</strong></p>
+<table>
+<thead>
+<tr>
+<th>操作符</th>
+<th>方法</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>&amp;&amp;</code></td>
+<td><code>and()</code></td>
+<td><code>builder.eq(&quot;a&quot;, 1).and(builder.eq(&quot;b&quot;, 2))</code></td>
+</tr>
+<tr>
+<td>`</td>
+<td></td>
+<td>`</td>
+</tr>
+<tr>
+<td><code>!</code></td>
+<td><code>not()</code></td>
+<td><code>builder.not(builder.eq(&quot;status&quot;, &quot;deleted&quot;))</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="删除文档"><a href="#删除文档" class="headerlink" title="删除文档"></a>删除文档</h2><p>Vector Store 接口提供了多种删除文档的方法，允许您通过特定的文档 ID 或使用过滤表达式来移除数据。</p>
+<h3 id="按-ID-列表删除"><a href="#按-ID-列表删除" class="headerlink" title="按 ID 列表删除"></a>按 ID 列表删除</h3><p>删除文档最简单的方法是提供文档 ID 列表：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">List&lt;String&gt; idsToDelete = Arrays.asList(<span class="string">"doc1"</span>, <span class="string">"doc2"</span>, <span class="string">"doc3"</span>);</span><br><span class="line">vectorStore.delete(idsToDelete);</span><br></pre></td></tr></table></figure>
+
+<p>此方法会移除 ID 与提供列表中相匹配的所有文档，如果列表中的任何 ID 在存储中不存在，则会被忽略。</p>
+<h3 id="按过滤表达式删除"><a href="#按过滤表达式删除" class="headerlink" title="按过滤表达式删除"></a>按过滤表达式删除</h3><p>对于更复杂的删除条件，您可以使用过滤表达式：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 使用 Filter.Expression</span></span><br><span class="line">Filter.Expression filter = <span class="keyword">new</span> FilterExpressionBuilder()</span><br><span class="line">    .eq(<span class="string">"tenantId"</span>, <span class="string">"tenant-123"</span>)</span><br><span class="line">    .and(<span class="keyword">new</span> FilterExpressionBuilder().lt(<span class="string">"version"</span>, <span class="number">2</span>))</span><br><span class="line">    .build();</span><br><span class="line"></span><br><span class="line">vectorStore.delete(filter);</span><br></pre></td></tr></table></figure>
+
+<p>此方法接受一个 <code>Filter.Expression</code> 对象，该对象定义了应删除哪些文档的条件。当您需要根据文档的元数据属性删除文档时，它特别有用。</p>
+<h3 id="按字符串过滤表达式删除"><a href="#按字符串过滤表达式删除" class="headerlink" title="按字符串过滤表达式删除"></a>按字符串过滤表达式删除</h3><p>为方便起见，您也可以使用基于字符串的过滤表达式删除文档：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vectorStore.delete(<span class="string">"tenantId == 'tenant-123' &amp;&amp; version &lt; 2"</span>);</span><br></pre></td></tr></table></figure>
+
+<p>此方法在内部将提供的字符串过滤器转换为 <code>Filter.Expression</code> 对象。当您以字符串格式拥有过滤条件时，这非常有用。</p>
+<h3 id="异常处理"><a href="#异常处理" class="headerlink" title="异常处理"></a>异常处理</h3><p>所有删除方法在出现错误时都可能抛出异常：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    vectorStore.delete(idsToDelete);</span><br><span class="line">&#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">    <span class="comment">// 处理删除失败</span></span><br><span class="line">    log.error(<span class="string">"Failed to delete documents"</span>, e);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最佳实践是将删除操作包装在 try-catch 块中：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">safeDeleteDocuments</span><span class="params">(List&lt;String&gt; ids)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        vectorStore.delete(ids);</span><br><span class="line">        log.info(<span class="string">"Successfully deleted &#123;&#125; documents"</span>, ids.size());</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        log.error(<span class="string">"Failed to delete documents: &#123;&#125;"</span>, ids, e);</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> DocumentDeletionException(<span class="string">"Could not delete documents"</span>, e);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="常见场景：管理文档版本"><a href="#常见场景：管理文档版本" class="headerlink" title="常见场景：管理文档版本"></a>常见场景：管理文档版本</h3><p>一个常见的场景是管理文档版本，您需要上传文档的新版本同时移除旧版本。以下是如何使用过滤表达式处理此问题：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 上传新版本前，删除旧版本</span></span><br><span class="line">Filter.Expression oldVersionFilter = <span class="keyword">new</span> FilterExpressionBuilder()</span><br><span class="line">    .eq(<span class="string">"documentId"</span>, <span class="string">"doc-456"</span>)</span><br><span class="line">    .and(<span class="keyword">new</span> FilterExpressionBuilder().ne(<span class="string">"version"</span>, newVersion))</span><br><span class="line">    .build();</span><br><span class="line"></span><br><span class="line">vectorStore.delete(oldVersionFilter);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 然后添加新版本</span></span><br><span class="line">vectorStore.add(newDocument);</span><br></pre></td></tr></table></figure>
+
+<p>您也可以使用字符串过滤表达式完成同样的操作：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vectorStore.delete(<span class="string">"documentId == 'doc-456' &amp;&amp; version != "</span> + newVersion);</span><br></pre></td></tr></table></figure>
+
+<h3 id="删除最佳实践"><a href="#删除最佳实践" class="headerlink" title="删除最佳实践"></a>删除最佳实践</h3><ul>
+<li><strong>按 ID 列表删除</strong>在您确切知道要移除哪些文档时通常更快。</li>
+<li><strong>基于过滤器的删除</strong>可能需要扫描索引以查找匹配的文档；不过，这取决于具体的向量存储实现。</li>
+<li><strong>大型删除操作</strong>应进行批处理，以避免压垮系统。</li>
+<li>当基于文档属性而非先收集 ID 进行删除时，考虑使用过滤表达式。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/springai/" rel="tag"># springai</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2026/07/13/AgentScopeJava-项目架构分析/" rel="next" title="AgentScopeJava 项目架构分析">
+                  <i class="fa fa-chevron-left"></i> AgentScopeJava 项目架构分析
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VectorStore-接口"><span class="nav-number">2.</span> <span class="nav-text">VectorStore 接口</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#VectorStoreRetriever-—-只读接口"><span class="nav-number">2.1.</span> <span class="nav-text">VectorStoreRetriever — 只读接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VectorStore-—-读写接口"><span class="nav-number">2.2.</span> <span class="nav-text">VectorStore — 读写接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#插入数据"><span class="nav-number">2.3.</span> <span class="nav-text">插入数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#相似度搜索参数"><span class="nav-number">2.4.</span> <span class="nav-text">相似度搜索参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模式初始化"><span class="nav-number">2.5.</span> <span class="nav-text">模式初始化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#批处理策略（Batching-Strategy）"><span class="nav-number">3.</span> <span class="nav-text">批处理策略（Batching Strategy）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么需要批处理？"><span class="nav-number">3.1.</span> <span class="nav-text">为什么需要批处理？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TokenCountBatchingStrategy"><span class="nav-number">3.2.</span> <span class="nav-text">TokenCountBatchingStrategy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义-TokenCountBatchingStrategy"><span class="nav-number">3.3.</span> <span class="nav-text">自定义 TokenCountBatchingStrategy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自动截断（Auto-Truncation）场景"><span class="nav-number">3.4.</span> <span class="nav-text">自动截断（Auto-Truncation）场景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spring-Boot-自动配置"><span class="nav-number">3.5.</span> <span class="nav-text">Spring Boot 自动配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VectorStore-实现"><span class="nav-number">4.</span> <span class="nav-text">VectorStore 实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用示例"><span class="nav-number">5.</span> <span class="nav-text">使用示例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#选择嵌入模型"><span class="nav-number">5.1.</span> <span class="nav-text">选择嵌入模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#加载数据"><span class="nav-number">5.2.</span> <span class="nav-text">加载数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#检索数据"><span class="nav-number">5.3.</span> <span class="nav-text">检索数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VectorStoreRetriever-的优势"><span class="nav-number">5.4.</span> <span class="nav-text">VectorStoreRetriever 的优势</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RAG-应用中的使用"><span class="nav-number">5.5.</span> <span class="nav-text">RAG 应用中的使用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#过滤表达式"><span class="nav-number">6.</span> <span class="nav-text">过滤表达式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#字符串过滤表达式示例"><span class="nav-number">6.1.</span> <span class="nav-text">字符串过滤表达式示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FilterExpressionBuilder-—-流畅-API"><span class="nav-number">6.2.</span> <span class="nav-text">FilterExpressionBuilder — 流畅 API</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可用操作符"><span class="nav-number">6.3.</span> <span class="nav-text">可用操作符</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#删除文档"><span class="nav-number">7.</span> <span class="nav-text">删除文档</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#按-ID-列表删除"><span class="nav-number">7.1.</span> <span class="nav-text">按 ID 列表删除</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#按过滤表达式删除"><span class="nav-number">7.2.</span> <span class="nav-text">按过滤表达式删除</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#按字符串过滤表达式删除"><span class="nav-number">7.3.</span> <span class="nav-text">按字符串过滤表达式删除</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#异常处理"><span class="nav-number">7.4.</span> <span class="nav-text">异常处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常见场景：管理文档版本"><span class="nav-number">7.5.</span> <span class="nav-text">常见场景：管理文档版本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#删除最佳实践"><span class="nav-number">7.6.</span> <span class="nav-text">删除最佳实践</span></a></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar.jpg"
+      alt="蝉">
+  <p class="site-author-name" itemprop="name">蝉</p>
+  <div class="site-description" itemprop="description">Another way to laugh !</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">140</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">80</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/lazycece" title="GitHub &rarr; https://github.com/lazycece" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:lazycece@qq.com" title="E-Mail &rarr; mailto:lazycece@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://blog.csdn.net/qq_28851503" title="CSDN &rarr; https://blog.csdn.net/qq_28851503" rel="noopener" target="_blank"><i class="fa fa-fw fa-vk"></i>CSDN</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://leetcode-cn.com/u/lazycece" title="LeetCode &rarr; https://leetcode-cn.com/u/lazycece" rel="noopener" target="_blank"><i class="fa fa-fw fa-vk"></i>LeetCode</a>
+      </span>
+    
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2026</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">蝉</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script><script src="/js/bookmark.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
